@@ -1,0 +1,1344 @@
+
+> swirl()
+
+| Welcome to swirl! Please sign in. If you've been here before, use the same name as you did then. If you are
+| new, call yourself something unique.
+
+What shall I call you? Sherman
+
+| Would you like to continue with one of these lessons?
+
+1: Getting and Cleaning Data Manipulating Data with dplyr
+2: No. Let me start something new.
+
+Selection: 2
+
+| Please choose a course, or type 0 to exit swirl.
+
+1: Getting and Cleaning Data
+2: R Programming
+3: Statistical Inference
+4: Take me to the swirl course repository!
+
+Selection: 3
+
+| Please choose a lesson, or type 0 to return to course menu.
+
+ 1: Introduction             2: Probability1             3: Probability2             4: ConditionalProbability
+ 5: Expectations             6: Variance                 7: CommonDistros            8: Asymptotics           
+ 9: T Confidence Intervals  10: Hypothesis Testing      11: P Values                12: Power                 
+13: Multiple Testing        14: Resampling              
+
+Selection: 3
+
+  |                                                                                                        |   0%
+
+| Probability. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be downloaded as a zip
+| file and viewed locally. This lesson corresponds to Statistical_Inference/Probability.)
+
+...
+
+  |===                                                                                                     |   3%
+
+| In this lesson, we'll continue to discuss probability.
+
+...
+
+  |======                                                                                                  |   6%
+
+| Recall that a random variable is a numerical outcome of an experiment. It can be discrete (take on only a
+| countable number of possibilities), or continuous (take on any value on the real line or subset of it).
+
+...
+
+  |=========                                                                                               |   9%
+
+| If you had a ruler of infinite precision, would measuring the height of adults around the world be continuous
+| or discrete?
+
+1: continuous
+2: discrete
+
+Selection: 1
+
+| You are amazing!
+
+  |============                                                                                            |  11%
+
+| Is the drawing of a hand of cards continuous or discrete?
+
+1: continuous
+2: discrete
+
+Selection: 1
+
+| Not exactly. Give it another go.
+
+| Can you enumerate the possible outcomes?
+
+1: continuous
+2: discrete
+
+Selection: 2
+
+| Your dedication is inspiring!
+
+  |===============                                                                                         |  14%
+
+| Continuous random variables are usually associated with measurements of time, distance, or some biological
+| process since they can take on any value, often within some specified range. Limitations of precision in taking
+| the measurements may imply that the values are discrete; we in fact consider them continuous.
+
+...
+
+  |==================                                                                                      |  17%
+
+| A probability mass function (PMF) gives the probability that a discrete random variable is exactly equal to
+| some value.
+
+...
+
+  |=====================                                                                                   |  20%
+
+| For instance, suppose we have a coin which may or may not be fair. Let x=0 represent a 'heads' outcome and x=1
+| represent a 'tails' outcome of a coin toss. If p is the probability of 'heads' which of the following
+| represents the PMF of the coin toss?  The variable x is either 0 (heads) or 1 (tails).
+
+1: (p^(1-x))*(1-p)^x
+2: (p^x)*(1-p)^(1-x)
+
+Selection: 2
+
+| Nice try, but that's not exactly what I was hoping for. Try again.
+
+| The probability p is associated with a 'heads' outcome which occurs when x=0. Which of the two expressions has
+| an exponent of 1 for p when x is 0?
+
+1: (p^(1-x))*(1-p)^x
+2: (p^x)*(1-p)^(1-x)
+
+Selection: 1
+
+| You got it!
+
+  |========================                                                                                |  23%
+
+| A probability density function is associated with a continuous random variable. To quote from Wikipedia, it "is
+| a function that describes the relative likelihood for this random variable to take on a given value. The
+| probability of the random variable falling within a particular range of values is given by ... the area under
+| the density function but above the horizontal axis and between the lowest and greatest values of the range."
+
+...
+
+  |===========================                                                                             |  26%
+
+| We'll repeat two requirements of a probability density function. It must be nonnegative everywhere, and the
+| area under it must equal one."
+
+...
+
+  |==============================                                                                          |  29%
+
+| Consider this figure - a rectangle with height 1 and width 2 with a diagonal line drawn from the lower left
+| corner (0,0) to the upper right (2,1). The area of the entire rectangle is 2 and elementary geometry tells us
+| that the diagonal divides the rectangle into 2 equal areas.
+
+...
+
+  |=================================                                                                       |  31%
+
+| Could the diagonal line represent a probability density function for a random variable with a range of values
+| between 0 and 2? Assume the lower side of the rectangle is the x axis.
+
+1: Yes
+2: No
+
+Selection: 1
+
+| All that hard work is paying off!
+
+  |====================================                                                                    |  34%
+
+| Now consider the shaded portion of the triangle - a smaller triangle with a base of length 1.6 and height
+| determined by the diagonal. We'll answer the question, "What proportion of the big triangle is shaded?"
+
+...
+
+  |=======================================                                                                 |  37%
+
+| This proportion represents the probability that throwing a piece of cat kibble at the bigger triangle (below
+| the diagonal) hits the blue portion.
+
+...
+
+  |==========================================                                                              |  40%
+
+| We have to compute the area of the blue triangle. (Since the area of the big triangle is 1, the area of the
+| blue triangle is the proportion of the big triangle that is shaded.) We know the base, but what is its height?
+
+1: .5
+2: .8
+3: .25
+4: I can't tell
+
+Selection: 2
+
+| That's correct!
+
+  |=============================================                                                           |  43%
+
+| What is the area of the blue triangle?
+
+> (1.6*0.8)/2
+[1] 0.64
+
+| You got it right!
+
+  |================================================                                                        |  46%
+
+| So, what is the probability that the kibble we throw at the bigger triangle will hit the blue portion?
+
+> (1.6*0.8)/2
+[1] 0.64
+
+| Perseverance, that's the answer.
+
+  |===================================================                                                     |  49%
+
+| This artificial example was to meant to illustrate a simple probability density function (PDF). Most PDF's have
+| underlying formulae more complicated than lines. We'll see more of these in future lessons.
+
+...
+
+  |=====================================================                                                   |  51%
+
+| The cumulative distribution function (CDF) of a random variable X, either discrete or continuous, is the
+| function F(x) equal to the probability that X is less than or equal to x. In the example above, the area of the
+| blue triangle represents the probability that the random variable was less than or equal to the value 1.6.
+
+...
+
+  |========================================================                                                |  54%
+
+| In the triangle example from above, which of the following expressions represents F(x), the CDF?
+
+1: x*2x/2
+2: x*x/2
+3: x^2
+4: x*x/4
+
+Selection: 3
+
+| Give it another try.
+
+| The term 'x' is the base, x/2 is the height.  Plug these into the formula for the area of a triangle.
+
+1: x*2x/2
+2: x*x/2
+3: x*x/4
+4: x^2
+
+Selection: 3
+
+| You are quite good my friend!
+
+  |===========================================================                                             |  57%
+
+| If you're familiar with calculus you might recognize that when you're computing areas under curves you're
+| actually integrating functions.
+
+...
+
+  |==============================================================                                          |  60%
+
+| When the random variable is continuous, as in the example, the PDF is the derivative of the CDF. So integrating
+| the PDF (the line represented by the diagonal) yields the CDF. When you evaluate the CDF at the limits of
+| integration the result is an area.
+
+...
+
+  |=================================================================                                       |  63%
+
+| To see this in the example, we've defined the function mypdf for you. This is the equation of the line
+| represented by the diagonal of the rectangle. As the PDF, it is the derivative of F(x), the CDF. Look at mypdf
+| now.
+
+> mypdf
+function(x){x/2}
+<environment: 0x000000001b656580>
+
+| Excellent work!
+
+  |====================================================================                                    |  66%
+
+| Now use the R function integrate to integrate mypdf with the parameters lower equal to 0 and upper equal to
+| 1.6. See if you get the same area (probability) you got before.
+
+> integrate(mypdf, 0, 1.6)
+0.64 with absolute error < 7.1e-15
+
+| Keep working like that and you'll get there!
+
+  |=======================================================================                                 |  69%
+
+| The survivor function S(x) of a random variable X is defined as the function of x equal to the probability that
+| the random variable X is greater than the value x. This is the complement of the CDF F(x), in our example, the
+| portion of the lower triangle that is not shaded.
+
+...
+
+  |==========================================================================                              |  71%
+
+| In our example, which of the following expressions represents the survival function?
+
+1: 1-x*x/4
+2: 1-x^2
+3: 1-x*x/2
+4: 1-x*2x/2
+
+Selection: 1
+
+| You are amazing!
+
+  |=============================================================================                           |  74%
+
+| The quantile v of a CDF is the point x_v at which the CDF has the value v. More precisely, F(x_v)=v. A
+| percentile is a quantile in which v is expressed as a percentage.
+
+...
+
+  |================================================================================                        |  77%
+
+| What percentile is the median?
+
+1: I can't tell
+2: 50-th
+3: 95-th
+4: 25-th
+
+Selection: 2
+
+| You're the best!
+
+  |===================================================================================                     |  80%
+
+| What is the 50th percentile of the CDF F(x)=(x^2)/4 from the example above?
+
+> 1
+[1] 1
+
+| Give it another try. Or, type info() for more options.
+
+| Solve for the x such that x^2=4*.5=2
+
+> sqrt(2)
+[1] 1.414214
+
+| You got it right!
+
+  |======================================================================================                  |  83%
+
+| What does this mean with respect to the kibble we're tossing at the triangle?
+
+1: Half of it falls to the left of 1.41
+2: All of it falls to the left of 1.41
+3: All of it falls on the vertical line at 1.41
+4: All of it falls to the right of 1.41
+
+Selection: 1
+
+| You're the best!
+
+  |=========================================================================================               |  86%
+
+| We'll close by repeating some important points.
+
+...
+
+  |============================================================================================            |  89%
+
+| A probability model connects data to a population using assumptions.
+
+...
+
+  |===============================================================================================         |  91%
+
+| Be careful to distinguish between population medians and sample medians.
+
+...
+
+  |==================================================================================================      |  94%
+
+| A sample median is an estimator of a population median (the estimand).
+
+...
+
+  |=====================================================================================================   |  97%
+
+| Congrats! You've concluded this lesson on probability.
+
+...
+
+  |========================================================================================================| 100%
+
+| Would you like to receive credit for completing this course on Coursera.org?
+
+1: Yes
+2: No
+
+Selection: 1
+What is your email address? sgwood63@gmail.com
+What is your assignment token? igXEMEU465KT2YFP
+Grade submission succeeded!
+
+| Keep up the great work!
+
+| You've reached the end of this lesson! Returning to the main menu...
+
+| Would you like to continue with one of these lessons?
+
+1: Getting and Cleaning Data Manipulating Data with dplyr
+2: No. Let me start something new.
+
+Selection: 2
+
+| Please choose a course, or type 0 to exit swirl.
+
+1: Getting and Cleaning Data
+2: R Programming
+3: Statistical Inference
+4: Take me to the swirl course repository!
+
+Selection: 3
+
+| Please choose a lesson, or type 0 to return to course menu.
+
+ 1: Introduction             2: Probability1             3: Probability2             4: ConditionalProbability
+ 5: Expectations             6: Variance                 7: CommonDistros            8: Asymptotics           
+ 9: T Confidence Intervals  10: Hypothesis Testing      11: P Values                12: Power                 
+13: Multiple Testing        14: Resampling              
+
+Selection: 4
+
+  |                                                                                                        |   0%
+
+| Conditional Probability. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses/. If you care to use them, they must be downloaded as a
+| zip file and viewed locally. This lesson corresponds to 06_Statistical_Inference/03_Conditional_Probability.)
+
+...
+
+  |==                                                                                                      |   2%
+
+| In this lesson, as the name suggests, we'll discuss conditional probability.
+
+...
+
+  |=====                                                                                                   |   5%
+
+| If you were given a fair die and asked what the probability of rolling a 3 is, what would you reply?
+
+1: 1/2
+2: 1/6
+3: 1
+4: 1/3
+5: 1/4
+
+Selection: 2
+
+| Nice work!
+
+  |=======                                                                                                 |   7%
+
+| Suppose the person who gave you the dice rolled it behind your back and told you the roll was odd. Now what is
+| the probability that the roll was a 3?
+
+1: 1/2
+2: 1/3
+3: 1
+4: 1/6
+5: 1/4
+
+Selection: 2
+
+| You're the best!
+
+  |==========                                                                                              |  10%
+
+| The probability of this second event is conditional on this new information, so the probability of rolling a 3
+| is now one third.
+
+...
+
+  |============                                                                                            |  12%
+
+| We represent the conditional probability of an event A given that B has occurred with the notation P(A|B). More
+| specifically, we define the conditional probability of event A, given that B has occurred with the following.
+
+...
+
+  |===============                                                                                         |  14%
+
+| P(A|B) = P(A & B)/ P(B) . P(A|B) is the probability that BOTH A and B occur divided by the probability that B
+| occurs.
+
+...
+
+  |=================                                                                                       |  17%
+
+| Back to our dice example. Which of the following expressions represents P(A&B), where A is the event of rolling
+| a 3 and B is the event of the roll being odd?
+
+1: 1/3
+2: 1/2
+3: 1/6
+4: 1/4
+5: 1
+
+Selection: 1
+
+| One more time. You can do it!
+
+| Here A is a subset of B so the probability of both A AND B happening is the probability of A happening.
+
+1: 1/2
+2: 1/3
+3: 1/4
+4: 1
+5: 1/6
+
+Selection: 3
+
+| Not exactly. Give it another go.
+
+| Here A is a subset of B so the probability of both A AND B happening is the probability of A happening.
+
+1: 1/4
+2: 1
+3: 1/2
+4: 1/6
+5: 1/3
+
+Selection: 4
+
+| Perseverance, that's the answer.
+
+  |====================                                                                                    |  19%
+
+| Continuing with the same dice example. Which of the following expressions represents P(A&B)/P(B), where A is
+| the event of rolling a 3 and B is the event of the roll being odd?
+
+1: (1/2)/(1/6)
+2: (1/3)/(1/2)
+3: (1/6)/(1/2)
+4: 1/6
+
+Selection: 3
+
+| Great job!
+
+  |======================                                                                                  |  21%
+
+| From the definition of P(A|B), we can write P(A&B) = P(A|B) * P(B), right?  Let's use this to express P(B|A).
+
+...
+
+  |=========================                                                                               |  24%
+
+| P(B|A) = P(B&A)/P(A) = P(A|B) * P(B)/P(A). This is a simple form of Bayes' Rule which relates the two
+| conditional probabilities.
+
+...
+
+  |===========================                                                                             |  26%
+
+| Suppose we don't know P(A) itself, but only know its conditional probabilities, that is, the probability that
+| it occurs if B occurs and the probability that it occurs if B doesn't occur. These are P(A|B) and P(A|~B),
+| respectively. We use ~B to represent 'not B' or 'B complement'.
+
+...
+
+  |==============================                                                                          |  29%
+
+| We can then express P(A) = P(A|B) * P(B) + P(A|~B) * P(~B) and substitute this is into the denominator of
+| Bayes' Formula.
+
+...
+
+  |================================                                                                        |  31%
+
+| P(B|A) = P(A|B) * P(B) / ( P(A|B) * P(B) + P(A|~B) * P(~B) )
+
+...
+
+  |===================================                                                                     |  33%
+
+| Bayes' Rule has applicability to medical diagnostic tests. We'll now discuss the example of the HIV test from
+| the slides.
+
+...
+
+  |=====================================                                                                   |  36%
+
+| Suppose we know the accuracy rates of the test for both the positive case (positive result when the patient has
+| HIV) and negative (negative test result when the patient doesn't have HIV). These are referred to as test
+| sensitivity and specificity, respectively.
+
+...
+
+  |========================================                                                                |  38%
+
+| Let 'D' be the event that the patient has HIV, and let '+' indicate a positive test result and '-' a negative.
+| What information do we know? Recall that we know the accuracy rates of the HIV test.
+
+1: P(+|~D) and P(-|~D)
+2: P(+|D) and P(-|D)
+3: P(+|~D) and P(-|D)
+4: P(+|D) and P(-|~D)
+
+Selection: 4
+
+| That's correct!
+
+  |==========================================                                                              |  40%
+
+| Suppose a person gets a positive test result and comes from a population with a HIV prevalence rate of .001.
+| We'd like to know the probability that he really has HIV. Which of the following represents this?
+
+1: P(+|D)
+2: P(D|-)
+3: P(D|+)
+4: P(~D|+)
+
+Selection: 1
+
+| Almost! Try again.
+
+| We've already been given the information that the test was positive '+'. We want to know whether D is present
+| given the positive test result.
+
+1: P(+|D)
+2: P(~D|+)
+3: P(D|+)
+4: P(D|-)
+
+Selection: 3
+
+| You're the best!
+
+  |=============================================                                                           |  43%
+
+| By Bayes' Formula, P(D|+) = P(+|D) * P(D) / ( P(+|D) * P(D) + P(+|~D) * P(~D) )
+
+...
+
+  |===============================================                                                         |  45%
+
+| We can use the prevalence of HIV in the patient's population as the value for P(D). Note that since
+| P(~D)=1-P(D) and P(+|~D) = 1-P(-|~D) we can calculate P(D|+). In other words, we know values for all the terms
+| on the right side of the equation. Let's do it!
+
+...
+
+  |==================================================                                                      |  48%
+
+| Disease prevalence is .001. Test sensitivity (+ result with disease) is 99.7% and specificity (- result without
+| disease) is 98.5%. First compute the numerator, P(+|D)*P(D). (This is also part of the denominator.)
+
+> 99.7%/0.01
+Error: unexpected input in "99.7%/0.01"
+> 0.997/0.001
+[1] 997
+
+| Almost! Try again. Or, type info() for more options.
+
+| Multiply the test sensitivity by the prevalence.
+
+> 0.997*0.001
+[1] 0.000997
+
+| Your dedication is inspiring!
+
+  |====================================================                                                    |  50%
+
+| Now solve for the remainder of the denominator, P(+|~D)*P(~D).
+
+> .985*(1-0.001)
+[1] 0.984015
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| Multiply the complement of test specificity by the complement of prevalence.
+
+> (1-.985)*(1-0.001)
+[1] 0.014985
+
+| Keep up the great work!
+
+  |======================================================                                                  |  52%
+
+| Now put the pieces together to compute the probability that the patient has the disease given his positive test
+| result, P(D|+). Plug your last two answers into the formula P(+|D) * P(D) / ( P(+|D) * P(D) + P(+|~D) * P(~D) )
+| to compute P(D|+).
+
+> (0.997*0.001)/((0.997*0.001() + ((1-.985)*(1-0.001))
++ )
++ )
+Error: attempt to apply non-function
+> (0.997*0.001) / (  (0.997*0.001) + ((1-.985)*(1-0.001)) )
+[1] 0.06238268
+
+| Great job!
+
+  |=========================================================                                               |  55%
+
+| So the patient has a 6% chance of having HIV given this positive test result. The expression P(D|+) is called
+| the positive predictive value. Similarly, P(~D|-), is called the negative predictive value, the probability
+| that a patient does not have the disease given a negative test result.
+
+...
+
+  |===========================================================                                             |  57%
+
+| The diagnostic likelihood ratio of a positive test, DLR_+, is the ratio of the two + conditional probabilities,
+| one given the presence of disease and the other given the absence. Specifically, DLR_+ = P(+|D) / P(+|~D).
+| Similarly, the DLR_- is defined as a ratio. Which of the following do you think represents the DLR_-?
+
+1: P(+|~D) / P(-|D)
+2: P(-|D) / P(+|~D)
+3: P(-|D) / P(-|~D)
+4: I haven't a clue.
+
+Selection: 1
+
+| Not exactly. Give it another go.
+
+| The signs of the test in both the numerator and denominator have to agree as they did for the DLR_+.
+
+1: P(-|D) / P(-|~D)
+2: I haven't a clue.
+3: P(+|~D) / P(-|D)
+4: P(-|D) / P(+|~D)
+
+Selection: 1
+
+| Keep working like that and you'll get there!
+
+  |==============================================================                                          |  60%
+
+| Recall that P(+|D) and P(-|~D), (test sensitivity and specificity respectively) are accuracy rates of a
+| diagnostic test for the two possible results. They should be close to 1 because no one would take an inaccurate
+| test, right? Since DLR_+ = P(+|D) / P(+|~D) we recognize the numerator as test sensitivity and the denominator
+| as the complement of test specificity.
+
+...
+
+  |================================================================                                        |  62%
+
+| Since the numerator is close to 1 and the denominator is close to 0 do you expect DLR_+ to be large or small?
+
+1: I haven't a clue.
+2: Large
+3: Small
+
+Selection: 2
+
+| All that hard work is paying off!
+
+  |===================================================================                                     |  64%
+
+| Now recall that DLR_- = P(-|D) / P(-|~D). Here the numerator is the complement of sensitivity and the
+| denominator is specificity. From the arithmetic and what you know about accuracy tests, do you expect DLR_- to
+| be large or small?
+
+1: Large
+2: Small
+3: I haven't a clue.
+
+Selection: 2
+
+| That's a job well done!
+
+  |=====================================================================                                   |  67%
+
+| Now a little more about likelihood ratios. Recall Bayes Formula. P(D|+) = P(+|D) * P(D) / ( P(+|D) * P(D) +
+| P(+|~D) * P(~D) ) and notice that if we replace all occurrences of 'D' with '~D', the denominator doesn't
+| change. This means that if we formed a ratio of P(D|+) to P(~D|+) we'd get a much simpler expression (since the
+| complicated denominators would cancel each other out). Like this....
+
+...
+
+  |========================================================================                                |  69%
+
+| P(D|+) / P(~D|+) = P(+|D) * P(D) / (P(+|~D) * P(~D)) = P(+|D)/P(+|~D) * P(D)/P(~D).
+
+...
+
+  |==========================================================================                              |  71%
+
+| The left side of the equation represents the post-test odds of disease given a positive test result. The
+| equation says that the post-test odds of disease equals the pre-test odds of disease (that is, P(D)/P(~D) )
+| times
+
+1: the DLR_-
+2: I haven't a clue.
+3: the DLR_+
+
+Selection: 3
+
+| You are really on a roll!
+
+  |=============================================================================                           |  74%
+
+| In other words, a DLR_+ value equal to N indicates that the hypothesis of disease is N times more supported by
+| the data than the hypothesis of no disease.
+
+...
+
+  |===============================================================================                         |  76%
+
+| Taking the formula above and replacing the '+' signs with '-' yields a formula with the DLR_-. Specifically,
+| P(D|-) / P(~D|-) = P(-|D) / P(-|~D) * P(D)/P(~D). As with the positive case, this relates the odds of disease
+| post-test, P(D|-) / P(~D|-), to those of disease pre-test, P(D)/P(~D).
+
+...
+
+  |==================================================================================                      |  79%
+
+| The equation P(D|-) / P(~D|-) = P(-|D) / P(-|~D) * P(D)/P(~D) says what about the post-test odds of disease
+| relative to the pre-test odds of disease given negative test results?
+
+1: I haven't a clue.
+2: post-test odds are greater than pre-test odds
+3: post-test odds are less than pre-test odds
+
+Selection: 3
+
+| All that practice is paying off!
+
+  |====================================================================================                    |  81%
+
+| Let's cover some basics now.
+
+...
+
+  |=======================================================================================                 |  83%
+
+| Two events, A and B, are independent if they have no effect on each other. Formally, P(A&B) = P(A)*P(B). It's
+| easy to see that if A and B are independent, then P(A|B)=P(A). The definition is similar for random variables X
+| and Y.
+
+...
+
+  |=========================================================================================               |  86%
+
+| We've seen examples of independence in our previous probability lessons. Let's review a little. What's the
+| probability of rolling a '6' twice in a row using a fair die?
+
+1: 1/6
+2: 1/36
+3: 1/2
+4: 2/6
+
+Selection: 2
+
+| You got it!
+
+  |============================================================================================            |  88%
+
+| You're given a fair die and asked to roll it twice. What's the probability that the second roll of the die
+| matches the first?
+
+1: 1/6
+2: 1/36
+3: 1/2
+4: 2/6
+
+Selection: 1
+
+| You are amazing!
+
+  |==============================================================================================          |  90%
+
+| If the chance of developing a disease with a genetic or environmental component is p, is the chance of both you
+| and your sibling developing that disease p*p?
+
+1: Yes
+2: No
+
+Selection: 2
+
+| Excellent work!
+
+  |=================================================================================================       |  93%
+
+| We'll conclude with iid. Random variables are said to be iid if they are independent and identically
+| distributed. By independent we mean "statistically unrelated from one another". Identically distributed means
+| that "all have been drawn from the same population distribution".
+
+...
+
+  |===================================================================================================     |  95%
+
+| Random variables which are iid are the default model for random samples and many of the important theories of
+| statistics assume that variables are iid. We'll usually assume our samples are random and variables are iid.
+
+...
+
+  |======================================================================================================  |  98%
+
+| Congrats! You've concluded this lesson on conditional probability. We hope you liked it unconditionally.
+
+...
+
+  |========================================================================================================| 100%
+
+| Would you like to receive credit for completing this course on Coursera.org?
+
+1: Yes
+2: No
+
+Selection: 1
+What is your email address? sgwood63@gmail.com
+What is your assignment token? DDqrowExJOhvgeHv
+Grade submission succeeded!
+
+| Excellent work!
+
+| Expectations. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses/. If you care to use them, they must be downloaded as a
+| zip file and viewed locally. This lesson corresponds to 06_Statistical_Inference/04_Expectations.)
+
+...
+
+  |==                                                                                                      |   2%
+
+| In this lesson, as you might expect, we'll discuss expected values. Expected values of what, exactly?
+
+...
+
+  |=====                                                                                                   |   5%
+
+| The expected value of a random variable X, E(X), is a measure of its central tendency. For a discrete random
+| variable X with PMF p(x), E(X) is defined as a sum, over all possible values x, of the quantity x*p(x). E(X)
+| represents the center of mass of a collection of locations and weights, {x, p(x)}.
+
+...
+
+  |=======                                                                                                 |   7%
+
+| Another term for expected value is mean. Recall your high school definition of arithmetic mean (or average) as
+| the sum of a bunch of numbers divided by the number of numbers you added together. This is consistent with the
+| formal definition of E(X) if all the numbers are equally weighted.
+
+...
+
+  |==========                                                                                              |   9%
+
+| Consider the random variable X representing a roll of a fair dice. By 'fair' we mean all the sides are equally
+| likely to appear. What is the expected value of X?
+
+> 3.5
+[1] 3.5
+
+| Nice work!
+
+  |============                                                                                            |  12%
+
+| We've defined a function for you, expect_dice, which takes a PMF as an input. For our purposes, the PMF is a
+| 6-long array of fractions. The i-th entry in the array represents the probability of i being the outcome of a
+| dice roll. Look at the function expect_dice now.
+
+> expect_dice
+function(pmf){ mu <- 0; for (i in 1:6) mu <- mu + i*pmf[i]; mu}
+<environment: 0x000000001af308b8>
+
+| You nailed it! Good job!
+
+  |===============                                                                                         |  14%
+
+| We've also defined PMFs for three dice, dice_fair, dice_high and dice_low. The last two are loaded, that is,
+| not fair. Look at dice_high now.
+
+> dice_high
+[1] 0.04761905 0.09523810 0.14285714 0.19047619 0.23809524 0.28571429
+
+| You nailed it! Good job!
+
+  |=================                                                                                       |  16%
+
+| Using the function expect_dice with dice_high as its argument, calculate the expected value of a roll of
+| dice_high.
+
+> expect_dice(dice_high)
+[1] 4.333333
+
+| That's correct!
+
+  |===================                                                                                     |  19%
+
+| See how the expected value of dice_high is higher than that of the fair dice. Now calculate the expected value
+| of a roll of dice_low.
+
+> expect_dice(dice_low)
+[1] 2.666667
+
+| You got it right!
+
+  |======================                                                                                  |  21%
+
+| You can see the effect of loading the dice on the expectations of the rolls. For high-loaded dice the expected
+| value of a roll (on average) is 4.33 and for low-loaded dice 2.67. We've stored these off for you in two
+| variables, edh and edl. We'll need them later.
+
+...
+
+  |========================                                                                                |  23%
+
+| One of the nice properties of the expected value operation is that it's linear. This means that, if c is a
+| constant, then E(cX) = c*E(X). Also, if X and Y are two random variables then E(X+Y)=E(X)+E(Y). It follows that
+| E(aX+bY)=aE(X)+bE(Y).
+
+...
+
+  |===========================                                                                             |  26%
+
+| Suppose you were rolling our two loaded dice, dice_high and dice_low. You can use this linearity property of
+| expectation to compute the expected value of their average. Let X_hi and X_lo represent the respective outcomes
+| of the dice roll. The expected value of the average is E((X_hi + X_lo)/2) or .5 *( E(X_hi)+E(X_lo) ). Compute
+| this now. Remember we stored the expected values in edh and edl.
+
+> 5. * (edh + edl)
+[1] 35
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| Type '.5*(edh+edl)' at the command prompt.
+
+> .5 * (edh + edl)
+[1] 3.5
+
+| Keep working like that and you'll get there!
+
+  |=============================                                                                           |  28%
+
+| Did you expect that?
+
+1: Yes
+2: No
+
+Selection: 1
+
+| All that practice is paying off!
+
+  |===============================                                                                         |  30%
+
+| For a continuous random variable X, the expected value is defined analogously as it was for the discrete case.
+| Instead of summing over discrete values, however, the expectation integrates over a continuous function.
+
+...
+
+  |==================================                                                                      |  33%
+
+| It follows that for continuous random variables, E(X) is the area under the function t*f(t), where f(t) is the
+| PDF (probability density function) of X. This definition borrows from the definition of center of mass of a
+| continuous body.
+
+...
+
+  |====================================                                                                    |  35%
+
+| Here's a figure from the slides. It shows the constant (1) PDF on the left and the graph of t*f(t) on the
+| right.
+
+...
+
+  |=======================================                                                                 |  37%
+
+| Knowing that the expected value is the area under the triangle, t*f(t), what is the expected value of the
+| random variable with this PDF?
+
+1: 2.0
+2: .25
+3: .5
+4: 1.0
+
+Selection: 3
+
+| You are doing so well!
+
+  |=========================================                                                               |  40%
+
+| For the purposes of illustration, here's another figure using a PDF from our previous probability lesson. It
+| shows the triangular PDF f(t) on the left and the parabolic t*f(t) on the right. The area under the parabola
+| between 0 and 2 represents the expected value of the random variable with this PDF.
+
+...
+
+  |============================================                                                            |  42%
+
+| To find the expected value of this random variable you need to integrate the function t*f(t). Here f(t)=t/2,
+| the diagonal line. (You might recall this from the last probability lesson.) The function you're integrating
+| over is therefore t^2/2. We've defined a function myfunc for you representing this. You can use the R function
+| 'integrate' with parameters myfunc, 0 (the lower bound), and 2 (the upper bound) to find the expected value. Do
+| this now.
+
+> integrate(myfunc,1,2)
+1.166667 with absolute error < 1.3e-14
+
+| Almost! Try again. Or, type info() for more options.
+
+| Type 'integrate(myfunc,0,2)' at the command prompt.
+
+> integrate(myfunc,0,2)
+1.333333 with absolute error < 1.5e-14
+
+| You are doing so well!
+
+  |==============================================                                                          |  44%
+
+| As all the examples have shown, expected values of distributions are useful in characterizing them. The mean
+| characterizes the central tendency of the distribution. However, often populations are too big to measure, so
+| we have to sample them and then we have to use sample means. That's okay because sample expected values
+| estimate the population versions. We'll show this first with a very simple toy and then with some simple
+| equations.
+
+...
+
+  |================================================                                                        |  47%
+
+| We've defined a small population of 5 numbers for you, spop. Look at it now.
+
+> spop
+[1]  1  4  7 10 13
+
+| You are really on a roll!
+
+  |===================================================                                                     |  49%
+
+| The R function mean will give us the mean of spop. Do this now.
+
+> mean(spop)
+[1] 7
+
+| Your dedication is inspiring!
+
+  |=====================================================                                                   |  51%
+
+| Suppose spop were much bigger and we couldn't measure its mean directly and instead had to sample it with
+| samples of size 2. There are 10 such samples, right? We've stored this for you in a 10 x 2 matrix, allsam. Look
+| at it now.
+
+> allsam
+      [,1] [,2]
+ [1,]    1    4
+ [2,]    1    7
+ [3,]    1   10
+ [4,]    1   13
+ [5,]    4    7
+ [6,]    4   10
+ [7,]    4   13
+ [8,]    7   10
+ [9,]    7   13
+[10,]   10   13
+
+| Excellent job!
+
+  |========================================================                                                |  53%
+
+| Each of these 10 samples will have a mean, right? We can use the R function apply to calculate the mean of each
+| row of the matrix allsam. We simply call apply with the arguments allsam, 1, and mean. The second argument, 1,
+| tells 'apply' to apply the third argument 'mean' to the rows of the matrix. Try this now.
+
+> apply(allsam, 1, mean)
+ [1]  2.5  4.0  5.5  7.0  5.5  7.0  8.5  8.5 10.0 11.5
+
+| You're the best!
+
+  |==========================================================                                              |  56%
+
+| You can see from the resulting vector that the sample means vary a lot, from 2.5 to 11.5, right? Not
+| unexpectedly, the sample mean depends on the sample. However...
+
+...
+
+  |============================================================                                            |  58%
+
+| ... if we take the expected value of these sample means we'll see something amazing. We've stored the sample
+| means in the array smeans for you. Use the R function mean on the array smeans now.
+
+> apply(smeans, 1, mean)
+Error in apply(smeans, 1, mean) : dim(X) must have a positive length
+> mean(smeans)
+[1] 7
+
+| Excellent work!
+
+  |===============================================================                                         |  60%
+
+| Look familiar? The result is the same as the mean of the original population spop. This is not because the
+| example was specially cooked. It would work on any population. The expected value or mean of the sample mean is
+| the population mean. What this means is that the sample mean is an unbiased estimator of the population mean.
+
+...
+
+  |=================================================================                                       |  63%
+
+| Formally, an estimator e of some parameter v is unbiased if its expected value equals v, i.e., E(e)=v. We can
+| show that the expected value of a sample mean equals the population mean with some simple algebra.
+
+...
+
+  |====================================================================                                    |  65%
+
+| Let X_1, X_2, ... X_n be a collection of n samples from a population with mean mu. The mean of these is (X_1 +
+| X_2 + ... + X_n)/n.
+
+...
+
+  |======================================================================                                  |  67%
+
+| What's the expected value of the mean? Recall that E(aX)=aE(X), so E( (X_1+..+X_n)/n ) =
+
+...
+
+  |=========================================================================                               |  70%
+
+| 1/n * (E(X_1) + E(X_2) + ... + E(X_n)) = (1/n)*n*mu = mu. Each E(X_i) equals mu since X_i is drawn from the
+| population with mean mu. We expect, on average, a random X_i will equal mu.
+
+...
+
+  |===========================================================================                             |  72%
+
+| Now that was theory.  We can also show this empirically with more simulations.
+
+...
+
+  |=============================================================================                           |  74%
+
+| Here's another figure from the slides. It shows how a sample mean and the mean of averages spike together. The
+| two shaded distributions come from the same data. The blue portion represents the density function of randomly
+| generated standard normal data, 100000 samples. The pink portion represents the density function of 10000
+| averages, each of 10 random normals. (The original data was stored in a 10000 x 10 array and the average of
+| each row was taken to generate the pink data.)
+
+...
+
+  |================================================================================                        |  77%
+
+| Here's another figure from the slides. Rolling a single die 10000 times yields the first figure. Each of the
+| 6 possible outcomes appears with about the same frequency. The second figure is the histogram of outcomes of
+| the average of rolling two dice. Similarly, the third figure is the histogram of averages of rolling three
+| dice, and the fourth four dice. As we showed previously, the center or mean of the original distribution is
+| 3.5 and that's exactly where all the panels are centered.
+
+...
+
+  |==================================================================================                      |  79%
+
+| Let's recap. Expected values are properties of distributions. The average, or mean, of random variables is
+| itself a random variable and its associated distribution itself has an expected value. The center of this
+| distribution is the same as that of the original distribution.
+
+...
+
+  |=====================================================================================                   |  81%
+
+| Now let's review!
+
+...
+
+  |=======================================================================================                 |  84%
+
+| Expected values are properties of what?
+
+1: demanding parents
+2: distributions
+3: variances
+4: fulcrums
+
+Selection: 2
+
+| You're the best!
+
+  |=========================================================================================               |  86%
+
+| A population mean is a center of mass of what?
+
+1: a sample
+2: a family
+3: a distribution
+4: a population
+
+Selection: 4
+
+| Your dedication is inspiring!
+
+  |============================================================================================            |  88%
+
+| A sample mean is a center of mass of what?
+
+1: a family
+2: a population
+3: a distribution
+4: observed data
+
+Selection: 4
+
+| Excellent work!
+
+  |==============================================================================================          |  91%
+
+| True or False? A population mean estimates a sample mean.
+
+1: True
+2: False
+
+Selection: 2
+
+| Keep up the great work!
+
+  |=================================================================================================       |  93%
+
+| True or False? A sample mean is unbiased.
+
+1: False
+2: True
+
+Selection: 2
+
+| You are doing so well!
+
+  |===================================================================================================     |  95%
+
+| True or False? The more data that goes into the sample mean, the more concentrated its density / mass
+| function is around the population mean.
+
+1: True
+2: False
+
+Selection: 1
+
+| Keep up the great work!
+
+  |======================================================================================================  |  98%
+
+| Congrats! You've concluded this lesson on expectations. We hope it met yours.
+
+...
+
+  |========================================================================================================| 100%
+
+| Would you like to receive credit for completing this course on Coursera.org?
+
+1: Yes
+2: No
+
+Selection: 1
+What is your email address? sgwood63@gmail.com
+What is your assignment token? JPVgv7pgNTN0KwSg
+Grade submission succeeded!
+
+| Excellent work!
