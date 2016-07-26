@@ -1,0 +1,2027 @@
+| Power. (Slides for this and other Data Science courses may be found at github https://github.com/DataScienceSpecialization/courses/.
+| If you care to use them, they must be downloaded as a zip file and viewed locally. This lesson corresponds to
+| 06_Statistical_Inference/11_Power.)
+
+...
+
+  |=                                                                                                                             |   1%
+
+| In this lesson, as the name suggests, we'll discuss POWER, which is the probability of rejecting the null hypothesis when it is
+| false, which is good and proper.
+
+...
+
+  |===                                                                                                                           |   2%
+
+| Hence you want more POWER.
+
+...
+
+  |====                                                                                                                          |   3%
+
+| Power comes into play when you're designing an experiment, and in particular, if you're trying to determine if a null result (failing
+| to reject a null hypothesis) is meaningful. For instance, you might have to determine if your sample size was big enough to yield a
+| meaningful, rather than random, result.
+
+...
+
+  |=====                                                                                                                         |   4%
+
+| Power gives you the opportunity to detect if your ALTERNATIVE hypothesis is true.
+
+...
+
+  |=======                                                                                                                       |   5%
+
+| Do you recall the definition of a Type II error?  Remember, errors are bad.
+
+1: Miscalculating a t score
+2: Rejecting a true null hypothesis
+3: Accepting a false null hypothesis
+4: Misspelling the word hypothesis
+
+Selection: 3
+
+| Nice work!
+
+  |========                                                                                                                      |   7%
+
+| Beta is the probability of a Type II error, accepting a false null hypothesis; the complement of this is obviously (1 - beta) which
+| represents the probability of rejecting a false null hypothesis. This is good and this is POWER!
+
+...
+
+  |==========                                                                                                                    |   8%
+
+| Recall our previous example involving the Respiratory Distress Index and sleep disturbances. Our null hypothesis H_0 was that mu = 30
+| and our alternative hypothesis H_a was that mu > 30.
+
+...
+
+  |===========                                                                                                                   |   9%
+
+| Which of the following expressions represents our test statistic under this null hypothesis? Here X' represents the sample mean, s is
+| the sample std deviation, and n is the sample size. Assume X' follows a t distribution.
+
+1: (X'-30)/(s/sqrt(n))
+2: (X'-30)/(s^2/n)
+3: 30/(s/sqrt(n))
+4: X'/(s^2/n)
+
+Selection: 1
+
+| You are doing so well!
+
+  |============                                                                                                                  |  10%
+
+| In the expression for the test statistic (X'-30)/(s/sqrt(n)) what does (s/sqrt(n)) represent?
+
+1: a standard sample
+2: a standard error
+3: a standard bearer
+4: a standard measure
+5: a standard variance
+
+Selection: 2
+
+| Excellent work!
+
+  |==============                                                                                                                |  11%
+
+| Suppose we're testing a null hypothesis H_0 with an alpha level of .05. Since H_a proposes that mu > 30 (the mean hypothesized by
+| H_0), power is the probability that the true mean mu is greater than the (1-alpha) quantile or qnorm(.95). For simplicity, assume
+| we're working with normal distributions of which we know the variances.
+
+...
+
+  |===============                                                                                                               |  12%
+
+| Here's the picture we've used a lot in these lessons. As you know, the shaded portion represents 5% of the area under the curve. If a
+| test statistic fell in this shaded portion we would reject H_0 because the sample mean is too far from the mean (center) of the
+| distribution hypothesized by H_0. Instead we would favor H_a, that mu > 30. This happens with probability .05.
+
+...
+
+  |================                                                                                                              |  13%
+
+| You might well ask, "What does this have to do with POWER?" Good question. We'll look at some pictures to show you.
+
+...
+
+  |==================                                                                                                            |  14%
+
+| First we have to emphasize a key point. The two hypotheses, H_0 and H_a, actually represent two distributions since they're talking
+| about means or centers of distributions. H_0 says that the mean is mu_0 (30 in our example) and H_a says that the mean is mu_a.
+
+...
+
+  |===================                                                                                                           |  15%
+
+| We're assuming normality and equal variance, say sigma^2/n, for both hypotheses, so under H_0, X'~ N(mu_0, sigma^2/n) and under H_a,
+| X'~ N(mu_a, sigma^2/n).
+
+...
+
+  |=====================                                                                                                         |  16%
+
+| Here's a picture with the two distributions. We've drawn a vertical line at our favorite spot, at the 95th percentile of the red
+| distribution. To the right of the line lies 5% of the red distribution.
+
+...
+
+  |======================                                                                                                        |  17%
+
+| Quick quiz! Which distribution represents H_0?
+
+1: the blue
+2: the red
+
+Selection: 2
+
+| Perseverance, that's the answer.
+
+  |=======================                                                                                                       |  18%
+
+| Which distribution represents H_a?
+
+1: the red
+2: the blue
+
+Selection: 2
+
+| Excellent job!
+
+  |=========================                                                                                                     |  20%
+
+| From the picture, what is the mean proposed by H_a?
+
+1: 28
+2: 30
+3: 36
+4: 32
+
+Selection: 4
+
+| You're the best!
+
+  |==========================                                                                                                    |  21%
+
+| See how much of the blue distribution lies to the right of that big vertical line?
+
+...
+
+  |===========================                                                                                                   |  22%
+
+| That, my friend, is POWER!
+
+...
+
+  |=============================                                                                                                 |  23%
+
+| It's the area under the blue curve (H_a) to the right of the vertical line.
+
+...
+
+  |==============================                                                                                                |  24%
+
+| Note that the placement of the vertical line depends on the null distribution. Here's another picture with fatter distributions. The
+| vertical line is still at the 95th percentile of the null (red) distribution and 5% of the distribution still lies to its right. The
+| line is calibrated to mu_0 and the variance.
+
+...
+
+  |================================                                                                                              |  25%
+
+| Back to our original picture.
+
+...
+
+  |=================================                                                                                             |  26%
+
+| We've shamelessly stolen plotting code from the slides so you can see H_a in action. Let's look at pictures before we delve into
+| numbers. We've fixed mu_0 at 30, sigma (standard deviation) at 4 and n (sample size) at 16. The function myplot just needs an
+| alternative mean, mu_a, as argument. Run myplot now with an argument of 34 to see what it does.
+
+> 
+> myplot(34)
+
+| That's the answer I was looking for.
+
+  |==================================                                                                                            |  27%
+
+| The distribution represented by H_a moved to the right, so almost all (100%) of the blue curve is to the right of the vertical line,
+| indicating that with mu_a=34, the test is more powerful, i.e., there's a higher probability that it's correct to reject the null
+| hypothesis since it appears false. Now try myplot with an argument of 33.3.
+
+> myplot(33.3)
+
+| All that practice is paying off!
+
+  |====================================                                                                                          |  28%
+
+| This isn't as powerful as the test with mu_a=34 but it makes a pretty picture. Now try myplot with an argument of 30.
+
+> myplot(30)
+
+| You got it!
+
+  |=====================================                                                                                         |  29%
+
+| Uh Oh! Did the red curve disappear? No. it's just under the blue curve. The power now, the area under the blue curve to the right of
+| the line, is exactly 5% or alpha!
+
+...
+
+  |======================================                                                                                        |  30%
+
+| So what did we learn?
+
+...
+
+  |========================================                                                                                      |  32%
+
+| First, power is a function that depends on a specific value of an alternative mean, mu_a, which is any value greater than mu_0, the
+| mean hypothesized by H_0. (Recall that H_a specified mu>30.)
+
+...
+
+  |=========================================                                                                                     |  33%
+
+| Second, if mu_a is much bigger than mu_0=30 then the power (probability) is bigger than if mu_a is close to 30. As mu_a approaches
+| 30, the mean under H_0, the power approaches alpha.
+
+...
+
+  |==========================================                                                                                    |  34%
+
+| Just for fun try myplot with an argument of 28.
+
+> myplot(28)
+
+| Keep working like that and you'll get there!
+
+  |============================================                                                                                  |  35%
+
+| We see that the blue curve has moved to the left of the red, so the area under it, to the right of the line, is less than the 5%
+| under the red curve. This then is even less powerful and contradicts H_a so it's not worth looking at.
+
+...
+
+  |=============================================                                                                                 |  36%
+
+| Here's a picture of the power curves for different sample sizes. Again, this uses code "borrowed" from the slides. The alternative
+| means, the mu_a's, are plotted along the horizontal axis and power along the vertical.
+
+...
+
+  |===============================================                                                                               |  37%
+
+| What does the graph show us about mu_a?
+
+1: as it gets bigger, it gets less powerful
+2: power is independent of mu_a
+3: as it gets bigger, it gets more powerful
+
+Selection: 3
+
+| You are amazing!
+
+  |================================================                                                                              |  38%
+
+| What does the graph show us about sample size?
+
+1: power is independent of sample size
+2: as it gets bigger, it gets more powerful
+3: as it gets bigger, it gets less powerful
+
+Selection: 2
+
+| Excellent work!
+
+  |=================================================                                                                             |  39%
+
+| Now back to numbers. Our test for determining rejection of H_0 involved comparing a test statistic, namely Z=(X'-30)/(sigma/sqrt(n)),
+| against some quantile, say Z_95, which depended on our level size alpha (.05 in this case). H_a proposed that mu > mu_0, so we tested
+| if Z>Z_95.  This is equivalent to X' > Z_95 * (sigma/sqrt(n)) + 30, right?
+
+...
+
+  |===================================================                                                                           |  40%
+
+| Recall that nifty R function pnorm, which gives us the probability that a value drawn from a normal distribution is greater or less
+| than/equal to a specified quantile argument depending on the flag lower.tail. The function also takes a mean and standard deviation
+| as arguments.
+
+...
+
+  |====================================================                                                                          |  41%
+
+| Suppose we call pnorm with the quantile 30 + Z_95 * (sigma/sqrt(n)) and specify mu_a as our mean argument. This would return a
+| probability which we can interpret as POWER. Why?
+
+...
+
+  |=====================================================                                                                         |  42%
+
+| Recall our picture of two distributions. 30 + Z_95 * (sigma/sqrt(n)) represents the point at which our vertical line falls. It's the
+| point on the null distribution at the (1-alpha) level.
+
+...
+
+  |=======================================================                                                                       |  43%
+
+| Study this picture. Calling pnorm with 30 + Z_95 * (sigma/sqrt(n)) as the quantile and mu_a, say 32, as the mean and lower.tail=FALSE
+| does what?
+
+1: returns the area under the blue curve to the left of the line
+2: returns the area under the red curve to the right of the line
+3: returns the area under the blue curve to the right of the line
+4: returns the area under the red curve to the left of the line
+
+Selection: 3
+
+| You are quite good my friend!
+
+  |========================================================                                                                      |  45%
+
+| Let's try some examples now. Before we do, what do we know pnorm will return if we specify a quantile less than the mean?
+
+1: an answer less than .50
+2: an answer dependent on beta
+3: an answer greater than 1
+4: an answer dependent on alpha
+
+Selection: 1
+
+| Great job!
+
+  |==========================================================                                                                    |  46%
+
+| First, define a variable z as qnorm(.95)
+
+> z <- qnorm(.95)
+
+| All that practice is paying off!
+
+  |===========================================================                                                                   |  47%
+
+| Run pnorm now with the quantile 30+z, mean=30, and lower.tail=FALSE. We've specified sigma and n so that the standard deviation of
+| the sample mean is 1.
+
+> pnorm(30+z, mean=30, lower.tail=FALSE)
+[1] 0.05
+
+| That's the answer I was looking for.
+
+  |============================================================                                                                  |  48%
+
+| That's not surprising, is it? With the mean set to mu_0 the two distributions, null and alternative, are the same and power=alpha.
+| Now run pnorm now with the quantile 30+z, mean=32, and lower.tail=FALSE.
+
+> pnorm(30+z, mean=32, lower.tail=FALSE)
+[1] 0.63876
+
+| You are quite good my friend!
+
+  |==============================================================                                                                |  49%
+
+| See how this is much more powerful? 64% as opposed to 5%. When the sample mean is quite different from (many standard errors greater
+| than) the mean hypothesized by the null hypothesis, the probability of rejecting H_0 when it is false is much higher. That is power!
+
+...
+
+  |===============================================================                                                               |  50%
+
+| Let's look again at the portly distributions.
+
+...
+
+  |================================================================                                                              |  51%
+
+| With this standard deviation=2 (fatter distribution) will power be greater or less than with the standard deviation=1?
+
+1: the same
+2: greater
+3: less than
+
+Selection: 3
+
+| Perseverance, that's the answer.
+
+  |==================================================================                                                            |  52%
+
+| To see this, run pnorm now with the quantile 30+z, mean=32 and sd=1. Don't forget to set lower.tail=FALSE so you get the right tail.
+
+> pnorm(30+z, mean=30, sd = 1, lower.tail=FALSE)
+[1] 0.05
+
+| Give it another try. Or, type info() for more options.
+
+| Type pnorm(30+z,mean=32,sd=1,lower.tail=FALSE) at the command prompt.
+
+> pnorm(30+z, mean=32, sd = 1, lower.tail=FALSE)
+[1] 0.63876
+
+| You nailed it! Good job!
+
+  |===================================================================                                                           |  53%
+
+| Now run pnorm now with the quantile 30+z*2, mean=32 and sd=2. Don't forget to set lower.tail=FALSE so you get the right tail.
+
+> pnorm(30+z*2, mean=32, sd = 2, lower.tail=FALSE)
+[1] 0.259511
+
+| You nailed it! Good job!
+
+  |====================================================================                                                          |  54%
+
+| See the power drain from 64% to 26% ? Let's review some basic facts about power. We saw before in our pictures that the power of the
+| test depends on mu_a. When H_a specifies that mu > mu_0, then as mu_a grows and exceeds mu_0 increasingly, what happens to power?
+
+1: it doesn't change
+2: it increases
+3: it decreases
+
+Selection: 2
+
+| You got it!
+
+  |======================================================================                                                        |  55%
+
+| Here's another question. Recall our power curves from before.
+
+...
+
+  |=======================================================================                                                       |  57%
+
+| As the sample size increases, what happens to power?
+
+1: it doesn't change
+2: it decreases
+3: it increases
+
+Selection: 3
+
+| You are quite good my friend!
+
+  |=========================================================================                                                     |  58%
+
+| Here's another one. More power curves.
+
+...
+
+  |==========================================================================                                                    |  59%
+
+| As variance increases, what happens to power?
+
+1: it increases
+2: it decreases
+3: it doesn't change
+
+Selection: 2
+
+| Keep working like that and you'll get there!
+
+  |===========================================================================                                                   |  60%
+
+| Here's another one. And even more power curves.
+
+...
+
+  |=============================================================================                                                 |  61%
+
+| As alpha increases, what happens to power?
+
+1: it doesn't change
+2: it increases
+3: it decreases
+
+Selection: 2
+
+| Excellent job!
+
+  |==============================================================================                                                |  62%
+
+| If H_a proposed that mu != mu_0 we would calculate the one sided power using alpha / 2 in the direction of mu_a (either less than or
+| greater than mu_0). (This is only approximately right, it excludes the probability of getting a large test statistic in the opposite
+| direction of the truth.
+
+...
+
+  |===============================================================================                                               |  63%
+
+| Since power goes up as alpha gets larger would the power of a one-sided test be greater or less than the power of the associated two
+| sided test?
+
+1: greater
+2: they're the same
+3: less than
+
+Selection: 3
+
+| Not quite right, but keep trying.
+
+| The quantity alpha is bigger than alpha/2 so it's got more power.
+
+1: they're the same
+2: greater
+3: less than
+
+Selection: 2
+
+| That's a job well done!
+
+  |=================================================================================                                             |  64%
+
+| Finally, if H_a specified that mu < mu_0 could we still do the same kind of power calculations?
+
+1: Yes
+2: No
+
+Selection: 1
+
+| Keep up the great work!
+
+  |==================================================================================                                            |  65%
+
+| Suppose H_a says that mu > mu_0. Then power = 1 - beta = Prob ( X' > mu_0 + z_(1-alpha) * sigma/sqrt(n)) assuming that X'~
+| N(mu_a,sigma^2/n). Which quantities do we know in this statement, given the context of the problem? Let's work through this.
+
+...
+
+  |====================================================================================                                          |  66%
+
+| What does the null hypothesis H_0 tell us that the population mean equals?
+
+1: mu_a
+2: mu_0
+3: beta
+4: alpha
+
+Selection: 1
+
+| That's not exactly what I'm looking for. Try again.
+
+| H_0 simply proposes a null mean.
+
+1: mu_0
+2: mu_a
+3: alpha
+4: beta
+
+Selection: 1
+
+| You nailed it! Good job!
+
+  |=====================================================================================                                         |  67%
+
+| After the null mean mu_0 is proposed what does the designer of the hypothesis test specify in order to reject or fail-to-reject H_0?
+| In other words, what is the level size of the test?
+
+1: alpha
+2: mu_a
+3: mu_0
+4: beta
+
+Selection: 1
+
+| You are quite good my friend!
+
+  |======================================================================================                                        |  68%
+
+| So we know that the quantities mu_0 and alpha are specified by the test designer. In the statement 1 - beta = Prob( X' > mu_0 +
+| z_(1-alpha) * sigma/sqrt(n)) given mu_a > mu_0, mu_0 and alpha are specified, and X' depends on the data. The other four quantities,
+| (beta, sigma, n, and mu_a), are all unknown.
+
+...
+
+  |========================================================================================                                      |  70%
+
+| It should be obvious that specifying any three of these unknowns will allow us to solve for the missing fourth. Usually, you only try
+| to solve for power (1-beta) or the sample size n.
+
+...
+
+  |=========================================================================================                                     |  71%
+
+| An interesting point is that power doesn't need mu_a, sigma and n individually.  Instead only sqrt(n)*(mu_a - mu_0) /sigma is needed.
+| The quantity (mu_a - mu_0) / sigma is called the EFFECT SIZE. This is the difference in the means in standard deviation units. It is
+| unit free so it can be interpreted in different settings.
+
+...
+
+  |==========================================================================================                                    |  72%
+
+| We'll work through some examples of this now. However, instead of assuming that we're working with normal distributions let's work
+| with t distributions. Remember, they're pretty close to normal with large enough sample sizes.
+
+...
+
+  |============================================================================================                                  |  73%
+
+| Power is still a probability, namely P( (X' - mu_0)/(S /sqrt(n)) > t_(1-alpha, n-1) given H_a that mu > mu_a ). Notice we use the t
+| quantile instead of the z. Also, since the proposed distribution is not centered at mu_0, we have to use the non-central t
+| distribution.
+
+...
+
+  |=============================================================================================                                 |  74%
+
+| R comes to the rescue again with the function power.t.test. We can omit one of the arguments and the function solves for it. Let's
+| first use it to solve for power.
+
+...
+
+  |==============================================================================================                                |  75%
+
+| We'll run it three times with the same values for n (16) and alpha (.05) but different delta and standard deviation values. We'll
+| show that if delta (difference in means) divided by the standard deviation is the same, the power returned will also be the same. In
+| other words, the effect size is constant for all three of our tests.
+
+...
+
+  |================================================================================================                              |  76%
+
+| We'll specify a positive delta; this tells power.t.test that H_a proposes that mu > mu_0 and so we'll need a one-sided test. First
+| run power.t.test(n = 16, delta = 2 / 4, sd=1, type = "one.sample", alt = "one.sided")$power .
+
+> power.t.test(n = 16, delta = 2 / 4, sd=1, type = "one.sample", alt = "one.sided")$power
+[1] 0.6040329
+
+| You're the best!
+
+  |=================================================================================================                             |  77%
+
+| Now change delta to 2 and sd to 4. Keep everything else the same.
+
+> power.t.test(n = 16, delta = 2, sd=4, type = "one.sample", alt = "one.sided")$power
+[1] 0.6040329
+
+| Your dedication is inspiring!
+
+  |===================================================================================================                           |  78%
+
+| Same answer, right? Now change delta to 100 and sd to 200. Keep everything else the same.
+
+> power.t.test(n = 16, delta = 100, sd=200, type = "one.sample", alt = "one.sided")$power
+[1] 0.6040329
+
+| Excellent work!
+
+  |====================================================================================================                          |  79%
+
+| So keeping the effect size (the ratio delta/sd) constant preserved the power. Let's try a similar experiment except now we'll specify
+| a power we want and solve for the sample size n.
+
+...
+
+  |=====================================================================================================                         |  80%
+
+| First run power.t.test(power = .8, delta = 2 / 4, sd=1, type = "one.sample", alt = "one.sided")$n .
+
+> power.t.test(power = .8, delta = 2 / 4, sd=1, type = "one.sample", alt = "one.sided")$n
+[1] 26.13751
+
+| You got it!
+
+  |=======================================================================================================                       |  82%
+
+| Now change delta to 2 and sd to 4. Keep everything else the same.
+
+> power.t.test(power = .8, delta = 2, sd=4, type = "one.sample", alt = "one.sided")$n
+[1] 26.13751
+
+| Your dedication is inspiring!
+
+  |========================================================================================================                      |  83%
+
+| Same answer, right? Now change delta to 100 and sd to 200. Keep everything else the same.
+
+> power.t.test(power = .8, delta = 100, sd=200, type = "one.sample", alt = "one.sided")$n
+[1] 26.13751
+
+| Keep working like that and you'll get there!
+
+  |=========================================================================================================                     |  84%
+
+| Now use power.t.test to find delta for a power=.8 and n=26 and sd=1
+
+> power.t.test(power = .8, n = 26, sd=1, type = "one.sample", alt = "one.sided")$delta
+[1] 0.5013986
+
+| Keep working like that and you'll get there!
+
+  |===========================================================================================================                   |  85%
+
+| Not a surprising result, is it? It told you before that with an effect size of .5 and power .8, you need a sample size a little more
+| than 26. Now run it with n=27.
+
+> power.t.test(power = .8, n = 27, sd=1, type = "one.sample", alt = "one.sided")$delta
+[1] 0.4914855
+
+| Great job!
+
+  |============================================================================================================                  |  86%
+
+| What do you think will happen if you doubled sd to 2 and ran the same test?
+
+1: delta will double
+2: delta will halve
+3: delta won't change
+
+Selection: 
+
+| Perseverance, that's the answer.
+
+  |==============================================================================================================                |  87%
+
+| Now for a quick review. We call this the power.u.test since it comes after the power.t.test. LOL.
+
+...
+
+  |===============================================================================================================               |  88%
+
+| 1. The level of a test is specified by what?
+
+1: alpha
+2: gamma
+3: None of the others
+4: delta
+5: beta
+
+Selection: 1
+
+| You are quite good my friend!
+
+  |================================================================================================================              |  89%
+
+| 2. What is a Type II error?
+
+1: accepting a false hypothesis
+2: accepting a true hypothesis
+3: rejecting a false hypothesis
+4: rejecting a true hypothesis
+
+Selection: 1
+
+| Nice work!
+
+  |==================================================================================================================            |  90%
+
+| 3. What is power?
+
+1: None of the others
+2: alpha
+3: beta
+4: delta
+5: thrilling
+6: gamma
+
+Selection: 2
+
+| You're close...I can feel it! Try it again.
+
+| Power is 1-beta. Is that in the list?
+
+1: gamma
+2: alpha
+3: beta
+4: delta
+5: None of the others
+6: thrilling
+
+Selection: 5
+
+| You got it right!
+
+  |===================================================================================================================           |  91%
+
+| 4. You're a perfectionist designing an experiment and you want both alpha and beta to be small. Can they both be 0 for this single
+| test?
+
+1: Yes
+2: No
+
+Selection: 2
+
+| You nailed it! Good job!
+
+  |====================================================================================================================          |  92%
+
+| 5. Suppose H_0 proposes mu = mu_0 and H_a proposes that mu < mu_0. You'll test a series of mu_a with power != alpha. Which of the
+| following is NOT true?
+
+1: mu_a-mu_0 < 0
+2: mu_a-mu_0=0
+3: mu_0-mu_a > 0
+4: huh?
+
+Selection: 2
+
+| Great job!
+
+  |======================================================================================================================        |  93%
+
+| 6. Suppose H_0 proposes mu = mu_0 and H_a proposes that mu < mu_0. Which of the following is true?
+
+1: the smaller mu_0-mu_a the more powerful the test
+2: mu_0=mu_a maximizes the power
+3: the smaller mu_a-mu_0 the more powerful the test
+
+Selection: 1
+
+| That's not the answer I was looking for, but try again.
+
+| Here mu_a < mu_0 and the smaller mu_a-mu_0 is, the easier it is to discriminate between mu_a and mu_0.
+
+1: the smaller mu_a-mu_0 the more powerful the test
+2: mu_0=mu_a maximizes the power
+3: the smaller mu_0-mu_a the more powerful the test
+
+Selection: 1
+
+| That's correct!
+
+  |=======================================================================================================================       |  95%
+
+| 7. Which expression represents the size effect?
+
+1: (mu_a - mu_0) / sqrt(sigma)
+2: (mu_a - mu_0) / sqrt(n)
+3: (mu_a - mu_0) / sigma
+4: (mu_a - mu_0) / n
+
+Selection: 2
+
+| Try again. Getting it right on the first try is boring anyway!
+
+| The size effect is the distance between the two proposed means in standard deviation units.
+
+1: (mu_a - mu_0) / n
+2: (mu_a - mu_0) / sqrt(n)
+3: (mu_a - mu_0) / sigma
+4: (mu_a - mu_0) / sqrt(sigma)
+
+Selection: 3
+
+| Perseverance, that's the answer.
+
+  |=========================================================================================================================     |  96%
+
+| 8. True or False? More power is better than less power.
+
+1: False
+2: True
+
+Selection: 2
+
+| You're the best!
+
+  |==========================================================================================================================    |  97%
+
+| 9. True or False? A larger beta (call it beta_max) is more powerful than a smaller beta.
+
+1: True
+2: False
+
+Selection: 2
+
+| Keep up the great work!
+
+  |===========================================================================================================================   |  98%
+
+| 10. True or False? The larger the sample size the less powerful the test.
+
+1: True
+2: False
+
+Selection: 2
+
+| You nailed it! Good job!
+
+  |============================================================================================================================= |  99%
+
+| Congrats! You finished this powerful lesson. We hope you feel emPOWERED.
+
+...
+
+  |==============================================================================================================================| 100%
+  
+  
+  
+  
+  
+  
+  | Multiple_Testing. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses/. If you care to use them, they must be downloaded as a zip file and viewed locally.
+| This lesson corresponds to 06_Statistical_Inference/12_MultipleTesting.)
+
+...
+
+  |==                                                                                                                                  |   2%
+
+| In this lesson, we'll discuss multiple testing. You might ask, "What's that?"
+
+...
+
+  |====                                                                                                                                |   3%
+
+| Given that data is valuable and we'd like to get the most out of it, we might use it to test several hypotheses. If we have an alpha level
+| of .05 and we test 20 hypotheses, then on average, we expect one error, just by chance.
+
+...
+
+  |======                                                                                                                              |   5%
+
+| Another potential problem is that after running several tests, only the lowest p-value might be reported OR all p-values under some
+| threshold might be considered significant. Undoubtedly, some of these would be false.
+
+...
+
+  |=========                                                                                                                           |   7%
+
+| Luckily, we have clever ways of minimizing errors in this situation. That's what we'll address.  We'll define specific error measures and
+| then statistical ways of correcting or limiting them.
+
+...
+
+  |===========                                                                                                                         |   8%
+
+| Multiple testing is particularly relevant now in this age of BIG data. Statisticians are tasked with questions such as "Which variables
+| matter among the thousands measured?" and "How do you relate unrelated information?"
+
+...
+
+  |=============                                                                                                                       |  10%
+
+| Since multiple testing addresses compensating for errors let's review what we know about them. A Type I error is
+
+1: failing to reject a true hypothesis
+2: failing to reject a false hypothesis
+3: rejecting a false hypothesis
+4: rejecting a true hypothesis
+
+Selection: 4
+
+| All that practice is paying off!
+
+  |===============                                                                                                                     |  11%
+
+| In an American court, an example of a Type I error is
+
+1: acquitting a guilty person
+2: letting the indicted off on a technicality
+3: convicting an innocent person
+
+Selection: 3
+
+| You got it right!
+
+  |=================                                                                                                                   |  13%
+
+| A Type II error is
+
+1: failing to reject a true hypothesis
+2: failing to reject a false hypothesis
+3: rejecting a true hypothesis
+4: rejecting a false hypothesis
+
+Selection: 2
+
+| All that practice is paying off!
+
+  |===================                                                                                                                 |  15%
+
+| In an American court, an example of a Type II error is
+
+1: convicting an innocent person
+2: letting the indicted off on a technicality
+3: acquitting a guilty person
+
+Selection: 1
+
+| Not quite! Try again.
+
+| In an American court, the null hypothesis is that the accused is innocent. If this is accepted (not rejected) by the jury and the defendant
+| is in fact guilty a Type II error has been made.
+
+1: convicting an innocent person
+2: acquitting a guilty person
+3: letting the indicted off on a technicality
+
+Selection: 3
+
+| One more time. You can do it!
+
+| In an American court, the null hypothesis is that the accused is innocent. If this is accepted (not rejected) by the jury and the defendant
+| is in fact guilty a Type II error has been made.
+
+1: letting the indicted off on a technicality
+2: acquitting a guilty person
+3: convicting an innocent person
+
+Selection: 2
+
+| That's a job well done!
+
+  |======================                                                                                                              |  16%
+
+| Good. Let's continue reviewing. The null hypothesis
+
+1: is a big nothing that statisticians like to gossip about
+2: tells us the origins of the number 0
+3: is never true
+4: represents the status_quo and is assumed true
+
+Selection: 4
+
+| Great job!
+
+  |========================                                                                                                            |  18%
+
+| The p-value is "the probability under the null hypothesis of obtaining evidence as or more extreme than your test statistic (obtained from
+| your observed data) in the direction of the alternative hypothesis." Of course p-values are related to significance or alpha levels, which
+| are set before the test is conducted (often at 0.05).
+
+...
+
+  |==========================                                                                                                          |  20%
+
+| If a p-value is found to be less than alpha (say 0.05), then the test result is considered statistically significant, i.e., surprising and
+| unusual, and the null hypothesis (the status quo) is ?
+
+1: renamed the aleph null hypothesis
+2: accepted
+3: revised
+4: rejected
+
+Selection: 4
+
+| Perseverance, that's the answer.
+
+  |============================                                                                                                        |  21%
+
+| Now consider this chart copied from http://en.wikipedia.org/wiki/Familywise_error_rate. Suppose we've tested m null hypotheses, m_0 of
+| which are actually true, and m-m_0 are actually false. Out of the m tests R have been declared significant, that is, the associated
+| p-values were less than alpha, and m-R were nonsignificant, or boring results.
+
+...
+
+  |==============================                                                                                                      |  23%
+
+| Looking at the chart, which variables are known?
+
+1: m_0, and m
+2: m and R
+3: A,B,C
+4: S,T,U,V
+
+Selection: 2
+
+| Excellent work!
+
+  |================================                                                                                                    |  25%
+
+| In testing the m_0 true null hypotheses, V results were declared significant, that is,
+| these tests favored the alternative hypothesis. What type of error does this represent?
+
+1: a serious one
+2: Type II
+3: Type I
+4: Type III
+
+Selection: 3
+
+| You are amazing!
+
+  |===================================                                                                                                 |  26%
+
+| Another name for a Type I error is False Positive, since it is falsely claiming a
+| significant (positive) result.
+
+...
+
+  |=====================================                                                                                               |  28%
+
+| Of the m-m_0 false null hypotheses, T were declared nonsignificant. This means that these T
+| null hypotheses were accepted (failed to be rejected). What type of error does this
+| represent?
+
+1: Type II
+2: a serious one
+3: Type I
+4: Type III
+
+Selection: 1
+
+| You are quite good my friend!
+
+  |=======================================                                                                                             |  30%
+
+| Another name for a Type II error is False Negative, since it is falsely claiming a
+| nonsignificant (negative) result.
+
+...
+
+  |=========================================                                                                                           |  31%
+
+| A rose by any other name, right? Consider the fraction V/R.
+
+...
+
+  |===========================================                                                                                         |  33%
+
+| The observed R represents the number of test results declared significant. These are
+| 'discoveries', something different from the status quo. V is the number of those falsely
+| declared significant, so V/R is the ratio of FALSE discoveries. Since V is a random
+| variable (i.e., unknown until we do an experiment) we call the expected value of the ratio,
+| E(V/R), the False Discovery Rate (FDR).
+
+...
+
+  |=============================================                                                                                       |  34%
+
+| A rose by any other name, right? How about the fraction V/m_0? From the chart, m_0
+| represents the number of true H_0's and m_0 is unknown. V is the number of those falsely
+| declared significant, so V/m_0 is the ratio of FALSE positives. Since V is a random
+| variable (i.e., unknown until we do an experiment) we call the expected value of the ratio,
+| E(V/m_0), the FALSE POSITIVE rate.
+
+...
+
+  |================================================                                                                                    |  36%
+
+| Another good name for the false positive rate would be
+
+1: a rose
+2: the Type II rate
+3: a thorn
+4: false alarm rate
+
+Selection: 2
+
+| That's not the answer I was looking for, but try again.
+
+| False positives are Type I errors so one of the only two sensible answers is incorrect.
+
+1: false alarm rate
+2: a thorn
+3: the Type II rate
+4: a rose
+
+Selection: 1
+
+| Excellent job!
+
+  |==================================================                                                                                  |  38%
+
+| The false positive rate would be closely related to
+
+1: the Type II error rate
+2: the Type I error rate
+3: a thorny rose
+
+Selection: 2
+
+| That's a job well done!
+
+  |====================================================                                                                                |  39%
+
+| We call the probability of at least one false positive, Pr(V >= 1) the Family Wise Error
+| Rate (FWER).
+
+...
+
+  |======================================================                                                                              |  41%
+
+| So how do we control the False Positive Rate?
+
+...
+
+  |========================================================                                                                            |  43%
+
+| Suppose we're really smart, calculate our p-values correctly, and declare all tests with p
+| < alpha as significant. This means that our false positive rate is at most alpha, on
+| average.
+
+...
+
+  |==========================================================                                                                          |  44%
+
+| Suppose we perform 10,000 tests and alpha = .05. How many false positives do we expect on
+| average?
+
+1: 50000
+2: 50
+3: 5000
+4: 500
+
+Selection: 2
+
+| Not quite right, but keep trying.
+
+| Multiply 10000 by .05 to get the correct answer.
+
+1: 50000
+2: 500
+3: 5000
+4: 50
+
+Selection: 4
+
+| Not quite! Try again.
+
+| Multiply 10000 by .05 to get the correct answer.
+
+1: 50000
+2: 50
+3: 5000
+4: 500
+
+Selection: 4
+
+| All that practice is paying off!
+
+  |=============================================================                                                                       |  46%
+
+| You got it! 500 false positives seems like a lot. How do we avoid so many?
+
+...
+
+  |===============================================================                                                                     |  48%
+
+| We can try to control the family-wise error rate (FWER), the probability of at least one
+| false positive, with the Bonferroni correction, the oldest multiple testing correction.
+
+...
+
+  |=================================================================                                                                   |  49%
+
+| It's very straightforward. We do m tests and want to control the FWER at level alpha so
+| that Pr(V >= 1) < alpha. We simply reduce alpha dramatically. Set alpha_fwer to be alpha/m.
+| We'll only call a test result significant if its p-value < alpha_fwer.
+
+...
+
+  |===================================================================                                                                 |  51%
+
+| Sounds good, right? Easy to calculate. What would be a drawback with this method?
+
+1: too many results will fail
+2: too many results will pass
+3: requires too much math
+
+Selection: 1
+
+| You nailed it! Good job!
+
+  |=====================================================================                                                               |  52%
+
+| Another way to limit the false positive rate is to control the false discovery rate (FDR).
+| Recall this is E(V/R). This is the most popular correction when performing lots of tests.
+| It's used in lots of areas such as genomics, imaging, astronomy, and other
+| signal-processing disciplines.
+
+...
+
+  |=======================================================================                                                             |  54%
+
+| Again, we'll do m tests but now we'll set the FDR, or E(V/R) at level alpha. We'll
+| calculate the p-values as usual and order them from smallest to largest, p_1, p_2,...p_m.
+| We'll call significant any result with p_i <= (alpha*i)/m. This is the Benjamini-Hochberg
+| method (BH). A p-value is compared to a value that depends on its ranking.
+
+...
+
+  |==========================================================================                                                          |  56%
+
+| This is equivalent to finding the largest k such that p_k <= (k * alpha)/m, (for a given
+| alpha) and then rejecting all the null hypotheses for i=1,...,k.
+
+...
+
+  |============================================================================                                                        |  57%
+
+| Like the Bonferroni correction, this is easy to calculate and it's much less conservative.
+| It might let more false positives through and it may behave strangely if the tests aren't
+| independent.
+
+...
+
+  |==============================================================================                                                      |  59%
+
+| Now consider this chart copied from the slides. It shows the p-values for 10 tests
+| performed at the alpha=.2 level and three cutoff lines. The p-values are shown in order
+| from left to right along the x-axis. The red line is the threshold for No Corrections
+| (p-values are compared to alpha=.2), the blue line is the Bonferroni threshold, alpha=.2/10
+| = .02, and the gray line shows the BH correction. Note that it is not horizontal but has a
+| positive slope as we expect.
+
+...
+
+  |================================================================================                                                    |  61%
+
+| With no correction, how many results are declared significant?
+
+1: 2
+2: 8
+3: 6
+4: 4
+
+Selection: 3
+
+| Keep trying!
+
+| How many points fall below the red line?
+
+1: 8
+2: 6
+3: 2
+4: 4
+
+Selection: 4
+
+| Great job!
+
+  |==================================================================================                                                  |  62%
+
+| With the Bonferroni correction, how many tests are declared significant?
+
+1: 8
+2: 2
+3: 4
+4: 6
+
+Selection: 2
+
+| That's the answer I was looking for.
+
+  |====================================================================================                                                |  64%
+
+| So the Bonferroni passed only half the results that the No Correction (comparing p-values
+| to alpha) method passed. Now look at the BH correction. How many tests are significant with
+| this scale?
+
+1: 5
+2: 7
+3: 1
+4: 3
+
+Selection: 4
+
+| That's correct!
+
+  |=======================================================================================                                             |  66%
+
+| So the BH correction which limits the FWER is between the No Correction and the Bonferroni.
+| It's more conservative (fewer significant results) than the No Correction but less
+| conservative (more significant results) than the Bonferroni. Note that with this method the
+| threshold is proportional to the ranking of the values so it slopes positively while the
+| other two thresholds are flat.
+
+...
+
+  |=========================================================================================                                           |  67%
+
+| Notice how both the Bonferroni and BH methods adjusted the threshold (alpha) level of
+| rejecting the null hypotheses. Another equivalent corrective approach is to adjust the
+| p-values, so they're not classical p-values anymore, but they can be compared directly to
+| the original alpha.
+
+...
+
+  |===========================================================================================                                         |  69%
+
+| Suppose the p-values are p_1, ... , p_m.  With the Bonferroni method you would adjust these
+| by setting p'_i = max(m * p_i, 1) for each p-value. Then if you call all p'_i < alpha
+| significant you will control the FWER.
+
+...
+
+  |=============================================================================================                                       |  70%
+
+| To demonstrate some of these concepts, we've created an array of p-values for you. It is
+| 1000-long and the result of a linear regression performed on random normal x,y pairs so
+| there is no true significant relationship between the x's and y's.
+
+...
+
+  |===============================================================================================                                     |  72%
+
+| Use the R command head to see the first few entries of the array pValues.
+
+> head(pValues)
+[1] 0.5334915 0.2765785 0.8380943 0.6721730 0.8122037 0.4078675
+
+| Great job!
+
+  |=================================================================================================                                   |  74%
+
+| Now count the number of entries in the array that are less than the value .05. Use the R
+| command sum, and the appropriate Boolean expression.
+
+> play()
+
+| Entering play mode. Experiment as you please, then type nxt() when you are ready to resume
+| the lesson.
+
+> sum(pValues[pValues < .05])
+[1] 1.141218
+> sum(if(pValues[pValues < .05], 1, 0))
+Error: unexpected ',' in "sum(if(pValues[pValues < .05],"
+> sum(pValues < .05)
+[1] 51
+> nxt()
+
+| Resuming lesson...
+
+
+| Now count the number of entries in the array that are less than the value .05. Use the R
+| command sum, and the appropriate Boolean expression.
+
+> sum(pValues < .05)
+[1] 51
+
+| Your dedication is inspiring!
+
+  |====================================================================================================                                |  75%
+
+| So we got around 50 false positives, just as we expected (.05*1000=50). The beauty of R is
+| that it provides a lot of built-in statistical functionality. The function p.adjust is one
+| example. The first argument is the array of pValues. Another argument is the method of
+| adjustment. Once again, use the R function sum and a boolean expression using p.adjust with
+| method="bonferroni" to control the FWER.
+
+> sum(p.adjust(pValues, method = "bonferroni") < 0.05)
+[1] 0
+
+| You are doing so well!
+
+  |======================================================================================================                              |  77%
+
+| So the correction eliminated all the false positives that had passed the uncorrected alpha
+| test. Repeat the same experiment, this time using the method "BH" to control the FDR.
+
+> sum(p.adjust(pValues, method = "BH") < 0.05)
+[1] 0
+
+| All that hard work is paying off!
+
+  |========================================================================================================                            |  79%
+
+| So the BH method also eliminated all the false positives. Now we've generated another
+| 1000-long array of p-values, this one called pValues2. In this data, the first half ( 500
+| x/y pairs) contains x and y values that are random and the second half contain x and y
+| pairs that are related, so running a linear regression model on the 1000 pairs should find
+| some significant (not random) relationship.
+
+...
+
+  |==========================================================================================================                          |  80%
+
+| We also created a 1000-long array of character strings, trueStatus. The first 500 entries
+| are "zero" and the last are "not zero". Use the R function tail to look at the end of
+| trueStatus.
+
+> tail(trueStatus)
+[1] "not zero" "not zero" "not zero" "not zero" "not zero" "not zero"
+
+| Great job!
+
+  |============================================================================================================                        |  82%
+
+| Once again we can use R's greatness to count and tabulate for us. We can call the R
+| function table with two arguments, a boolean such as pValues2<.05, and the array
+| trueStatus. The boolean obviously has two outcomes and each entry of trueStatus has one of
+| two possible values. The function table aligns the two arguments and counts how many of
+| each combination (TRUE,"zero"), (TRUE,"not zero"), (FALSE,"zero"), and (FALSE,"not zero")
+| appear. Try it now.
+
+> table(pValues2<.05, trueStatus)
+       trueStatus
+        not zero zero
+  FALSE        0  476
+  TRUE       500   24
+
+| Your dedication is inspiring!
+
+  |==============================================================================================================                      |  84%
+
+| We see that without any correction all 500 of the truly significant (nonrandom) tests were
+| correctly identified in the "not zero" column. In the zero column (the truly random tests),
+| however, 24 results were flagged as significant.
+
+...
+
+  |=================================================================================================================                   |  85%
+
+| What is the percentage of false positives in this test?
+
+> 24/500
+[1] 0.048
+
+| You are doing so well!
+
+  |===================================================================================================================                 |  87%
+
+| Just as we expected - around 5% or .05*100.
+
+...
+
+  |=====================================================================================================================               |  89%
+
+| Now run the same table function, however, this time use the call to p.adjust with the
+| "bonferroni" method in the boolean expression. This will control the FWER.
+
+> table(p.adjust(pValues, method = "bonferroni") < 0.05, trueStatus)
+       trueStatus
+        not zero zero
+  FALSE      500  500
+
+| Give it another try. Or, type info() for more options.
+
+| Type table(p.adjust(pValues2,method="bonferroni") < 0.05, trueStatus) at the command
+| prompt.
+
+> table(p.adjust(pValues2, method = "bonferroni") < 0.05, trueStatus)
+       trueStatus
+        not zero zero
+  FALSE       23  500
+  TRUE       477    0
+
+| Your dedication is inspiring!
+
+  |=======================================================================================================================             |  90%
+
+| Since the Bonferroni correction method is more conservative than just comparing p-values to
+| alpha all the truly random tests are correctly identified in the zero column. In other
+| words, we have no false positives. However, the threshold has been adjusted so much that 23
+| of the truly significant results have been misidentified in the not zero column.
+
+...
+
+  |=========================================================================================================================           |  92%
+
+| Now run the same table function one final time. Use the call to p.adjust with "BH" method
+| in the boolean expression. This will control the false discovery rate.
+
+> table(p.adjust(pValues2, method = "BH") < 0.05, trueStatus)
+       trueStatus
+        not zero zero
+  FALSE        0  487
+  TRUE       500   13
+
+| Perseverance, that's the answer.
+
+  |===========================================================================================================================         |  93%
+
+| Again, the results are a compromise between the No Corrections and the Bonferroni. All the
+| significant results were correctly identified in the "not zero" column but in the random
+| ("zero") column 13 results were incorrectly identified. These are the false positives. This
+| is roughly half the number of errors in the other two runs.
+
+...
+
+  |==============================================================================================================================      |  95%
+
+| Here's a plot of the two sets of adjusted p-values, Bonferroni on the left and BH on the
+| right. The x-axis indicates the original p-values. For the Bonferroni, (adjusting by
+| multiplying by 1000, the number of tests), only a few of the adjusted values are below 1.
+| For the BH, the adjusted values are slightly larger than the original values.
+
+...
+
+  |================================================================================================================================    |  97%
+
+| We'll conclude by saying that multiple testing is an entire subfield of statistical
+| inference. Usually a basic Bonferroni/BH correction is good enough to eliminate false
+| positives, but if there is strong dependence between tests there may be problems. Another
+| correction method to consider is "BY".
+
+...
+
+  |==================================================================================================================================  |  98%
+
+| Congrats! We hope you liked the multiple concepts and questions you saw in this lesson.
+
+...
+
+  |====================================================================================================================================| 100%
+  
+  
+  missed the start!
+
+ [4807] 71.02634 63.89132 65.79786 69.13395 68.02969 64.63959 68.12592 66.03081 64.08920
+ [4816] 66.96738 67.35461 64.84995 62.93203 68.32281 66.63586 66.11120 70.29942 60.91526
+ [4825] 69.41356 67.74181 64.10318 68.36488 61.50617 63.90010 67.09047 65.56421 70.90445
+ [4834] 62.53200 72.74936 67.41075 70.27309 67.82769 65.05963 69.61942 70.20658 69.49516
+ [4843] 69.12925 62.83528 66.61001 66.83256 68.88641 72.37013 65.94624 67.48444 64.12671
+ [4852] 68.94943 69.29517 65.66031 66.23650 66.54635 68.77033 66.95295 70.63764 67.21634
+ [4861] 72.20218 66.87795 67.38231 68.35003 63.75483 67.31523 66.94161 62.88524 66.43717
+ [4870] 66.77012 64.30302 67.36559 63.22006 67.47271 71.56142 66.56566 65.26855 69.92407
+ [4879] 70.29892 61.02471 70.44394 64.59851 68.64797 68.07787 67.64175 62.18330 63.58145
+ [4888] 68.99349 68.06061 60.41857 70.48140 68.46917 68.33586 70.64687 66.57388 69.65536
+.....
+ [9991] 68.27194 67.27716 67.09116 69.29517 69.76071 63.03753 69.73728 64.45497 69.09588
+[10000] 68.27918
+ [ reached getOption("max.print") -- omitted 1068000 entries ]
+
+| Not exactly. Give it another go. Or, type info() for more options.
+
+| Type sam <- sample(fh,nh*B,replace=TRUE) at the command prompt.
+
+> sam <- sample(fh, size = nh*B, replace = TRUE)
+
+| You nailed it! Good job!
+
+  |=====================================                                               |  44%
+
+| Now form sam into a matrix with B rows and nh columns. Use the R function matrix and put
+| the result in resam
+
+> resam <- matrix(sam, nrow = B, ncol = nh)
+
+| That's correct!
+
+  |======================================                                              |  46%
+
+| Now use the R function apply to take the median (third argument) of each row of resam
+| (first argument). Put the result in meds. The second argument, the number 1, specifies that
+| the application of the function is to the rows of the first argument.
+
+> View(resam)
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| Type meds <- apply(resam,1,median) at the command prompt.
+
+> View(resam)
+
+| Almost! Try again. Or, type info() for more options.
+
+| Type meds <- apply(resam,1,median) at the command prompt.
+
+warning messages from top-level task callback 'mini'
+Warning message:
+In rm(list = c(vName), envir = globalenv()) : object 'sam' not found
+> meds <- apply(resam, 1, median)
+
+| Great job!
+
+  |========================================                                            |  47%
+
+| Now look at the difference between the median of fh and the median of meds.
+
+warning messages from top-level task callback 'mini'
+Warning message:
+In rm(list = c(vName), envir = globalenv()) : object 'sam' not found
+> median(fh) - median meds
+Error: unexpected symbol in "median(fh) - median meds"
+> median(fh) - median(meds)
+[1] 0
+
+| Excellent job!
+
+  |=========================================                                           |  49%
+
+| Pretty close, right? Now use the R function sd to estimate the standard error of the vector
+| meds.
+
+> sd(meds)
+[1] 0.1030132
+
+| You're the best!
+
+  |==========================================                                          |  50%
+
+| We previously did this same process for the sons' data and stored the resampled medians in
+| the 1000-long vector resampledMedians. Find the standard error of resampledMedians.
+
+> sd(resampledMedians)
+[1] 0.08296743
+
+| Keep up the great work!
+
+  |===========================================                                         |  51%
+
+| Now we'll find a 95% confidence interval for the sons' data with the R function quantile.
+| The first argument is the vector of resampledMedians and the second is the expression
+| c(.025,.975). Do this now.
+
+> quantile(resampledMedians, c(.025,.975))
+    2.5%    97.5% 
+68.43733 68.80718 
+
+| All that practice is paying off!
+
+  |============================================                                        |  53%
+
+| Pretty close quantiles, right? Now do the same thing for the fathers' data. Recall that
+| it's stored in the vector meds.
+
+> quantile(meds, c(.025,.975))
+    2.5%    97.5% 
+67.55466 67.94265 
+
+| You nailed it! Good job!
+
+  |==============================================                                      |  54%
+
+| Another pair of close quantiles, but notice that these quantiles of the fathers' medians
+| differ from those of the sons.
+
+...
+
+  |===============================================                                     |  56%
+
+| Bootstrapping is a very diverse and complicated topic and we just skimmed the surface here.
+| The technique we showed you is nonparametric, that is, it's not based on any parameterized
+| family of probability distributions. We used only one set of observations that we assumed
+| to be representative of the population.
+
+...
+
+  |================================================                                    |  57%
+
+| Finally, the confidence intervals we calculated might not perform very well because of
+| biases but the R package bootstrap provides an easy fix for this problem.
+
+...
+
+  |=================================================                                   |  58%
+
+| Now, to permutation testing, another handy tool used in group comparisons. As bootstrapping
+| did, permutation testing samples a single dataset a zillion times and calculates a
+| statistic based on these samplings.
+
+...
+
+  |==================================================                                  |  60%
+
+| Permutation testing, however, is based on the idea of exchangability of group labels. It
+| measures whether or not outcomes are independent of group identity. Our zillion samples
+| simply permute group labels associated with outcomes. We'll see an example of this.
+
+...
+
+  |===================================================                                 |  61%
+
+| Here's a picture from the dataset InsectSprays which contains counts of the number of bugs
+| killed by six different sprays.
+
+...
+
+  |====================================================                                |  62%
+
+| We'll use permutation testing to compare Spray B with Spray C.
+
+...
+
+  |======================================================                              |  64%
+
+| Use the R command dim to find the dimensions of InsectSprays.
+
+> dim(InsectSprays)
+[1] 72  2
+
+| That's correct!
+
+  |=======================================================                             |  65%
+
+| Now use the R command names to find what the two columns of InsectSprays contain.
+
+> names(InsectSprays)
+[1] "count" "spray"
+
+| Great job!
+
+  |========================================================                            |  67%
+
+| We'll use permutation testing to compare Spray B with Spray C. We subsetted data for these
+| two sprays into a data frame subdata. Moreover, the two data frames Bdata and Cdata contain
+| the data for their respective sprays.
+
+...
+
+  |=========================================================                           |  68%
+
+| Now use the R command range on Bdata$count to find the minimum and maximum counts for Spray
+| B.
+
+> range(Bdata$count)
+[1]  7 21
+
+| That's correct!
+
+  |==========================================================                          |  69%
+
+| The picture makes more sense now, right? Now do the same for Spray C. Its data is in Cdata.
+
+> range(Cdata$count)
+[1] 0 7
+
+| Excellent work!
+
+  |===========================================================                         |  71%
+
+| From the ranges (as well as the picture), the sprays look a lot different. We'll test the
+| (obviously false) null hypothesis that their means are the same.
+
+...
+
+  |=============================================================                       |  72%
+
+| To make the analysis easier we've defined two arrays for you, one holding the counts for
+| sprays B and C. It's call BCcounts. Look at it now.
+
+> BCcounts
+ [1] 11 17 21 11 16 14 17 17 19 21  7 13  0  1  7  2  3  1  2  1  3  0  1  4
+
+| That's the answer I was looking for.
+
+  |==============================================================                      |  74%
+
+| The second array we've defined holds the spray identification and it's called group. These
+| two arrays line up with each other, that is, the first 12 entries of counts are associated
+| with spray B and the last 12 with spray C.  Look at group now.
+
+> group
+ [1] "B" "B" "B" "B" "B" "B" "B" "B" "B" "B" "B" "B" "C" "C" "C" "C" "C" "C" "C" "C" "C" "C"
+[23] "C" "C"
+
+| You got it!
+
+  |===============================================================                     |  75%
+
+| We've also defined for you a one-line function testStat which takes two parameters, an
+| array of counts and an array of associated identifiers. It assumes all the counts come from
+| group B or group C. It subtracts the mean of the counts from group C from the mean of the
+| counts of group B. Type testStat with no parentheses and no arguments to see how it's
+| defined.
+
+> testStat()
+Error in mean(w[g == "B"]) : argument "w" is missing, with no default
+> testStat
+function(w, g) mean(w[g == "B"]) - mean(w[g == "C"])
+<environment: 0x000000002782eb10>
+
+| You are really on a roll!
+
+  |================================================================                    |  76%
+
+| Now set a variable obs by invoking testStat with the arguments BCcounts and group and
+| assigning the result to obs.
+
+> obs <- testStat(BCcounts, group)
+
+| You nailed it! Good job!
+
+  |=================================================================                   |  78%
+
+| Take a peek at obs now.
+
+> obs
+[1] 13.25
+
+| You got it!
+
+  |==================================================================                  |  79%
+
+| Pretty big difference, right? You can check this by using mean on Bdata$count and on
+| Cdata$count and subtracting the latter from the former. Equivalently, you can just apply
+| mean to Bdata$count-Cdata$count. Do either one now.
+
+> mean(Bdata$count-Cdata$count)
+[1] 13.25
+
+| Great job!
+
+  |====================================================================                |  81%
+
+| So, mean(Bdata$count)-mean(Cdata$count) equals mean(Bdata$count-Cdata$count) because ?
+
+1: mean is linear
+2: mathemagic
+3: the data is special
+
+Selection: 1
+
+| Perseverance, that's the answer.
+
+  |=====================================================================               |  82%
+
+| Now this is where the permutation testing starts to involve resampling. We're going to test
+| whether or not the particular group association of the counts affects the difference of the
+| means.
+
+...
+
+  |======================================================================              |  83%
+
+| We'll keep the same array of counts, just randomly relabel them, by permuting the group
+| array. R makes this process very easy. Calling the function sample (which we've used
+| several times in this lesson) with one argument, an array name, will simply permute the
+| elements of that array.
+
+...
+
+  |=======================================================================             |  85%
+
+| Call sample now on the array group to see what happens.
+
+> sample(group)
+ [1] "C" "C" "B" "C" "C" "B" "B" "C" "C" "B" "C" "B" "C" "C" "C" "C" "B" "C" "B" "B" "B" "B"
+[23] "B" "B"
+
+| That's a job well done!
+
+  |========================================================================            |  86%
+
+| The labels are all mixed up now. We'll do this permuting of labels and then we'll
+| recalculate the difference of the means of the two "new" (really newly labelled) groups.
+
+...
+
+  |==========================================================================          |  88%
+
+| We'll relabel and calculate the difference of means 10000 times and store the differences
+| (of means) in the array perms. Here's what the code looks like perms <- sapply(1 : 10000,
+| function(i) testStat(BCcounts, sample(group))). Try it now.
+
+> perms <- sapply(1 : 10000,function(i) testStat(BCcounts, sample(group)))
+
+| All that hard work is paying off!
+
+  |===========================================================================         |  89%
+
+| We can take the mean of the virtual array of the boolean expression perms > obs. Do this
+| now.
+
+> mean(perms > obs)
+[1] 0
+
+| All that practice is paying off!
+
+  |============================================================================        |  90%
+
+| So on average 0 of the permutations had a difference greater than the observed. That means
+| we would reject the null hypothesis that the means of the two sprays were equal.
+
+...
+
+  |=============================================================================       |  92%
+
+| Here's a histogram of the difference of the means. Looks pretty normal, right? We can see
+| that the distribution runs roughly between -10 and +10 and it's centered around 0. The
+| vertical line shows where the observed difference of means was and we see that it's pretty
+| far away from the distribution of the resampled permutations. This means that group
+| identification did matter and sprays B and C were quite different.
+
+...
+
+  |==============================================================================      |  93%
+
+| Here's the picture of the InsectSprays again. Suppose we run the same experiment, this time
+| comparing sprays D and E, which look more alike. We've redefined testStat to look at these
+| sprays and subtract the mean of spray E from the mean of spray D.
+
+...
+
+  |===============================================================================     |  94%
+
+| We've also stored off the D and E data in DEcounts and the group labels in group. Run
+| testStat now with DEcounts and group.
+
+> testStat(DEcounts, group)
+[1] 1.416667
+
+| Keep up the great work!
+
+  |================================================================================    |  96%
+
+| We've stored off this value, 1.416667, in the variable obs for you. Now run the permutation
+| command, with DEcounts. Here it is, perms <- sapply(1 : 10000, function(i)
+| testStat(DEcounts, sample(group)))
+
+> perms <- sapply(1 : 10000, function(i) testStat(DEcounts, sample(group)))
+
+| Nice work!
+
+  |==================================================================================  |  97%
+
+| Finally, we can plot the histogram of the distribution of the difference of the means. We
+| see that with these sprays the observed difference of means (the vertical line) is closer
+| to the mean of the permuted labels. This indicates that sprays D and E are quite similar
+| and we fail to reject the null hypothesis that the means were equal.
+
+...
+
+  |=================================================================================== |  99%
+
+| Congrats! We hope you weren't bugged too much by this lesson and feel like you've pulled
+| yourself up by your bootstraps.
+
+...
+
+  |====================================================================================| 100%
+

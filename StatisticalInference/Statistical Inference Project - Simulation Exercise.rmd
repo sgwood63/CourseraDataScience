@@ -1,0 +1,110 @@
+---
+title: "Statistical Inference Project - Simulation Exercise"
+author: "Sherman Wood"
+date: "July 25, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+
+This is my submission for the Coursera Statistical Inference Course Project - Simulation Exercise.
+
+## Simulation Exercise
+
+### Overview
+
+We will investigate the exponential distribution and compare it with the Central Limit Theorem through the use of R.
+
+The Central Limit Theorem states that as n gets larger, the distribution of the difference between the sample average Sn and its limit mu, when multiplied by the factor sqrt(n) (that is sqrt(n)(Sn - mu)), approximates the normal distribution with mean 0 and variance sigma^2. For large enough n, the distribution of Sn is close to the normal distribution with mean mu and variance sigma^2/n.
+
+The exponential distribution can be simulated in R with rexp(n, lambda) where lambda is the rate parameter. The theoretical mean of an exponential distribution is 1/lambda and the theoretical standard deviation is also 1/lambda.
+
+### Simulation
+
+For this investigation, we will evaluate the distribution of means of 1,000 samples of 40 random exponentials with lambda = 0.2.
+```{r base parameters}
+lambda = 0.2
+n = 40
+simulations = 1000
+
+# theoretical statistics
+mu <- 1/lambda 
+Tvariance <- (1/lambda)^2 / n
+set.seed(1337)
+
+means = NULL
+```
+
+For this exponential distribution, the Central Limit Theorem says that:
+
+mu = 1/lambda = theoretical sample mean (Sn) = `r round(mu, 4)`
+
+Theoretical Sample variance = (1/lambda)^2 / n = `r round(Tvariance, 6)`
+
+First let's get our sample exponential distribution.
+
+```{r exp distribution, echo=TRUE}
+for (i in 1 : simulations) means = c(means, mean(rexp(n,lambda)))
+```
+```{r statistics}
+Sn <- mean(means)
+Svariance <- var(means)
+Ssigma <- sqrt(Svariance)
+```
+
+The statitics of the the sample are:
+
+Sample mean (Sn) = `r round(Sn, 4)`
+      
+Sample variance = `r round(Svariance, 4)`
+
+Sample standard deviation = `r round(Ssigma, 4)`
+
+Visually the sample is:
+
+```{r histogram of distribution, fig.width = 6, fig.height = 3}
+library(ggplot2)
+g = ggplot(data.frame(means), aes(means))
+g = g + geom_histogram(colour = "darkgreen", fill = "white", bins=100)
+g = g + labs(title=paste("Distribution of Exp Samples:", simulations, "samples of", n, "values"),
+             x="Mean of sample", y = "Frequency of Mean in Samples")
+g = g + geom_vline(aes(xintercept=mu, linetype="mu"), color="blue") +
+        geom_vline(aes(xintercept=Sn, linetype="Sn"), color="red") +
+      scale_linetype_manual(name = "Means", labels = c(paste("mu:", round(mu, 4)),
+                                                      paste("Sn:", round(Sn, 4))), values = c("mu" = 1, "Sn" = 2))
+g
+```
+
+
+### Comparison of Theoretical and Sample Means and Variance
+
+Compare the sample distribution statistics to the values expected from the Central Limit Theorem :
+
+Theoretical mean mu - Sn = `r round(mu - Sn,4)`
+      
+Theoretical - Sample variance = `r round(Tvariance - Svariance, 4)`
+
+These differences are close to 0. The Central Limit Theorem assertions are thus supported.
+
+### Comparison of the sample to the normal distribution
+
+A density plot allows us to compare the sample distribution to the normal distribution. The closeness of these curves highlights the Central Limit Theorem assertion that for large enough n, the distribution of Sn is close to the normal distribution with mean mu and variance sigma^2/n.
+
+```{r Density plot, fig.width = 6, fig.height = 3}
+library(ggplot2)
+d = ggplot(data.frame(means), aes(means)) + geom_density()
+d = d + labs(title=paste("Density of Exp Samples:", simulations, "samples of", n, "values\nComparison to Normal Distribution"),
+             x="Mean of sample", y = "Density")
+d = d + stat_function(fun=dnorm, geom = "line", 
+                      args = list(mean = mu, sqrt(Tvariance)), 
+                      size = 2, col = "yellow")
+d = d + geom_vline(aes(xintercept=mu, linetype="mu"), color="blue") +
+        geom_vline(aes(xintercept=Sn, linetype="Sn"), color="red") +
+      scale_linetype_manual(name = "Means", labels = c(paste("mu:", round(mu, 4)),
+                                                      paste("Sn:", round(Sn, 4))), values = c("mu" = 1, "Sn" = 2))
+d
+```

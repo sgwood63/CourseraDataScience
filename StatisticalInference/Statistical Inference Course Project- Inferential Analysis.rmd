@@ -1,0 +1,70 @@
+---
+title: "Coursera Statistical Inference Course Project - Inferential Data Analysis"
+author: "Sherman Wood"
+date: "July 21, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Inferential Data Analysis
+
+In this inferential analysis, we are going to explore the ToothGrowth data set that is part of the base R distribution. Let's start with an overview of the base ToothGrowth data set.
+
+The documentation for the ToothGrowth data set says:
+
+The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, (orange juice (coded as OJ) or ascorbic acid (a form of vitamin C and coded as VC).
+
+```{r ToothGrowth data overview, echo = TRUE}
+head(ToothGrowth)
+table(ToothGrowth$supp, ToothGrowth$dose)
+```
+
+We can see 10 observations for each dose/delivery method combination. The observations are independent.
+
+We will assume that the length of time for the observations is the same, so tooth growth is comparable across the combinations.
+
+### ToothGrowth data profile
+
+```{r scatter, fig.width = 5, fig.height = 3}
+library(ggplot2)
+g = ggplot(ToothGrowth, aes(x = dose, y = len, colour = supp)) + geom_point() +
+      labs(x="Dose (mg/day)", y="Tooth growth (length)") +
+      scale_color_manual(name = "Delivery", labels = c("Orange Juice","Ascorbic Acid"),
+                          values = c("blue", "red"))
+g
+```
+
+### Comparison of tooth growth
+
+Let us investigate whether the tooth growth was significantly differentiated by delivery method - orange juice versus ascorbic acid, regardless of dosage. This can be highlighted by a t-test of tooth growth across the samples partitioned by delivery method.
+
+We will assume that the variances between the two groups is not equal.
+
+```{r t-tests}
+oj <- ToothGrowth[ToothGrowth$supp == 'OJ',]
+vc <- ToothGrowth[ToothGrowth$supp == 'VC',]
+suppTTest <- t.test(oj$len, vc$len, var.equal = FALSE)
+suppTTest
+```
+
+### Conclusions
+
+Given a t statistic of `r round(suppTTest$statistic, 4)` and a a low p-value of `r round(suppTTest$p.value,4)`,  this test supports the hypothesis that orange juice provides significantly better tooth growth than asorbic acid. The 95% confidence interval of `r round(suppTTest$conf,4)`, which is only just negative on the lower tail, also supports this conclusion.
+\newpage
+
+## Appendix
+
+### ToothGrowth data summaries
+
+```{r toothgrowth summaries, echo = TRUE}
+xtabs(len ~ dose, aggregate(len ~ dose,ToothGrowth,mean)) 
+xtabs(len ~ supp, aggregate(len ~ supp,ToothGrowth,mean))
+xtabs(len ~ dose, aggregate(len ~ dose,ToothGrowth,quantile))
+xtabs(len ~ supp, aggregate(len ~ supp,ToothGrowth,quantile))
+xtabs(len ~ dose + supp, aggregate(len ~ dose + supp,ToothGrowth,mean)) 
+
+```
