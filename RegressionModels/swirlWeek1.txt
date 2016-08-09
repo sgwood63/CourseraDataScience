@@ -1,0 +1,801 @@
+| Introduction to Regression Models. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses if you want to use them. They must be downloaded as a
+| zip file and viewed locally. This lesson corresponds to Regression_Models/01_01_introduction.)
+
+...
+
+  |=====                                                                                               |   5%
+
+| This is the first lesson on Regression Models. We'll begin with the concept of "regression toward the mean"
+| and illustrate it with some pioneering work of the father of forensic science, Sir Francis Galton.
+
+...
+
+  |==========                                                                                          |  10%
+
+| Sir Francis studied the relationship between heights of parents and their children. His work showed that
+| parents who were taller than average had children who were also tall but closer to the average height.
+| Similarly, parents who were shorter than average had children who were also shorter than average but less
+| so than mom and dad. That is, they were closer to the average height. From one generation to the next the
+| heights moved closer to the average or regressed toward the mean.
+
+...
+
+  |==============                                                                                      |  14%
+
+| For this lesson we'll use Sir Francis's parent/child height data which we've taken the liberty to load for
+| you as the variable, galton. (Data is from John Verzani's website,
+| http://wiener.math.csi.cuny.edu/UsingR/.) So let's get started!
+
+...
+
+  |===================                                                                                 |  19%
+
+| Here is a plot of Galton's data, a set of 928 parent/child height pairs. Moms' and dads' heights were
+| averaged together (after moms' heights were adjusted by a factor of 1.08). In our plot we used the R
+| function "jitter" on the children's heights to highlight heights that occurred most frequently. The dark
+| spots in each column rise from left to right suggesting that children's heights do depend on their
+| parents'. Tall parents have tall children and short parents have short children.
+
+...
+
+  |========================                                                                            |  24%
+
+| Here we add a red (45 degree) line of slope 1 and intercept 0 to the plot. If children tended to be the
+| same height as their parents, we would expect the data to vary evenly about this line. We see this isn't
+| the case. On the left half of the plot we see a concentration of heights above the line, and on the right
+| half we see the concentration below the line.
+
+...
+
+  |=============================                                                                       |  29%
+
+| Now we've added a blue regression line to the plot. This is the line which has the minimum variation of the
+| data around it. (For theory see the slides.) Its slope is greater than zero indicating that parents'
+| heights do affect their children's. The slope is also less than 1 as would have been the case if children
+| tended to be the same height as their parents.
+
+...
+
+  |=================================                                                                   |  33%
+
+| Now's your chance to plot in R. Type "plot(child ~ parent, galton)" at the R prompt.
+
+> plot(child ~ parent, galton)
+
+| Keep working like that and you'll get there!
+
+  |======================================                                                              |  38%
+
+| You'll notice that this plot looks a lot different than the original we displayed. Why? Many people are the
+| same height to within measurement error, so points fall on top of one another. You can see that some
+| circles appear darker than others. However, by using R's function "jitter" on the children's heights, we
+| can spread out the data to simulate the measurement errors and make high frequency heights more visible.
+
+...
+
+  |===========================================                                                         |  43%
+
+| Now it's your turn to try. Just type "plot(jitter(child,4) ~ parent,galton)" and see the magic.
+
+> plot(jitter(child,4) ~ parent,galton)
+
+| That's correct!
+
+  |================================================                                                    |  48%
+
+| Now for the regression line. This is quite easy in R. The function lm (linear model) needs a "formula" and
+| dataset. You can type "?formula" for more information, but, in simple terms, we just need to specify the
+| dependent variable (children's heights) ~ the independent variable (parents' heights).
+
+...
+
+  |====================================================                                                |  52%
+
+| So generate the regression line and store it in the variable regrline. Type "regrline <- lm(child ~ parent,
+| galton)"
+
+> regrline <- lm(child ~ parent, galton
++ )
+
+| You are really on a roll!
+
+  |=========================================================                                           |  57%
+
+| Now add the regression line to the plot with "abline". Make the line wide and red for visibility. Type
+| "abline(regrline, lwd=3, col='red')"
+
+> abline(regrline, lwd=3, col='red')
+
+| That's correct!
+
+  |==============================================================                                      |  62%
+
+| The regression line will have a slope and intercept which are estimated from data. Estimates are not exact.
+| Their accuracy is gauged by theoretical techniques and expressed in terms of "standard error." You can use
+| "summary(regrline)" to examine the Galton regression line. Do this now.
+
+> summary(regrline)
+
+Call:
+lm(formula = child ~ parent, data = galton)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.8050 -1.3661  0.0487  1.6339  5.9264 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 23.94153    2.81088   8.517   <2e-16 ***
+parent       0.64629    0.04114  15.711   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.239 on 926 degrees of freedom
+Multiple R-squared:  0.2105,	Adjusted R-squared:  0.2096 
+F-statistic: 246.8 on 1 and 926 DF,  p-value: < 2.2e-16
+
+
+| You got it right!
+
+  |===================================================================                                 |  67%
+
+| The slope of the line is the estimate of the coefficient, or muliplier, of "parent", the independent
+| variable of our data (in this case, the parents' heights). From the output of "summary" what is the slope
+| of the regression line?
+
+1: .64629
+2: 23.94153
+3: .04114
+
+Selection: 1
+
+| Keep up the great work!
+
+  |=======================================================================                             |  71%
+
+| What is the standard error of the slope?
+
+1: 23.94153
+2: .04114
+3: .64629
+
+Selection: 2
+
+| Great job!
+
+  |============================================================================                        |  76%
+
+| A coefficient will be within 2 standard errors of its estimate about 95% of the time. This means the slope
+| of our regression is significantly different than either 0 or 1 since (.64629) +/- (2*.04114) is near
+| neither 0 nor 1.
+
+...
+
+  |=================================================================================                   |  81%
+
+| We're now adding two blue lines to indicate the means of the children's heights (horizontal) and the
+| parents' (vertical). Note that these lines and the regression line all intersect in a point. Pretty cool,
+| huh? We'll talk more about this in a later lesson. (Something you can look forward to.)
+
+...
+
+  |======================================================================================              |  86%
+
+| The slope of a line shows how much of a change in the vertical direction is produced by a change in the
+| horizontal direction. So, parents "1 inch" above the mean in height tend to have children who are only .65
+| inches above the mean. The green triangle illustrates this point. From the mean, moving a "1 inch distance"
+| horizontally to the right (increasing the parents' height) produces a ".65 inch" increase in the vertical
+| direction (children's height).
+
+...
+
+  |==========================================================================================          |  90%
+
+| Similarly, parents who are 1 inch below average in height have children who are only .65 inches below
+| average height. The purple triangle illustrates this. From the mean, moving a "1 inch distance"
+| horizontally to the left (decreasing the parents' height) produces a ".65 inch" decrease in the vertical
+| direction (children's height).
+
+...
+
+  |===============================================================================================     |  95%
+
+| This concludes our lesson on regression toward the mean. We hope you found it above average!
+
+...
+
+  |====================================================================================================| 100%
+
+| Would you like to receive credit for completing this course on Coursera.org?
+
+1: Yes
+2: No
+
+Selection: 1
+What is your email address? sgwood63@gmail.com
+What is your assignment token? lV3InHDQbbwV8QW6
+Grade submission succeeded!
+
+| All that hard work is paying off!
+
+| You've reached the end of this lesson! Returning to the main menu...
+
+| Please choose a course, or type 0 to exit swirl.
+
+1: Exploratory Data Analysis
+2: Getting and Cleaning Data
+3: R Programming
+4: Regression Models
+5: Statistical Inference
+6: Take me to the swirl course repository!
+
+Selection: 4
+
+| Please choose a lesson, or type 0 to return to course menu.
+
+ 1: Introduction                               2: Residuals                               
+ 3: Least Squares Estimation                   4: Residual Variation                      
+ 5: Introduction to Multivariable Regression   6: MultiVar Examples                       
+ 7: MultiVar Examples2                         8: MultiVar Examples3                      
+ 9: Residuals Diagnostics and Variation       10: Variance Inflation Factors              
+11: Overfitting and Underfitting              12: Binary Outcomes                         
+13: Count Outcomes                            
+
+Selection: 2
+
+  |                                                                                                    |   0%
+
+| Residuals. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be downloaded as a
+| zip file and viewed locally. This lesson corresponds to Regression_Models/01_03_ols. Galton data is from
+| John Verzani's website, http://wiener.math.csi.cuny.edu/UsingR/)
+
+...
+
+  |===                                                                                                 |   3%
+
+| This lesson will focus on the residuals, the distances between the actual children's heights and the
+| estimates given by the regression line. Since all lines are characterized by two parameters, a slope and an
+| intercept, we'll use the least squares criteria to provide two equations in two unknowns so we can solve
+| for these parameters, the slope and intercept.
+
+...
+
+  |======                                                                                              |   6%
+
+| The first equation says that the "errors" in our estimates, the residuals, have mean zero. In other words,
+| the residuals are "balanced" among the data points; they're just as likely to be positive as negative. The
+| second equation says that our residuals must be uncorrelated with our predictors, the parents’ height. This
+| makes sense - if the residuals and predictors were correlated then you could make a better prediction and
+| reduce the distances (residuals) between the actual outcomes and the predictions.
+
+...
+
+  |=========                                                                                           |   9%
+
+| We'll demonstrate these concepts now. First regenerate the regression line and call it fit. Use the R
+| function lm. Recall that by default its first argument is a formula such as "child ~ parent" and its second
+| is the dataset, in this case galton.
+
+> fit <- lm(child ~ parent, galton)
+
+| You nailed it! Good job!
+
+  |============                                                                                        |  12%
+
+| Now we'll examine fit to see its slope and intercept. The residuals we're interested in are stored in the
+| 928-long vector fit$residuals. If you type fit$residuals you'll see a lot of numbers scroll by which isn't
+| very useful; however if you type "summary(fit)" you will see a more concise display of the regression data.
+| Do this now.
+
+> summary(fit)
+
+Call:
+lm(formula = child ~ parent, data = galton)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.8050 -1.3661  0.0487  1.6339  5.9264 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 23.94153    2.81088   8.517   <2e-16 ***
+parent       0.64629    0.04114  15.711   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.239 on 926 degrees of freedom
+Multiple R-squared:  0.2105,	Adjusted R-squared:  0.2096 
+F-statistic: 246.8 on 1 and 926 DF,  p-value: < 2.2e-16
+
+
+| All that hard work is paying off!
+
+  |================                                                                                    |  16%
+
+| First check the mean of fit$residuals to see if it's close to 0.
+
+> mean(fit$residuals)
+[1] -2.359884e-15
+
+| Excellent job!
+
+  |===================                                                                                 |  19%
+
+| Now check the correlation between the residuals and the predictors. Type "cov(fit$residuals,
+| galton$parent)" to see if it's close to 0.
+
+> cov(fit$residuals, galton$parent)
+[1] -1.790153e-13
+
+| You nailed it! Good job!
+
+  |======================                                                                              |  22%
+
+| As shown algebraically in the slides, the equations for the intercept and slope are found by supposing a
+| change is made to the intercept and slope. Squaring out the resulting expressions produces three
+| summations. The first sum is the original term squared, before the slope and intercept were changed. The
+| third sum totals the squared changes themselves. For instance, if we had changed fit’s intercept by adding
+| 2, the third sum would be the total of 928 4’s. The middle sum is guaranteed to be zero precisely when the
+| two equations (the conditions on the residuals) are satisfied.
+
+
+
+  |=========================                                                                           |  25%
+
+| We'll verify these claims now. We've defined for you two R functions, est and sqe. Both take two inputs, a
+| slope and an intercept. The function est calculates a child's height (y-coordinate) using the line defined
+| by the two parameters, (slope and intercept), and the parents' heights in the Galton data as x-coordinates.
+
+...
+
+  |============================                                                                        |  28%
+
+| Let "mch" represent the mean of the galton childrens' heights and "mph" the mean of the galton parents'
+| heights. Let "ic" and "slope" represent the intercept and slope of the regression line respectively. As
+| shown in the slides and past lessons, the point (mph,mch) lies on the regression line. This means
+
+1: mch = ic + slope*mph
+2: mph = ic + slope*mch
+3: I haven't the slightest idea.
+
+Selection: 1
+
+| Perseverance, that's the answer.
+
+  |===============================                                                                     |  31%
+
+| The function sqe calculates the sum of the squared residuals, the differences between the actual children's
+| heights and the estimated heights specified by the line defined by the given parameters (slope and
+| intercept).  R provides the function deviance to do exactly this using a fitted model (e.g., fit) as its
+| argument. However, we provide sqe because we'll use it to test regression lines different from fit.
+
+...
+
+  |==================================                                                                  |  34%
+
+| We'll see that when we vary or tweak the slope and intercept values of the regression line which are stored
+| in fit$coef, the resulting squared residuals are approximately equal to the sum of two sums of squares -
+| that of the original regression residuals and that of the tweaks themselves. More precisely, up to
+| numerical error,
+
+...
+
+  |======================================                                                              |  38%
+
+| sqe(ols.slope+sl,ols.intercept+ic) == deviance(fit) + sum(est(sl,ic)ˆ2 )
+
+...
+
+  |=========================================                                                           |  41%
+
+| Equivalently, sqe(ols.slope+sl,ols.intercept+ic) == sqe(ols.slope, ols.intercept) + sum(est(sl,ic)ˆ2 )
+
+...
+
+  |============================================                                                        |  44%
+
+| The left side of the equation represents the squared residuals of a new line, the "tweaked" regression
+| line. The terms "sl" and "ic" represent the variations in the slope and intercept respectively. The right
+| side has two terms. The first represents the squared residuals of the original regression line and the
+| second is the sum of squares of the variations themselves.
+
+...
+
+  |===============================================                                                     |  47%
+
+| We'll demonstrate this now. First extract the intercept from fit$coef and put it in a variable called
+| ols.ic . The intercept is the first element in the fit$coef vector, that is fit$coef[1].
+
+> ols.ic <- fit$coef[1]
+
+| Excellent job!
+
+  |==================================================                                                  |  50%
+
+| Now extract the slope from fit$coef and put it in the variable ols.slope; the slope is the second element
+| in the fit$coef vector, fit$coef[2].
+
+> ols.slope <- fit$coef[2]
+
+| You are doing so well!
+
+  |=====================================================                                               |  53%
+
+| Now we'll show you some R code which generates the left and right sides of this equation.  Take a moment to
+| look it over. We've formed two 6-long vectors of variations, one for the slope and one for the intercept.
+| Then we have two "for" loops to generate the two sides of the equation.
+
+...
+
+  |========================================================                                            |  56%
+
+| Subtract the right side, the vector rhs, from the left, the vector lhs, to see the relationship between
+| them. You should get a vector of very small, almost 0, numbers.
+
+> lhs - rhs
+[1]  1.264198e-09  2.527486e-09  3.801688e-09 -1.261469e-09 -2.522938e-09 -3.767127e-09
+
+| That's a job well done!
+
+  |===========================================================                                         |  59%
+
+| You could also use the R function all.equal with lhs and rhs as arguments to test for equality. Try it
+| now.
+
+> all.equal((lhs, rhs))
+Error: unexpected ',' in "all.equal((lhs,"
+> all.equal(lhs, rhs)
+[1] TRUE
+
+| That's the answer I was looking for.
+
+  |==============================================================                                      |  62%
+
+| Now we'll show that the variance in the children's heights is the sum of the variance in the OLS estimates
+| and the variance in the OLS residuals. First use the R function var to calculate the variance in the
+| children's heights and store it in the variable varChild.
+
+> varChild <- var(galton$child)
+
+| Your dedication is inspiring!
+
+  |==================================================================                                  |  66%
+
+| Remember that we've calculated the residuals and they're stored in fit$residuals. Use the R function var
+| to calculate the variance in these residuals now and store it in the variable varRes.
+
+> varRes <- var(fit$residuals)
+
+| Excellent work!
+
+  |=====================================================================                               |  69%
+
+| Recall that the function "est" calculates the estimates (y-coordinates) of values along the regression
+| line defined by the variables "ols.slope" and "ols.ic". Compute the variance in the estimates and store it
+| in the variable varEst.
+
+> varEst <- var(est(ols.slope, ols.ic))
+
+| Keep working like that and you'll get there!
+
+  |========================================================================                            |  72%
+
+| Now use the function all.equal to compare varChild and the sum of varRes and varEst.
+
+> all.equal(varChild, sum(varRes, varEst))
+[1] TRUE
+
+| Nice try, but that's not exactly what I was hoping for. Try again. Or, type info() for more options.
+
+| Type "all.equal(varChild,varEst+varRes)" at the R prompt.
+
+> all.equal(varChild, varRes + varEst)
+[1] TRUE
+
+| Great job!
+
+  |===========================================================================                         |  75%
+
+| Since variances are sums of squares (and hence always positive), this equation which we've just
+| demonstrated, var(data)=var(estimate)+var(residuals), shows that the variance of the estimate is ALWAYS
+| less than the variance of the data.
+
+...
+
+  |==============================================================================                      |  78%
+
+| Since var(data)=var(estimate)+var(residuals) and variances are always positive, the variance of residuals
+
+1: is unknown without actual data
+2: is less than the variance of data
+3: is greater than the variance of data
+
+Selection: 2
+
+| Excellent work!
+
+  |=================================================================================                   |  81%
+
+| The two properties of the residuals we've emphasized here can be applied to datasets which have multiple
+| predictors. In this lesson we've loaded the dataset attenu which gives data for 23 earthquakes in
+| California. Accelerations are estimated based on two predictors, distance and magnitude.
+
+...
+
+  |====================================================================================                |  84%
+
+| Generate the regression line for this data. Type efit <- lm(accel ~ mag+dist, attenu) at the R prompt.
+
+> efit <- lm(accel ~ mag+dist, attenu)
+
+| Excellent job!
+
+  |========================================================================================            |  88%
+
+| Verify the mean of the residuals is 0.
+
+> mean(efit)
+[1] NA
+Warning message:
+In mean.default(efit) : argument is not numeric or logical: returning NA
+
+| That's not the answer I was looking for, but try again. Or, type info() for more options.
+
+| Type "mean(efit$residuals)" at the R prompt.
+
+> mean(efit$residuals)
+[1] -1.785061e-18
+
+| Perseverance, that's the answer.
+
+  |===========================================================================================         |  91%
+
+| Using the R function cov verify the residuals are uncorrelated with the magnitude predictor, attenu$mag.
+
+> cov(efit$residuals, attenu$mag)
+[1] 5.338694e-17
+
+| You are amazing!
+
+  |==============================================================================================      |  94%
+
+| Using the R function cov verify the residuals are uncorrelated with the distance predictor, attenu$dist.
+
+> cov(efit$residuals, attenu$dist)
+[1] 5.253433e-16
+
+| All that practice is paying off!
+
+  |=================================================================================================   |  97%
+
+| Congrats! You've finished the course on Residuals. We hope it hasn't left a bad taste in your mouth.
+
+...
+
+  |====================================================================================================| 100%
+  
+| Least Squares Estimation. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be downloaded as
+| a zip file and viewed locally. This lesson corresponds to Regression_Models/01_03_ols. Galton data is from
+| John Verzani's website, http://wiener.math.csi.cuny.edu/UsingR/)
+
+...
+
+  |=====                                                                                              |   5%
+
+| In this lesson, if you're using RStudio, you'll be able to play with some of the code which appears in the
+| slides. If you're not using RStudio, you can look at the code but you won't be able to experiment with the
+| function "manipulate". We provide the code for you so you can examine it without having to type it all
+| out.  In RStudio, when the edit window displays code, make sure your flashing cursor is back in the
+| console window before you hit "Enter" or any keyboard buttons, otherwise you might accidentally alter the
+| code. If you do alter the file, in RStudio, you can hit Ctrl z in the editor until all the unwanted
+| changes disappear. In other editors, you'll have to use whatever key combination performs "undo" to remove
+| all your unwanted changes.
+
+...
+
+  |==========                                                                                         |  11%
+
+| Here are the Galton data and the regression line seen in the Introduction. The regression line summarizes
+| the relationship between parents' heights (the predictors) and their children's (the outcomes).
+
+...
+
+  |================                                                                                   |  16%
+
+| We learned in the last lesson that the regression line is the line through the data which has the minimum
+| (least) squared "error", the vertical distance between the 928 actual children's heights and the heights
+| predicted by the line. Squaring the distances ensures that data points above and below the line are
+| treated the same. This method of choosing the 'best' regression line (or 'fitting' a line to the data) is
+| known as ordinary least squares.
+
+...
+
+  |=====================                                                                              |  21%
+
+| As shown in the slides, the regression line contains the point representing the means of the two sets of
+| heights. These are shown by the thin horizontal and vertical lines. The intersection point is shown by the
+| triangle on the plot. Its x-coordinate is the mean of the parents' heights and y-coordinate is the mean of
+| the childrens' heights.
+
+...
+
+  |==========================                                                                         |  26%
+
+| As shown in the slides, the slope of the regression line is the correlation between the two sets of
+| heights multiplied by the ratio of the standard deviations (childrens' to parents' or outcomes to
+| predictors).
+
+...
+
+  |===============================                                                                    |  32%
+
+| Here we show code which demonstrates how changing the slope of the regression line affects the mean
+| squared error between actual and predicted values. Look it over to see how straightforward it is.
+
+...
+
+  |====================================                                                               |  37%
+
+| What RStudio graphics package allows the user to play with the data to see the effects of the changes?
+
+1: manipulate
+2: points
+3: plot
+4: abline
+
+Selection: 1
+
+| You are quite good my friend!
+
+  |==========================================                                                         |  42%
+
+| Now you can actually play with the code to use R's manipulate function and find the minimum squared error.
+| You can adjust the slider with the left mouse button or use the right and left arrow keys to see how
+| changing the slope (beta) affects the mean squared error (mse). If the slider disappears you can call it
+| back by clicking on the little gear in the upper left corner of the plot window.
+
+...
+
+  |===============================================                                                    |  47%
+
+| Which value of the slope minimizes the mean squared error?
+
+1: 5
+2: .64
+3: .44
+4: .70
+
+Selection: 2
+
+| That's the answer I was looking for.
+
+  |====================================================                                               |  53%
+
+| What was the minimum mse?
+
+1: 44
+2: .64
+3: 5.0
+4: .66
+
+Selection: 3
+
+| You are amazing!
+
+  |=========================================================                                          |  58%
+
+| Recall that you normalize data by subtracting its mean and dividing by its standard deviation. We've done
+| this for the galton child and parent data for you. We've stored these normalized values in two vectors,
+| gpa_nor and gch_nor, the normalized galton parent and child data.
+
+...
+
+  |===============================================================                                    |  63%
+
+| Use R's function "cor" to compute the correlation between these normalized data sets.
+
+> cor(gpa_nor, gch_nor)
+[1] 0.4587624
+
+| Nice work!
+
+  |====================================================================                               |  68%
+
+| How does this correlation relate to the correlation of the unnormalized data?
+
+1: It is smaller.
+2: It is the same.
+3: It is bigger.
+
+Selection: 1
+
+| That's not exactly what I'm looking for. Try again.
+
+| Have you really changed anything?
+
+1: It is the same.
+2: It is smaller.
+3: It is bigger.
+
+Selection: 2
+
+| You almost had it, but not quite. Try again.
+
+| Have you really changed anything?
+
+1: It is bigger.
+2: It is smaller.
+3: It is the same.
+
+Selection: 3
+
+| You got it!
+
+  |=========================================================================                          |  74%
+
+| Use R's function "lm" to generate the regression line using this normalized data. Store it in a variable
+| called l_nor. Use the parents' heights as the predictors (independent variable) and the childrens' as the
+| predicted (dependent). Remember, 'lm' needs a formula of the form dependent ~ independent. Since we've
+| created the data vectors for you there's no need to provide a second "data" argument as you have
+| previously.
+
+> l_nor <- lm(gpa_nor, gch_nor)
+Error in formula.default(object, env = baseenv()) : invalid formula
+> ?lm
+> l_nor <- lm(gpa_nor ~ gch_nor)
+
+| Try again. Getting it right on the first try is boring anyway! Or, type info() for more options.
+
+| Type "l_nor <- lm(gch_nor ~ gpa_nor)" at the R prompt.
+
+> l_nor <- lm(gch_nor ~ gpa_nor)
+
+| You are amazing!
+
+  |==============================================================================                     |  79%
+
+| What is the slope of this line?
+
+1: 1.
+2: I have no idea
+3: The correlation of the 2 data sets
+
+Selection: 3
+
+| That's a job well done!
+
+  |===================================================================================                |  84%
+
+| If you swapped the outcome (Y) and predictor (X) of your original (unnormalized) data, (for example, used
+| childrens' heights to predict their parents), what would the slope of the new regression line be?
+
+1: 1.
+2: I have no idea
+3: the same as the original
+4: correlation(X,Y) * sd(X)/sd(Y)
+
+Selection: 4
+
+| Excellent work!
+
+  |=========================================================================================          |  89%
+
+| We'll close with a final display of source code from the slides. It plots the galton data with three
+| regression lines, the original in red with the children as the outcome, a new blue line with the parents'
+| as outcome and childrens' as predictor, and a black line with the slope scaled so it equals the ratio of
+| the standard deviations.
+
+...
+
+  |==============================================================================================     |  95%
+
+| Congrats! You've concluded this lesson on ordinary least squares which are truly extraordinary!
+
+...
+
+  |===================================================================================================| 100%
+  
+  

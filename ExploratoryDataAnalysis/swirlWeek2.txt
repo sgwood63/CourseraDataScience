@@ -1,0 +1,3256 @@
+| Lattice_Plotting_System. (Slides for this and other Data Science courses
+| may be found at github
+| https://github.com/DataScienceSpecialization/courses/. If you care to use
+| them, they must be downloaded as a zip file and viewed locally. This lesson
+| corresponds to 04_ExploratoryAnalysis/PlottingLattice.)
+
+...
+
+  |=                                                                   |   1%
+
+| In another lesson, we gave you an overview of the three plotting systems in
+| R. In this lesson we'll focus on the lattice plotting system.  As we did
+| with the base plotting system, we'll focus on using lattice to create
+| graphics on the screen device rather than another graphics device.
+
+...
+
+  |==                                                                  |   3%
+
+| The lattice plotting system is completely separate and independent of the
+| base plotting system. It's an add-on package so it has to be explicitly
+| loaded with a call to the R function library. We've done this for you. The
+| R Documentation tells us that lattice "is an implementation of Trellis
+| graphics for R. It is a powerful and elegant high-level data visualization
+| system with an emphasis on multivariate data."
+
+...
+
+  |===                                                                 |   4%
+
+| Lattice is implemented using two packages. The first is called, not
+| surprisingly, lattice, and it contains code for producing Trellis graphics.
+| Some of the functions in this package are the higher level functions which
+| you, the user, would call. These include xyplot, bwplot, and levelplot.
+
+...
+
+  |====                                                                |   6%
+
+| If xyplot produces a scatterplot, what kind of plot does bwplot produce?
+
+1: bad and wonderful
+2: box and whisker
+3: big and whittle
+4: black and white
+
+Selection: 2
+
+| That's a job well done!
+
+  |=====                                                               |   7%
+
+| The second package in the lattice system is grid which contains the
+| low-level functions upon which the lattice package is built. You, the user,
+| seldom call functions from the grid package directly.
+
+...
+
+  |======                                                              |   9%
+
+| Unlike base plotting, the lattice system does not have a "two-phase" aspect
+| with separate plotting and annotation. Instead all plotting and annotation
+| is done at once with a single function call.
+
+...
+
+  |=======                                                             |  10%
+
+| The lattice system, as the base does, provides several different plotting
+| functions. These include xyplot for creating scatterplots, bwplot for
+| box-and-whiskers plots or boxplots, and histogram for histograms. There are
+| several others (stripplot, dotplot, splom and levelplot), which we won't
+| cover here.
+
+...
+
+  |========                                                            |  12%
+
+| Lattice functions generally take a formula for their first argument,
+| usually of the form y ~ x. This indicates that y depends on x, so in a
+| scatterplot y would be plotted on the y-axis and x on the x-axis.
+
+...
+
+  |=========                                                           |  13%
+
+| Here's an example of typical lattice plot call, xyplot(y ~ x | f * g,
+| data). The f and g represent the optional conditioning variables. The *
+| represents interaction between them. Remember when we said that lattice is
+| good for plotting multivariate data? That's where these conditioning
+| variables come into play.
+
+...
+
+  |==========                                                          |  15%
+
+| The second argument is the data frame or list from which the variables in
+| the formula should be looked up.  If no data frame or list is passed, then
+| the parent frame is used. If no other arguments are passed, the default
+| values are used.
+
+...
+
+  |===========                                                         |  16%
+
+| Recall the airquality data we've used before. We've loaded it again for
+| you. To remind yourself what it looks like run the R command head with
+| airquality as an argument to see what the data looks like.
+
+> head(airquality)
+  Ozone Solar.R Wind Temp Month Day
+1    41     190  7.4   67     5   1
+2    36     118  8.0   72     5   2
+3    12     149 12.6   74     5   3
+4    18     313 11.5   62     5   4
+5    NA      NA 14.3   56     5   5
+6    28      NA 14.9   66     5   6
+
+| You are amazing!
+
+  |============                                                        |  18%
+
+| Now try running xyplot with the formula Ozone~Wind as the first argument
+| and the second argument data set equal to airquality.
+
+> xyplot(Ozone ~ Wind, airquality)
+
+| Excellent job!
+
+  |=============                                                       |  19%
+
+| Look vaguely familiar? The dots are blue, instead of black, but lattice
+| labeled the axes for you. You can use some of the same graphical parameters
+| (e.g., pch and col) that you used in the base package in calls to lattice
+| functions.
+
+...
+
+  |==============                                                      |  21%
+
+| Now rerun xyplot with the formula Ozone~Wind as the first argument and the
+| second argument data set equal to airquality (use the up arrow to save
+| typing). This time add the arguments col set equal to "red", pch set equal
+| to 8, and main set equal to "Big Apple Data".
+
+> xyplot(Ozone ~ Wind, airquality, col="red", pch=8, main="Big Apple Data")
+
+| Give it another try. Or, type info() for more options.
+
+| Type xyplot(Ozone ~ Wind, data = airquality, pch=8, col="red", main="Big
+| Apple Data") at the command prompt.
+
+> xyplot(Ozone ~ Wind, data=airquality, col="red", pch=8, main="Big Apple Data")
+
+| You almost had it, but not quite. Try again. Or, type info() for more
+| options.
+
+| Type xyplot(Ozone ~ Wind, data = airquality, pch=8, col="red", main="Big
+| Apple Data") at the command prompt.
+
+> xyplot(Ozone ~ Wind, data = airquality, pch=8, col="red", main="Big
++ | Apple Data")
+
+| Not exactly. Give it another go. Or, type info() for more options.
+
+| Type xyplot(Ozone ~ Wind, data = airquality, pch=8, col="red", main="Big
+| Apple Data") at the command prompt.
+
+> xyplot(Ozone ~ Wind, data = airquality, pch=8, col="red", main="Big
++  Apple Data")
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| Type xyplot(Ozone ~ Wind, data = airquality, pch=8, col="red", main="Big
+| Apple Data") at the command prompt.
+
+> xyplot(Ozone ~ Wind, data = airquality, pch=8, col="red", main="Big Apple Data")
+
+| That's correct!
+
+  |===============                                                     |  22%
+
+| Red snowflakes are cool, right? Now that you’ve seen the basic xyplot() and
+| some of its arguments, you might want to experiment more by yourself when
+| you're done with the lesson to discover what other arguments and colors are
+| available. (If you can't wait to experiment, recall that swirl has play()
+| and nxt() functions. At a command prompt, typing play() allows you to leave
+| swirl temporarily so you can try different R commands at the console.
+| Typing nxt() when you’re done playing brings you back to swirl and you can
+| resume your lesson.)
+
+...
+
+  |================                                                    |  24%
+
+| Now you'll see how easy it is to generate a multipanel plot using a single
+| lattice command.
+
+...
+
+  |=================                                                   |  25%
+
+| Run xyplot with the formula Ozone~Wind | as.factor(Month) as the first
+| argument and the second argument data set equal to airquality (use the up
+| arrow to save typing). So far, not much is different, right? Add a third
+| argument, layout, set equal to c(5,1).
+
+> xyplot(Ozone ~ Wind | as.factor(Month), data = airquality)
+
+| One more time. You can do it! Or, type info() for more options.
+
+| Type xyplot(Ozone ~ Wind | as.factor(Month), data = airquality,
+| layout=c(5,1)) at the command prompt.
+
+> xyplot(Ozone ~ Wind | as.factor(Month), data = airquality, layout=c(5,1))
+
+| Your dedication is inspiring!
+
+  |==================                                                  |  27%
+
+| Note that the default color and plotting character are back. What did the
+| as.factor(Month) do?
+
+1: Displayed and labeled each subplot with the month's integer
+2: Randomly divided the data into 5 panels
+3: Huh?
+4: Displayed the data by individual months
+
+Selection: 4
+
+| You almost had it, but not quite. Try again.
+
+| Obviously the data is broken up and displayed by month. The as.factor made
+| sure each panel was labeled correctly.
+
+1: Displayed the data by individual months
+2: Randomly divided the data into 5 panels
+3: Huh?
+4: Displayed and labeled each subplot with the month's integer
+
+Selection: 4
+
+| Excellent work!
+
+  |===================                                                 |  28%
+
+| Since Month is a named column of the airquality dataframe we had to tell R
+| to treat it as a factor. To see how this affects the plot, rerun the xyplot
+| command you just ran, but use Ozone ~ Wind | Month instead of Ozone ~ Wind
+| | as.factor(Month) as the first argument.
+
+> xyplot(Ozone ~ Wind | Month, data = airquality, layout=c(5,1))
+
+| You're the best!
+
+  |====================                                                |  30%
+
+| Not as informative, right? The word Month in each panel really doesn't tell
+| you much if it doesn't identify which month it's plotting. Notice that the
+| actual data is the same between the two plots, though.
+
+...
+
+  |=====================                                               |  31%
+
+| Lattice functions behave differently from base graphics functions in one
+| critical way. Recall that base graphics functions plot data directly to the
+| graphics device (e.g., screen, or file such as a PDF file). In contrast,
+| lattice graphics functions return an object of class trellis.
+
+...
+
+  |======================                                              |  33%
+
+| The print methods for lattice functions actually do the work of plotting
+| the data on the graphics device. They return "plot objects" that can be
+| stored (but it’s usually better to just save the code and data). On the
+| command line, trellis objects are auto-printed so that it appears the
+| function is plotting the data.
+
+...
+
+  |=======================                                             |  34%
+
+| To see this, create a variable p which is assigned the output of this
+| simple call to xyplot, xyplot(Ozone~Wind,data=airquality).
+
+> p <- xyplot(Ozone~Wind,data=airquality)
+
+| That's the answer I was looking for.
+
+  |========================                                            |  36%
+
+| Nothing plotted, right? But the object p is around.
+
+...
+
+  |=========================                                           |  37%
+
+| Type p or print(p) now to see it.
+
+> p
+
+| You got it!
+
+  |==========================                                          |  39%
+
+| Like magic, it appears. Now run the R command names with p as its argument.
+
+> 
+> names(p)
+ [1] "formula"           "as.table"          "aspect.fill"      
+ [4] "legend"            "panel"             "page"             
+ [7] "layout"            "skip"              "strip"            
+[10] "strip.left"        "xscale.components" "yscale.components"
+[13] "axis"              "xlab"              "ylab"             
+[16] "xlab.default"      "ylab.default"      "xlab.top"         
+[19] "ylab.right"        "main"              "sub"              
+[22] "x.between"         "y.between"         "par.settings"     
+[25] "plot.args"         "lattice.options"   "par.strip.text"   
+[28] "index.cond"        "perm.cond"         "condlevels"       
+[31] "call"              "x.scales"          "y.scales"         
+[34] "panel.args.common" "panel.args"        "packet.sizes"     
+[37] "x.limits"          "y.limits"          "x.used.at"        
+[40] "y.used.at"         "x.num.limit"       "y.num.limit"      
+[43] "aspect.ratio"      "prepanel.default"  "prepanel"         
+
+| That's the answer I was looking for.
+
+  |===========================                                         |  40%
+
+| We see that the trellis object p has 45 named properties, the first of
+| which is "formula" which isn't too surprising. A lot of these properties
+| are probably NULL in value. We've done some behind-the-scenes work for you
+| and created two vectors. The first, mynames, is a character vector of the
+| names in p. The second is a boolean vector, myfull, which has TRUE values
+| for nonnull entries of p. Run mynames[myfull] to see which entries of p are
+| not NULL.
+
+> mynames[myfull]
+ [1] "formula"           "as.table"          "aspect.fill"      
+ [4] "panel"             "skip"              "strip"            
+ [7] "strip.left"        "xscale.components" "yscale.components"
+[10] "axis"              "xlab"              "ylab"             
+[13] "xlab.default"      "ylab.default"      "x.between"        
+[16] "y.between"         "index.cond"        "perm.cond"        
+[19] "condlevels"        "call"              "x.scales"         
+[22] "y.scales"          "panel.args.common" "panel.args"       
+[25] "packet.sizes"      "x.limits"          "y.limits"         
+[28] "aspect.ratio"      "prepanel.default" 
+
+| You got it right!
+
+  |============================                                        |  42%
+
+| Wow! 29 nonNull values for one little plot. Note that a lot of them are
+| like the ones we saw in the base plotting system. Let's look at the values
+| of some of them. Type p[["formula"]] now.
+
+> p[["formula"]]
+Ozone ~ Wind
+
+| You got it right!
+
+  |=============================                                       |  43%
+
+| Not surprising, is it? It's a familiar formula. Now look at p's x.limits.
+| Remember the double square brackets and quotes.
+
+> p[["x.limits"]]
+[1]  0.37 22.03
+
+| Nice work!
+
+  |==============================                                      |  45%
+
+| They match the plot, right? The x values are indeed between .37 and 22.03.
+
+...
+
+  |===============================                                     |  46%
+
+| Again, not surprising. Before we wrap up, let's talk about lattice's panel
+| functions which control what happens inside each panel of the plot. The
+| ease of making multi-panel plots makes lattice very appealing. The lattice
+| package comes with default panel functions, but you can customize what
+| happens in each panel.
+
+...
+
+  |================================                                    |  48%
+
+| Panel functions receive the x and y coordinates of the data points in their
+| panel (along with any optional arguments). To see this, we've created some
+| data for you - two 100-long vectors, x and y. For its first 50 values y is
+| a function of x, for the last 50 values, y is random. We've also defined a
+| 100-long factor vector f which distinguishes between the first and last 50
+| elements of the two vectors. Run the R command table with f as it argument.
+
+> table(f)
+f
+Group 1 Group 2 
+     50      50 
+
+| Nice work!
+
+  |=================================                                   |  49%
+
+| The first 50 entries of f are "Group 1" and the last 50 are "Group 2". Run
+| xyplot with two arguments. The first is the formula y~x|f, and the second
+| is layout set equal to c(2,1). Note that we're not providing an explicit
+| data argument, so xyplot will look in the environment and see the x and y
+| that we've generated for you.
+
+> xyplot(y~x|f, layout=c(2,1))
+
+| You are really on a roll!
+
+  |===================================                                 |  51%
+
+| To understand this a little better look at the variable v1 we've created
+| for you.
+
+> v1
+[1] -2.185287  1.101780 -2.716851  1.569850
+
+| You are doing so well!
+
+  |====================================                                |  52%
+
+| The first two numbers are the range of the x values of Group 1 and the last
+| two numbers are the range of y values of Group 1. See how they match the
+| values of the left panel (Group 1) in the plot. Now look at v2 which holds
+| the comparable numbers for Group 2.
+
+> v2
+[1] -1.6066772  2.2205197 -0.1605085  2.0341048
+
+| You are amazing!
+
+  |=====================================                               |  54%
+
+| Again, the values match the plot. That's reassuring. We've copied some code
+| from the slides for you. To see it, type myedit("plot1.R"). This will open
+| your editor and display the R code in it.
+
+> myedit("plot1.R")
+
+| Nice work!
+
+  |======================================                              |  55%
+
+| How many calls to basic lattice plotting functions are there in plot1.R?
+
+1: 1
+2: 3
+3: 2
+
+Selection: 2
+
+| Not quite, but you're learning! Try again.
+
+| How many calls to xyplot are there?
+
+1: 2
+2: 3
+3: 1
+
+Selection: 1
+
+| You almost had it, but not quite. Try again.
+
+| How many calls to xyplot are there?
+
+1: 3
+2: 2
+3: 1
+
+Selection: 3
+
+| That's a job well done!
+
+  |=======================================                             |  57%
+
+| Note the panel function. How many formal arguments does it have?
+
+1: 2
+2: 1
+3: 3
+
+Selection: 3
+
+| That's a job well done!
+
+  |========================================                            |  58%
+
+| The panel function has 3 arguments, x, y and ... . This last stands for all other
+| arguments (such as graphical parameters) you might want to include. There are 2
+| lines in the panel function. Each invokes a panel method, the first to plot the
+| data in each panel (panel.xyplot), the second to draw a horizontal line in each
+| panel (panel.abline). Note the similarity of this last call to that of the base
+| plotting function of the same name.
+
+...
+
+  |=========================================                           |  60%
+
+| We've defined a function for you, pathtofile, which takes a filename as its
+| argument. This makes sure R can find the file on your computer. Now run the R
+| command source with two arguments. The first is the call to pathtofile with the
+| string "plot1.R" as its argument and the second is the argument local set equal to
+| TRUE. This command will run the code contained in plot1.R within the swirl
+| environment so you can see what it does.
+
+> source(pathtofile("plot1.R"), local=TRUE)
+
+| You are quite good my friend!
+
+  |==========================================                          |  61%
+
+| See how the lines appear. The plot shows two panels because...?
+
+1: f contains 2 factors
+2: lattice can handle at most 2 panels
+3: there are 2 variables
+4: there are 2 calls to panel methods
+
+Selection: 1
+
+| You nailed it! Good job!
+
+  |===========================================                         |  63%
+
+| We've copied another piece of similar code, i.e., a call to xyplot with a custom
+| panel function, from the slides. To see it, type myedit("plot2.R"). This will open
+| your editor and display the R code in it.
+
+> myedit("plot2.R")
+
+| That's a job well done!
+
+  |============================================                        |  64%
+
+| You can see how plot2.R differs from plot1.R, right?
+
+...
+
+  |=============================================                       |  66%
+
+| Again, run the R command source with the two arguments pathtofile("plot2.R") and
+| local=TRUE. This will run the code in plot2.R.
+
+> source(pathtofile("plot2.R"), local=TRUE)
+
+| You got it!
+
+  |==============================================                      |  67%
+
+| The regression lines are red because ...?
+
+1: R is the first letter of the word red
+2: R always plots regression lines in red
+3: the custom panel function specified a col argument
+
+Selection: 3
+
+| You are amazing!
+
+  |===============================================                     |  69%
+
+| Before we close we'll look at how easily lattice can handle a plot with a great
+| many panels. (The sky's the limit.) We've loaded some diamond data for you. It
+| comes with the ggplot2 package. We'll use it just to show off lattice's panel
+| plotting capability.
+
+...
+
+  |================================================                    |  70%
+
+| The data is in the data frame diamonds. Use the R command str to see what it looks
+| like.
+
+> str(diamonds)
+Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	53940 obs. of  10 variables:
+ $ carat  : num  0.23 0.21 0.23 0.29 0.31 0.24 0.24 0.26 0.22 0.23 ...
+ $ cut    : Ord.factor w/ 5 levels "Fair"<"Good"<..: 5 4 2 4 2 3 3 3 1 3 ...
+ $ color  : Ord.factor w/ 7 levels "D"<"E"<"F"<"G"<..: 2 2 2 6 7 7 6 5 2 5 ...
+ $ clarity: Ord.factor w/ 8 levels "I1"<"SI2"<"SI1"<..: 2 3 5 4 2 6 7 3 4 5 ...
+ $ depth  : num  61.5 59.8 56.9 62.4 63.3 62.8 62.3 61.9 65.1 59.4 ...
+ $ table  : num  55 61 65 58 58 57 57 55 61 61 ...
+ $ price  : int  326 326 327 334 335 336 336 337 337 338 ...
+ $ x      : num  3.95 3.89 4.05 4.2 4.34 3.94 3.95 4.07 3.87 4 ...
+ $ y      : num  3.98 3.84 4.07 4.23 4.35 3.96 3.98 4.11 3.78 4.05 ...
+ $ z      : num  2.43 2.31 2.31 2.63 2.75 2.48 2.47 2.53 2.49 2.39 ...
+
+| Keep working like that and you'll get there!
+
+  |=================================================                   |  72%
+
+| So the data frame contains 10 pieces of information for each of 53940 diamonds. Run
+| the R command table with diamonds$color as an argument.
+
+> table(diamonds$color)
+
+    D     E     F     G     H     I     J 
+ 6775  9797  9542 11292  8304  5422  2808 
+
+| You're the best!
+
+  |==================================================                  |  73%
+
+| We see 7 colors each represented by a letter. Now run the R command table with two
+| arguments, diamonds$color and diamonds$cut.
+
+> table(diamonds$color, diamonds$cut)
+   
+    Fair Good Very Good Premium Ideal
+  D  163  662      1513    1603  2834
+  E  224  933      2400    2337  3903
+  F  312  909      2164    2331  3826
+  G  314  871      2299    2924  4884
+  H  303  702      1824    2360  3115
+  I  175  522      1204    1428  2093
+  J  119  307       678     808   896
+
+| Great job!
+
+  |===================================================                 |  75%
+
+| We see a 7 by 5 array with counts indicating how many diamonds in the data frame
+| have a particular color and cut. From the table, which is the most frequent
+| combination?
+
+1: Ideal cut of color F.
+2: Ideal color of cut G
+3: Ideal cut of color G
+4: Premium cut of color G
+
+Selection: 2
+
+| Not quite, but you're learning! Try again.
+
+| Colors are depicted by letters, so one choice is eliminated. Which letter appears
+| in most of the choices?
+
+1: Premium cut of color G
+2: Ideal color of cut G
+3: Ideal cut of color F.
+4: Ideal cut of color G
+
+Selection: 4
+
+| Keep up the great work!
+
+  |====================================================                |  76%
+
+| To save you some trouble we've defined three character strings for you, labels for
+| the x- and y-axes and a main title. They're in the file myLabels.R, so run myedit
+| on this file to see them. Remember to put the file name in quotes when you call
+| myedit.
+
+> myedit("myLabels.R")
+
+| You are amazing!
+
+  |=====================================================               |  78%
+
+| Now run source with pathtofile("myLabels.R") and local set equal to TRUE.
+
+> source(pathtofile("myLabels.R"), local=TRUE)
+
+| Nice work!
+
+  |======================================================              |  79%
+
+| Now call xyplot with the formula price~carat | color*cut and data set equal to
+| diamonds. In addition, set the argument strip equal to FALSE, pch set equal to 20,
+| xlab to myxlab, ylab to myylab, and main to mymain. The plot may take longer than
+| previous plots because it is bigger.
+
+> xyplot(price~carat | color*cut, data=diamonds, strip=FALSE, pch=20, xlab=myxlab, ylab=myylab, main=mymain)
+
+| You got it!
+
+  |=======================================================             |  81%
+
+| Pretty cool, right? 35 panels, one for each combination of color and cut. The dots
+| (pch=20) show how prices for the diamonds in each category (panel) vary depending
+| on carat.
+
+...
+
+  |========================================================            |  82%
+
+| Are colors defining the rows or columns of the plot?
+
+1: columns
+2: rows
+
+Selection: 1
+
+| Excellent job!
+
+  |=========================================================           |  84%
+
+| Were you curious about that argument strip? I know I was. Now rerun the xyplot
+| command you just ran (use the up arrow key to retrieve it), this time without the
+| strip argument.
+
+> xyplot(price~carat | color*cut, data=diamonds, pch=20, xlab=myxlab, ylab=myylab, main=mymain)
+
+| All that hard work is paying off!
+
+  |==========================================================          |  85%
+
+| The plot shows that the strip argument ....
+
+1: has a default value of FALSE
+2: makes the plot less intelligible
+3: removes information from the plot
+4: labels each panel
+
+Selection: 1
+
+| Not quite right, but keep trying.
+
+| Do the words in the colorful stripes convey useful information?
+
+1: removes information from the plot
+2: has a default value of FALSE
+3: labels each panel
+4: makes the plot less intelligible
+
+Selection: 3
+
+| You nailed it! Good job!
+
+  |===========================================================         |  87%
+
+| Review time!!!
+
+...
+
+  |============================================================        |  88%
+
+| True or False? Lattice plots are constructed by a series of calls to core
+| functions.
+
+1: True
+2: False
+
+Selection: 2
+
+| You are amazing!
+
+  |=============================================================       |  90%
+
+| True or False? Lattice plots are constructed with a single function call to a core
+| lattice function (e.g. xyplot)
+
+1: True
+2: False
+
+Selection: 1
+
+| Keep working like that and you'll get there!
+
+  |==============================================================      |  91%
+
+| True or False? Aspects like margins and spacing are automatically handled and
+| defaults are usually sufficient.
+
+1: False
+2: True
+
+Selection: 2
+
+| All that practice is paying off!
+
+  |===============================================================     |  93%
+
+| True or False? The lattice system is ideal for creating conditioning plots where
+| you examine the same kind of plot under many different conditions.
+
+1: True
+2: False
+
+Selection: 1
+
+| You are quite good my friend!
+
+  |================================================================    |  94%
+
+| True or False? The lattice system, like the base plotting system, returns a trellis
+| plot object.
+
+1: True
+2: False
+
+Selection: 1
+
+| Not quite! Try again.
+
+| This is the key difference between the two systems. Lattice DOES return a plot
+| object but base doesn't.
+
+1: False
+2: True
+
+Selection: 1
+
+| Excellent job!
+
+  |=================================================================   |  96%
+
+| True or False?  Panel functions can NEVER be customized to modify what is plotted
+| in each of the plot panels.
+
+1: True
+2: False
+
+Selection: 2
+
+| Keep up the great work!
+
+  |==================================================================  |  97%
+
+| True or False?  Lattice plots can display at most 20 panels in a single plot.
+
+1: False
+2: True
+
+Selection: 1
+
+| Your dedication is inspiring!
+
+  |=================================================================== |  99%
+
+| Congrats! We hope this lesson didn't leave you climbing the trellis.
+
+...
+
+  |====================================================================| 100%
+  
+  
+  | Working_with_Colors. (Slides for this and other Data Science courses may be found
+| at github https://github.com/DataScienceSpecialization/courses/. If you care to use
+| them, they must be downloaded as a zip file and viewed locally. This lesson
+| corresponds to 04_ExploratoryAnalysis/Colors.)
+
+...
+
+  |=                                                                           |   1%
+
+| This lesson is about using colors in R. It really supplements the lessons on
+| plotting with the base and lattice packages which contain functions that are able
+| to take the argument col. We'll discuss ways to set this argument more colorfully.
+
+...
+
+  |==                                                                          |   3%
+
+| Of course, color choice is secondary to your data and how you analyze it, but
+| effectively using colors can enhance your plots and presentations, emphasizing the
+| important points you're trying to convey.
+
+...
+
+  |===                                                                         |   4%
+
+| The motivation for this lesson is that the default color schemes for most plots in
+| R are not optimal. Fortunately there have been recent developments to improve the
+| handling and specification of colors in plots and graphs. We'll cover some
+| functions in R as well as in external packages that are very handy. If you know how
+| to use some of these then you'll have more options when you create your displays.
+
+...
+
+  |====                                                                        |   6%
+
+| We'll begin with a motivating example - a typical R plot using 3 default colors.
+
+...
+
+  |======                                                                      |   7%
+
+| According to the plot, what is color 2?
+
+1: Blue
+2: Green
+3: Empty black circles
+4: Red
+
+Selection: 4
+
+| Keep up the great work!
+
+  |=======                                                                     |   9%
+
+| So these are the first 3 default values. If you were plotting and just specified
+| col=c(1:3) as one of your arguments, these are colors you'd get. Maybe you like
+| them, but they might not be the best choice for your application.
+
+...
+
+  |========                                                                    |  10%
+
+| To show you some options, here's a display of two color palettes that come with the
+| grDevices package available to you. The left shows you some colors from the
+| function heat.colors. Here low values are represented in red and as the values
+| increase the colors move through yellow towards white. This is consistent with the
+| physical properties of fire. The right display is from the function topo.colors
+| which uses topographical colors ranging from blue (low values) towards brown
+| (higher values).
+
+...
+
+  |=========                                                                   |  12%
+
+| So we'll first discuss some functions that the grDevices package offers. The
+| function colors() lists the names of 657 predefined colors you can use in any
+| plotting function.  These names are returned as strings. Run the R command sample
+| with colors() as its first argument and 10 as its second to give you an idea of the
+| choices you have.
+
+> sample(colors, 10)
+Error in sample.int(length(x), size, replace, prob) : 
+  cannot take a sample larger than the population when 'replace = FALSE'
+> sample(colors(), 10)
+ [1] "aquamarine4"     "gray75"          "grey46"          "honeydew"       
+ [5] "gray43"          "grey50"          "palegreen"       "lightsteelblue2"
+ [9] "indianred3"      "paleturquoise"  
+
+| You are quite good my friend!
+
+  |==========                                                                  |  13%
+
+| We see a lot of variety in the colors, some of which are names followed by numbers
+| indicating that there are multiple forms of that particular color.
+
+...
+
+  |===========                                                                 |  14%
+
+| So you're free to use any of these 600+ colors listed by the colors function.
+| However, two additional functions from grDevices, colorRamp and colorRampPalette,
+| give you more options. Both of these take color names as arguments and use them as
+| "palettes", that is, these argument colors are blended in different proportions to
+| form new colors.
+
+...
+
+  |============                                                                |  16%
+
+| The first, colorRamp, takes a palette of colors (the arguments) and returns a
+| function that takes values between 0 and 1 as arguments. The 0 and 1 correspond to
+| the extremes of the color palette. Arguments between 0 and 1 return blends of these
+| extremes.
+
+...
+
+  |=============                                                               |  17%
+
+| Let's see what this means. Assign to the variable pal the output of a call to
+| colorRamp with the single argument, c("red","blue").
+
+> pal <- colorRamp(c("red","blue"))
+
+| You are amazing!
+
+  |==============                                                              |  19%
+
+| We don't see any output, but R has created the function pal which we can call with
+| a single argument between 0 and 1. Call pal now with the argument 0.
+
+> pal(0)
+     [,1] [,2] [,3]
+[1,]  255    0    0
+
+| Nice work!
+
+  |===============                                                             |  20%
+
+| We see a 1 by 3 array with 255 as the first entry and 0 in the other 2. This 3 long
+| vector corresponds to red, green, blue (RGB) color encoding commonly used in
+| televisions and monitors. In R, 24 bits are used to represent colors. Think of
+| these 24 bits as 3 sets of 8 bits, each of which represents an intensity for one of
+| the colors red, green, and blue.
+
+...
+
+  |=================                                                           |  22%
+
+| The 255 returned from the pal(0) call corresponds to the largest possible number
+| represented with 8 bits, so the vector (255,0,0) contains only red (no green or
+| blue), and moreover, it's the highest possible value of red.
+
+...
+
+  |==================                                                          |  23%
+
+| Given that you created pal with the palette containing "red" and "blue", what color
+| do you think will be represented by the vector that pal(1) returns? Recall that pal
+| will only take arguments between 0 and 1, so 1 is the largest argument you can pass
+| it.
+
+1: blue
+2: yellow
+3: green
+4: red
+
+Selection: 1
+
+| That's the answer I was looking for.
+
+  |===================                                                         |  25%
+
+| Check your answer now by calling pal with the argument 1.
+
+> pal(1)
+     [,1] [,2] [,3]
+[1,]    0    0  255
+
+| Excellent job!
+
+  |====================                                                        |  26%
+
+| You see the vector (0,0,255) which represents the highest intensity of blue. What
+| vector do you think the call pal(.5) will return?
+
+1: (0,255,0)
+2: (255,255,255)
+3: (255,0,255)
+4: (127.5,0,127.5)
+
+Selection: 4
+
+| Keep working like that and you'll get there!
+
+  |=====================                                                       |  28%
+
+| The function pal can take more than one argument. It returns one 3-long (or 4-long,
+| but more about this later) vector for each argument. To see this in action, call
+| pal with the argument seq(0,1,len=6).
+
+> pal(seq(0,1,len=6))
+     [,1] [,2] [,3]
+[1,]  255    0    0
+[2,]  204    0   51
+[3,]  153    0  102
+[4,]  102    0  153
+[5,]   51    0  204
+[6,]    0    0  255
+
+| Keep up the great work!
+
+  |======================                                                      |  29%
+
+| Six vectors (each of length 3) are returned. The i-th vector is identical to output
+| that would be returned by the call pal(i/5) for i=0,...5. We see that the i-th row
+| (for i=1,...6) differs from the (i-1)-st row in the following way. Its red entry is
+| 51 = 255/5 points lower and its blue entry is 51 points higher.
+
+...
+
+  |=======================                                                     |  30%
+
+| So pal creates colors using the palette we specified when we called colorRamp. In
+| this example none of pal's outputs will ever contain green since it wasn't in our
+| initial palette.
+
+...
+
+  |========================                                                    |  32%
+
+| We'll turn now to colorRampPalette, a function similar to colorRamp. It also takes
+| a palette of colors and returns a function. This function, however, takes integer
+| arguments (instead of numbers between 0 and 1) and returns a vector of colors each
+| of which is a blend of colors of the original palette.
+
+...
+
+  |=========================                                                   |  33%
+
+| The argument you pass to the returned function specifies the number of colors you
+| want returned. Each element of the returned vector is a 24 bit number, represented
+| as 6 hexadecimal characters, which range from 0 to F. This set of 6 hex characters
+| represents the intensities of red, green, and blue, 2 characters for each color.
+
+...
+
+  |==========================                                                  |  35%
+
+| To see this better, assign to the variable p1 the output of a call to
+| colorRampPalette with the single argument, c("red","blue"). We'll compare it to our
+| experiments using colorRamp.
+
+> p1 <- colorRampPalette(c("red","blue"))
+
+| All that practice is paying off!
+
+  |============================                                                |  36%
+
+| Now call p1 with the argument 2.
+
+> p1(2)
+[1] "#FF0000" "#0000FF"
+
+| Your dedication is inspiring!
+
+  |=============================                                               |  38%
+
+| We see a 2-long vector is returned. The first entry FF0000 represents red. The FF
+| is hexadecimal for 255, the same value returned by our call pal(0). The second
+| entry 0000FF represents blue, also with intensity 255.
+
+...
+
+  |==============================                                              |  39%
+
+| Now call p1 with the argument 6. Let's see if we get the same result as we did when
+| we called pal with the argument seq(0,1,len=6).
+
+> p1(6)
+[1] "#FF0000" "#CC0033" "#990066" "#650099" "#3200CC" "#0000FF"
+
+| Excellent work!
+
+  |===============================                                             |  41%
+
+| Now we get the 6-long vector (FF0000, CC0033, 990066, 650099, 3200CC, 0000FF). We
+| see the two ends (FF0000 and 0000FF) are consistent with the colors red and blue.
+| How about CC0033? Type 0xcc or 0xCC at the command line to see the decimal
+| equivalent of this hex number. You must include the 0 before the x to specify that
+| you're entering a hexadecimal number.
+
+> 0xcc
+[1] 204
+
+| Excellent work!
+
+  |================================                                            |  42%
+
+| So 0xCC equals 204 and we can easily convert hex 33 to decimal, as in
+| 0x33=3*16+3=51. These were exactly the numbers we got in the second row returned
+| from our call to pal(seq(0,1,len=6)). We see that 4 of the 6 numbers agree with our
+| earlier call to pal. Two of the 6 differ slightly.
+
+...
+
+  |=================================                                           |  43%
+
+| We can also form palettes using colors other than red, green and blue. Form a
+| palette, p2, by calling colorRampPalette with the colors "red" and "yellow".
+| Remember to concatenate them into a single argument.
+
+> p2 <- colorRampPalette(c("red","yellow"))
+
+| Great job!
+
+  |==================================                                          |  45%
+
+| Now call p2 with the argument 2. This will show us the two extremes of the blends
+| of colors we'll get.
+
+> p2(2)
+[1] "#FF0000" "#FFFF00"
+
+| You are amazing!
+
+  |===================================                                         |  46%
+
+| Not surprisingly the first color we see is FF0000, which we know represents red.
+| The second color returned, FFFF00, must represent yellow, a combination of full
+| intensity red and full intensity green. This makes sense, since yellow falls
+| between red and green on the color wheel as we see here. (We borrowed this image
+| from lucaskrech.com.)
+
+...
+
+  |====================================                                        |  48%
+
+| Let's now call p2 with the argument 10. This will show us how the two extremes, red
+| and yellow, are blended together.
+
+> p2(10)
+ [1] "#FF0000" "#FF1C00" "#FF3800" "#FF5500" "#FF7100" "#FF8D00" "#FFAA00" "#FFC600"
+ [9] "#FFE200" "#FFFF00"
+
+| Keep working like that and you'll get there!
+
+  |=====================================                                       |  49%
+
+| So we see the 10-long vector. For each element, the red component is fixed at FF,
+| and the green component grows from 00 (at the first element) to FF (at the last).
+
+...
+
+  |=======================================                                     |  51%
+
+| This is all fine and dandy but you're probably wondering when you can see how all
+| these colors show up in a display. We copied some code from the R documentation
+| pages (color.scale if you're interested) and created a function for you, showMe.
+| This takes as an argument, a color vector, which as you know, is precisely what
+| calls to p1 and p2 return to you. Call showMe now with p1(20).
+
+> showMe(p1(20))
+
+| You are quite good my friend!
+
+  |========================================                                    |  52%
+
+| We see the interpolated palette here. Low values in the lower left corner are red
+| and as you move to the upper right, the colors move toward blue. Now call showMe
+| with p2(20) as its argument.
+
+> showMe(p2(20))
+
+| You are quite good my friend!
+
+  |=========================================                                   |  54%
+
+| Here we see a similar display, the colors moving from red to yellow, the base
+| colors of our p2 palette. For fun, see what p2(2) looks like using showMe.
+
+> showMe(p2(2))
+
+| You're the best!
+
+  |==========================================                                  |  55%
+
+| A much more basic pattern, simple but elegant.
+
+...
+
+  |===========================================                                 |  57%
+
+| We mentioned before that colorRamp (and colorRampPalette) could return a 3 or 4
+| long vector of colors. We saw 3-long vectors returned indicating red, green, and
+| blue intensities. What would the 4th entry be?
+
+...
+
+  |============================================                                |  58%
+
+| We'll answer this indirectly. First, look at the function p1 that colorRampPalette
+| returned to you. Just type p1 at the command prompt.
+
+> p1
+function (n) 
+{
+    x <- ramp(seq.int(0, 1, length.out = n))
+    if (ncol(x) == 4L) 
+        rgb(x[, 1L], x[, 2L], x[, 3L], x[, 4L], maxColorValue = 255)
+    else rgb(x[, 1L], x[, 2L], x[, 3L], maxColorValue = 255)
+}
+<bytecode: 0x0000000016544b10>
+<environment: 0x000000001a5b0f50>
+
+| Great job!
+
+  |=============================================                               |  59%
+
+| We see that p1 is a short function with one argument, n. The argument n is used as
+| the length in a call to the function seq.int, itself an argument to the function
+| ramp. We can infer that ramp is just going to divide the interval from 0 to 1 into
+| n pieces.
+
+...
+
+  |==============================================                              |  61%
+
+| The heart of p1 is really the call to the function rgb with either 4 or 5
+| arguments. Use the ?fun construct to look at the R documentation for rgb now.
+
+> ?rgb
+
+| Keep working like that and you'll get there!
+
+  |===============================================                             |  62%
+
+| We see that rgb is a color specification function that can be used to produce any
+| color with red, green, blue proportions. We see the maxColorValue is 1 by default,
+| so if we called rgb with values for red, green and blue, we would specify numbers
+| at most 1 (assuming we didn't change the default for maxColorValue). According to
+| the documentation, what is the maximum number of arguments rgb can have?
+
+1: 4
+2: 3
+3: 6
+4: 5
+
+Selection: 3
+
+| Your dedication is inspiring!
+
+  |================================================                            |  64%
+
+| So the fourth argument is alpha which can be a logical, i.e., either TRUE or FALSE,
+| or a numerical value. Create the function p3 now by calling colorRampPalette with
+| the colors blue and green (remember to concatenate them into a single argument) and
+| setting the alpha argument to .5.
+
+> p2 <- colorRampPalette(c("blue","green"), alpha=0.5)
+
+| Try again. Getting it right on the first try is boring anyway! Or, type info() for
+| more options.
+
+| Type p3 <- colorRampPalette(c("blue","green"),alpha=.5) at the command prompt.
+
+> p3 <- colorRampPalette(c("blue","green"), alpha=0.5)
+
+| Keep up the great work!
+
+  |==================================================                          |  65%
+
+| Now call p3 with the argument 5.
+
+> p3(5)
+[1] "#0000FFFF" "#003FBFFF" "#007F7FFF" "#00BF3FFF" "#00FF00FF"
+
+| Nice work!
+
+  |===================================================                         |  67%
+
+| We see that in the 5-long vector that the call returned, each element has 32 bits,
+| 4 groups of 8 bits each. The last 8 bits represent the value of alpha. Since it was
+| NOT ZERO in the call to colorRampPalette, it gets the maximum FF value. (The same
+| result would happen if alpha had been set to TRUE.) When it was 0 or FALSE (as in
+| previous calls to colorRampPalette) it was given the value 00 and wasn't shown. The
+| leftmost 24 bits of each element are the same RGB encoding we previously saw.
+
+...
+
+  |====================================================                        |  68%
+
+| So what is alpha? Alpha represents an opacity level, that is, how transparent
+| should the colors be. We can add color transparency with the alpha parameter to
+| calls to rgb. We haven't seen any examples of this yet, but we will now.
+
+...
+
+  |=====================================================                       |  70%
+
+| We generated 1000 random normal pairs for you in the variables x and y. We'll plot
+| them in a scatterplot by calling plot with 4 arguments. The variables x and y are
+| the first 2. The third is the print character argument pch. Set this equal to 19
+| (filled circles). The final argument is col which should be set equal to a call to
+| rgb. Give rgb 3 arguments, 0, .5, and .5.
+
+> plot(x, y, pch=19, col=rgb(0, .5, .5))
+
+| You nailed it! Good job!
+
+  |======================================================                      |  71%
+
+| Well this picture is okay for a scatterplot, a nice mix of blue and green, but it
+| really doesn't tell us too much information in the center portion, since the points
+| are so thick there. We see there are a lot of points, but is one area more filled
+| than another? We can't really discriminate between different point densities. This
+| is where the alpha argument can help us. Recall your plot command (use the up
+| arrow) and add a 4th argument, .3, to the call to rgb. This will be our value for
+| alpha.
+
+> plot(x, y, pch=19, col=rgb(0, .5, .5, .3))
+
+| You're the best!
+
+  |=======================================================                     |  72%
+
+| Clearly this is better. It shows us where, specifically, the densest areas of the
+| scatterplot really are.
+
+...
+
+  |========================================================                    |  74%
+
+| Our last topic for this lesson is the RColorBrewer Package, available on CRAN, that
+| contains interesting and useful color palettes, of which there are 3 types,
+| sequential, divergent, and qualitative. Which one you would choose to use depends
+| on your data.
+
+...
+
+  |=========================================================                   |  75%
+
+| Here's a picture of the palettes available from this package. The top section shows
+| the sequential palettes in which the colors are ordered from light to dark. The
+| divergent palettes are at the bottom. Here the neutral color (white) is in the
+| center, and as you move from the middle to the two ends of each palette, the colors
+| increase in intensity. The middle display shows the qualitative palettes which look
+| like collections of random colors. These might be used to distinguish factors in
+| your data.
+
+...
+
+  |==========================================================                  |  77%
+
+| These colorBrewer palettes can be used in conjunction with the colorRamp() and
+| colorRampPalette() functions. You would use colors from a colorBrewer palette as
+| your base palette,i.e., as arguments to colorRamp or colorRampPalette which would
+| interpolate them to create new colors.
+
+...
+
+  |===========================================================                 |  78%
+
+| As an example of this, create a new object, cols by calling the function brewer.pal
+| with 2 arguments, 3 and "BuGn". This last is the second last palette in the
+| sequential display. The 3 tells the function how many different colors we want.
+
+> cols <- brewer.pal(3, "BuGn")
+
+| You got it right!
+
+  |=============================================================               |  80%
+
+| Use showMe to look at cols now.
+
+> showMe(cols)
+
+| All that hard work is paying off!
+
+  |==============================================================              |  81%
+
+| We see 3 colors, mixes of blue and green. Now create the variable pal by calling
+| colorRampPalette with cols as its argument.
+
+> pal <- colorRampPalette(cols)
+
+| Excellent job!
+
+  |===============================================================             |  83%
+
+| The call showMe(pal(3)) would be identical to the showMe(cols) call. So use showMe
+| to look at pal(20).
+
+> showMe(pal(20))
+
+| Great job!
+
+  |================================================================            |  84%
+
+| Now we can use the colors in pal(20) to display topographic information on
+| Auckland's Maunga Whau Volcano. R provides this information in a matrix called
+| volcano which is included in the package datasets.  Call the R function image with
+| volcano as its first argument and col set equal to pal(20) as its second.
+
+> image(volcano, pal(20))
+Error in image.default(volcano, pal(20)) : 
+  'x' and 'y' values must be finite and non-missing
+> ?image
+> ?volcano
+> image(10*(1:nrow(volcano)), 10*(1:nrow(volcano)), volcano, col=pal(20))
+Error in image.default(10 * (1:nrow(volcano)), 10 * (1:nrow(volcano)),  : 
+  dimensions of z are not length(x)(-1) times length(y)(-1)
+> p
+Error: object 'p' not found
+> p1
+function (n) 
+{
+    x <- ramp(seq.int(0, 1, length.out = n))
+    if (ncol(x) == 4L) 
+        rgb(x[, 1L], x[, 2L], x[, 3L], x[, 4L], maxColorValue = 255)
+    else rgb(x[, 1L], x[, 2L], x[, 3L], maxColorValue = 255)
+}
+<bytecode: 0x0000000016544b10>
+<environment: 0x000000001a5b0f50>
+
+| Not quite! Try again. Or, type info() for more options.
+
+| Type image(volcano, col = pal(20)) at the command prompt.
+
+> image(volcano, col = pal(20)) 
+
+| That's a job well done!
+
+  |=================================================================           |  86%
+
+| We see that the colors here of the sequential palette clue us in on the topography.
+| The darker colors are more concentrated than the lighter ones. Just for fun, recall
+| your last command calling image and instead of pal(20), use p1(20) as the second
+| argument.
+
+> image(volcano, col = p1(20)) 
+
+| You are doing so well!
+
+  |==================================================================          |  87%
+
+| Not as nice a picture since the palette isn't as well suited to this data, but
+| that's okay. It's review time!!!!
+
+...
+
+  |===================================================================         |  88%
+
+| True or False? Careful use of colors in plots/maps/etc. can make it easier for the
+| reader to understand what points you're trying to convey.
+
+1: False
+2: True
+
+Selection: 2
+
+| You're the best!
+
+  |====================================================================        |  90%
+
+| Which of the following is an R package that provides color palettes for sequential,
+| categorical, and diverging data?
+
+1: RColorVintner
+2: RColorBrewer
+3: RColorBluer
+4: RColorStewer
+
+Selection: 2
+
+| Nice work!
+
+  |=====================================================================       |  91%
+
+| True or False? The colorRamp and colorRampPalette functions can be used in
+| conjunction with color palettes to connect data to colors.
+
+1: True
+2: False
+
+Selection: 1
+
+| Keep working like that and you'll get there!
+
+  |======================================================================      |  93%
+
+| True or False?  Transparency can NEVER be used to clarify plots with many points
+
+1: True
+2: False
+
+Selection: 2
+
+| Keep up the great work!
+
+  |========================================================================    |  94%
+
+| True or False?  The call p7 <- colorRamp("red","blue") would work (i.e., not
+| generate an error).
+
+1: False
+2: True
+
+Selection: 1
+
+| Your dedication is inspiring!
+
+  |=========================================================================   |  96%
+
+| True or False?  The function colors returns only 10 colors.
+
+1: False
+2: True
+
+Selection: 1
+
+| You got it right!
+
+  |==========================================================================  |  97%
+
+| Transparency is determined by which parameter of the rgb function?
+
+1: alpha
+2: it's all Greek to me
+3: beta
+4: delta
+5: gamma
+
+Selection: 1
+
+| You got it!
+
+  |=========================================================================== |  99%
+
+| Congratulations! We hope this lesson didn't make you see red. We're green with envy
+| that you blue through it.
+
+...
+
+  |============================================================================| 100%
+  
+  
+  
+| GGPlot2_Part1. (Slides for this and other Data Science courses may be found at
+| github https://github.com/DataScienceSpecialization/courses/. If you care to use
+| them, they must be downloaded as a zip file and viewed locally. This lesson
+| corresponds to 04_ExploratoryAnalysis/ggplot2.)
+
+...
+
+  |==                                                                          |   2%
+
+| In another lesson, we gave you an overview of the three plotting systems in R. In
+| this lesson we'll focus on the third and newest plotting system in R, ggplot2.  As
+| we did with the other two systems, we'll focus on creating graphics on the screen
+| device rather than another graphics device.
+
+...
+
+  |====                                                                        |   5%
+
+| The ggplot2 package is an add-on package available from CRAN via
+| install.packages(). (Don't worry, we've installed it for you already.) It is an
+| implementation of The Grammar of Graphics, an abstract concept (as well as book)
+| authored and invented by Leland Wilkinson and implemented by Hadley Wickham while
+| he was a graduate student at Iowa State. The web site http://ggplot2.org provides
+| complete documentation.
+
+...
+
+  |======                                                                      |   7%
+
+| A grammar of graphics represents an abstraction of graphics, that is, a theory of
+| graphics which conceptualizes basic pieces from which you can build new graphics
+| and graphical objects. The goal of the grammar is to “Shorten the distance from
+| mind to page”. From Hadley Wickham's book we learn that
+
+...
+
+  |=======                                                                     |  10%
+
+| The ggplot2 package "is composed of a set of independent components that can be
+| composed in many different ways. ... you can create new graphics that are precisely
+| tailored for your problem." These components include aesthetics which are
+| attributes such as colour, shape, and size, and geometric objects or geoms such as
+| points, lines, and bars.
+
+...
+
+  |=========                                                                   |  12%
+
+| Before we delve into details, let's review the other 2 plotting systems.
+
+...
+
+  |===========                                                                 |  15%
+
+| Recall what you know about R's base plotting system. Which of the following does
+| NOT apply to it?
+
+1: It is convenient and mirrors how we think of building plots and analyzing data
+2: Use annotation functions to add/modify (text, lines, points, axis)
+3: Start with plot (or similar) function
+4: Can easily go back once the plot has started (e.g., to adjust margins or correct a typo)
+
+Selection: 1
+
+| You're close...I can feel it! Try it again.
+
+| Which choice is the only one which looks backward?
+
+1: Use annotation functions to add/modify (text, lines, points, axis)
+2: Start with plot (or similar) function
+3: Can easily go back once the plot has started (e.g., to adjust margins or correct a typo)
+4: It is convenient and mirrors how we think of building plots and analyzing data
+
+Selection: 3
+
+| All that hard work is paying off!
+
+  |=============                                                               |  17%
+
+| Recall what you know about R's lattice plotting system. Which of the following does
+| NOT apply to it?
+
+1: Margins and spacing are set automatically because entire plot is specified at once
+2: Plots are created with a single function call (xyplot, bwplot, etc.)
+3: Can always add to the plot once it is created
+4: Most useful for conditioning types of plots and putting many panels on one plot
+
+Selection: 3
+
+| Excellent work!
+
+  |===============                                                             |  20%
+
+| If we told you that ggplot2 combines the best of base and lattice, that would mean
+| it ...?
+
+1: Its default mode makes many choices for you (but you can customize!)
+2: All of the others
+3: Automatically deals with spacings, text, titles but also allows you to annotate
+4: Like lattice it allows for multipanels but more easily and intuitively
+
+Selection: 2
+
+| You're the best!
+
+  |=================                                                           |  22%
+
+| Yes, ggplot2 combines the best of base and lattice. It allows for multipanel
+| (conditioning) plots (as lattice does) but also post facto annotation (as base
+| does), so you can add titles and labels. It uses the low-level grid package (which
+| comes with R) to draw the graphics. As part of its grammar philosophy, ggplot2
+| plots are composed of aesthetics (attributes such as size, shape, color) and geoms
+| (points, lines, and bars), the geometric objects you see on the plot.
+
+...
+
+  |===================                                                         |  24%
+
+| The ggplot2 package has 2 workhorse functions. The more basic workhorse function is
+| qplot, (think quick plot), which works like the plot function in the base graphics
+| system. It can produce many types of plots (scatter, histograms, box and whisker)
+| while hiding tedious details from the user. Similar to lattice functions, it looks
+| for data in a data frame or parent environment.
+
+...
+
+  |====================                                                        |  27%
+
+| The more advanced workhorse function in the package is ggplot, which is more
+| flexible and can be customized for doing things qplot cannot do. In this lesson
+| we'll focus on qplot.
+
+...
+
+  |======================                                                      |  29%
+
+| We'll start by showing how easy and versatile qplot is. First, let's look at some
+| data which comes with the ggplot2 package. The mpg data frame contains fuel economy
+| data for 38 models of cars manufactured in 1999 and 2008. Run the R command str
+| with the argument mpg. This will give you an idea of what mpg contains.
+
+> str(mpg)
+Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	234 obs. of  11 variables:
+ $ manufacturer: chr  "audi" "audi" "audi" "audi" ...
+ $ model       : chr  "a4" "a4" "a4" "a4" ...
+ $ displ       : num  1.8 1.8 2 2 2.8 2.8 3.1 1.8 1.8 2 ...
+ $ year        : int  1999 1999 2008 2008 1999 1999 2008 1999 1999 2008 ...
+ $ cyl         : int  4 4 4 4 6 6 6 4 4 4 ...
+ $ trans       : chr  "auto(l5)" "manual(m5)" "manual(m6)" "auto(av)" ...
+ $ drv         : chr  "f" "f" "f" "f" ...
+ $ cty         : int  18 21 20 21 16 18 18 18 16 20 ...
+ $ hwy         : int  29 29 31 30 26 26 27 26 25 28 ...
+ $ fl          : chr  "p" "p" "p" "p" ...
+ $ class       : chr  "compact" "compact" "compact" "compact" ...
+
+| You are doing so well!
+
+  |========================                                                    |  32%
+
+| We see that there are 234 points in the dataset concerning 11 different
+| characteristics of the cars. Suppose we want to see if there's a correlation
+| between engine displacement (displ) and highway miles per gallon (hwy). As we did
+| with the plot function of the base system we could simply call qplot with 3
+| arguments, the first two are the variables we want to examine and the third
+| argument data is set equal to the name of the dataset which contains them (in this
+| case, mpg). Try this now.
+
+> qplot(displ, hwy, mpg)
+Error: Unknown parameters: NA
+> qplot(displ, hwy, data=mpg)
+
+| You got it right!
+
+  |==========================                                                  |  34%
+
+| A nice scatterplot done simply, right? All the labels are provided. The first
+| argument is shown along the x-axis and the second along the y-axis. The negative
+| trend (increasing displacement and lower gas mileage) is pretty clear. Now suppose
+| we want to do the same plot but this time use different colors to distinguish
+| between the 3 factors (subsets) of different types of drive (drv) in the data
+| (front-wheel, rear-wheel, and 4-wheel). Again, qplot makes this very easy. We'll
+| just add what ggplot2 calls an aesthetic, a fourth argument, color, and set it
+| equal to drv. Try this now. (Use the up arrow key to save some typing.)
+
+> qplot(displ, hwy, data=mpg, color=drv)
+
+| Keep working like that and you'll get there!
+
+  |============================                                                |  37%
+
+| Pretty cool, right? See the legend to the right which qplot helpfully supplied? The
+| colors were automatically assigned by qplot so the legend decodes the colors for
+| you. Notice that qplot automatically used dots or points to indicate the data.
+| These points are geoms (geometric objects). We could have used a different
+| aesthetic, for instance shape instead of color, to distinguish between the drive
+| types.
+
+...
+
+  |==============================                                              |  39%
+
+| Now let's add a second geom to the default points. How about some smoothing
+| function to produce trend lines, one for each color? Just add a fifth argument,
+| geom, and using the R function c(), set it equal to the concatenation of the two
+| strings "point" and "smooth". The first refers to the data points and second to the
+| trend lines we want plotted. Try this now.
+
+> qplot(displ, hwy, data=mpg, color=drv, geom = c("point, "smooth))
+Error: unexpected symbol in "qplot(displ, hwy, data=mpg, color=drv, geom = c("point, "smooth"
+> qplot(displ, hwy, data=mpg, color=drv, geom = c("point, "smooth""))
+Error: unexpected symbol in "qplot(displ, hwy, data=mpg, color=drv, geom = c("point, "smooth"
+> qplot(displ, hwy, data=mpg, color=drv, geom = c("point", "smooth"))
+
+| You are amazing!
+
+  |================================                                            |  41%
+
+| Notice the gray areas surrounding each trend lines. These indicate the 95%
+| confidence intervals for the lines.
+
+...
+
+  |=================================                                           |  44%
+
+| Before we leave qplot's scatterplotting ability, call qplot again, this time with 3
+| arguments. The first is y set equal to hwy, the second is data set equal to mpg,
+| and the third is color set equal to drv. Try this now.
+
+> qplot(y=hwy, data=mpg, color=drv)
+
+| You are quite good my friend!
+
+  |===================================                                         |  46%
+
+| What's this plot showing? We see the x-axis ranges from 0 to 250 and we remember
+| that we had 234 data points in our set, so we can infer that each point in the plot
+| represents one of the hwy values (indicated by the y-axis). We've created the
+| vector myhigh for you which contains the hwy data from the mpg dataset. Look at
+| myhigh now.
+
+> myhigh
+  [1] 29 29 31 30 26 26 27 26 25 28 27 25 25 25 25 24 25 23 20 15 20 17 17 26 23 26 25
+ [28] 24 19 14 15 17 27 30 26 29 26 24 24 22 22 24 24 17 22 21 23 23 19 18 17 17 19 19
+ [55] 12 17 15 17 17 12 17 16 18 15 16 12 17 17 16 12 15 16 17 15 17 17 18 17 19 17 19
+ [82] 19 17 17 17 16 16 17 15 17 26 25 26 24 21 22 23 22 20 33 32 32 29 32 34 36 36 29
+[109] 26 27 30 31 26 26 28 26 29 28 27 24 24 24 22 19 20 17 12 19 18 14 15 18 18 15 17
+[136] 16 18 17 19 19 17 29 27 31 32 27 26 26 25 25 17 17 20 18 26 26 27 28 25 25 24 27
+[163] 25 26 23 26 26 26 26 25 27 25 27 20 20 19 17 20 17 29 27 31 31 26 26 28 27 29 31
+[190] 31 26 26 27 30 33 35 37 35 15 18 20 20 22 17 19 18 20 29 26 29 29 24 44 29 26 29
+[217] 29 29 29 23 24 44 41 29 26 28 29 29 29 28 29 26 26 26
+
+| You are really on a roll!
+
+  |=====================================                                       |  49%
+
+| Comparing the values of myhigh with the plot, we see the first entries in the
+| vector (29, 29, 31, 30,...) correspond to the leftmost points in the the plot (in
+| order), and the last entries in myhigh (28, 29, 26, 26, 26) correspond to the
+| rightmost plotted points. So, specifying the y parameter only, without an x
+| argument, plots the values of the y argument in the order in which they occur in
+| the data.
+
+...
+
+  |=======================================                                     |  51%
+
+| The all-purpose qplot can also create box and whisker plots.  Call qplot now with 4
+| arguments. First specify the variable by which you'll split the data, in this case
+| drv, then specify the variable which you want to examine, in this case hwy. The
+| third argument is data (set equal to mpg), and the fourth, the geom, set equal to
+| the string "boxplot"
+
+> qplot(drv, hwy, data=mpg, geom="boxplot")
+
+| You got it right!
+
+  |=========================================                                   |  54%
+
+| We see 3 boxes, one for each drive. Now to impress you, call qplot with 5
+| arguments. The first 4 are just as you used previously, (drv, hwy, data set equal
+| to mpg, and geom set equal to the string "boxplot"). Now add a fifth argument,
+| color, equal to manufacturer.
+
+> qplot(drv, hwy, data=mpg, geom="boxplot", color=manufacturer)
+
+| That's a job well done!
+
+  |===========================================                                 |  56%
+
+| It's a little squished but we just wanted to illustrate qplot's capabilities.
+| Notice that there are still 3 regions of the plot (determined by the factor drv).
+| Each is subdivided into several boxes depicting different manufacturers.
+
+...
+
+  |============================================                                |  59%
+
+| Now, on to histograms. These display frequency counts for a single variable. Let's
+| start with an easy one. Call qplot with 3 arguments. First specify the variable for
+| which you want the frequency count, in this case hwy, then specify the data (set
+| equal to mpg), and finally, the aesthetic, fill, set equal to drv. Instead of a
+| plain old histogram, this will again use colors to distinguish the 3 different
+| drive factors.
+
+> qplot(hwy, data=mpg, fill=drv)
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+| That's correct!
+
+  |==============================================                              |  61%
+
+| See how qplot consistently uses the colors. Red (if 4-wheel drv is in the bin) is
+| at the bottom of the bin, then green on top of it (if present), followed by blue
+| (rear wheel drv). The color lets us see right away that 4-wheel drive vehicles in
+| this dataset don't have gas mileages exceeding 30 miles per gallon.
+
+...
+
+  |================================================                            |  63%
+
+| It's cool that qplot can do this so easily, but some people may find this
+| multi-color histogram hard to interpret. Instead of using colors to distinguish
+| between the drive factors let's use facets or panels. (That's what lattice called
+| them.) This just means we'll split the data into 3 subsets (according to drive) and
+| make 3 smaller individual plots of each subset in one plot (and with one call to
+| qplot).
+
+...
+
+  |==================================================                          |  66%
+
+| Remember that with base plot we had to do each subplot individually. The lattice
+| system made plotting conditioning plots easier. Let's see how easy it is with
+| qplot.
+
+...
+
+  |====================================================                        |  68%
+
+| We'll do two plots, a scatterplot and then a histogram, each with 3 facets. For the
+| scatterplot, call qplot with 4 arguments. The first two are displ and hwy and the
+| third is the argument data set equal to mpg. The fourth is the argument facets
+| which will be set equal to the expression . ~ drv which is ggplot2's shorthand for
+| number of rows (to the left of the ~) and number of columns (to the right of the
+| ~). Here the . indicates a single row and drv implies 3, since there are 3 distinct
+| drive factors. Try this now.
+
+> qplot(displ, hwy, data=mpg, facets=. | ~)
+Error: unexpected ')' in "qplot(displ, hwy, data=mpg, facets=. | ~)"
+> qplot(displ, hwy, data=mpg, facets= . | ~ )
+Error: unexpected ')' in "qplot(displ, hwy, data=mpg, facets= . | ~ )"
+> qplot(displ, hwy, data=mpg, facets= ". | ~" )
+Error in parse(text = x, keep.source = FALSE) : 
+  <text>:2:0: unexpected end of input
+1: . | ~
+   ^
+> qplot(displ, hwy, data = mpg, facets = . ~ drv)
+
+| That's correct!
+
+  |======================================================                      |  71%
+
+| The result is a 1 by 3 array of plots. Note how each is labeled at the top with the
+| factor label (4,f, or r). This shows us more detailed information than the
+| histogram. We see the relationship between displacement and highway mileage for
+| each of the 3 drive factors.
+
+...
+
+  |========================================================                    |  73%
+
+| Now we'll do a histogram, again calling qplot with 4 arguments. This time, since we
+| need only one variable for a histogram, the first is hwy and the second is the
+| argument data set equal to mpg. The third is the argument facets which we'll set
+| equal to the expression drv ~ . . This will give us a different arrangement of the
+| facets. The fourth argument is binwidth. Set this equal to 2. Try this now.
+
+> qplot(displ, hwy, data = mpg, facets = drv ~ ., binwidth=2)
+Error: Unknown parameters: binwidth
+> qplot(hwy, data = mpg, facets = drv ~ ., binwidth=2)
+
+| Your dedication is inspiring!
+
+  |=========================================================                   |  76%
+
+| The facets argument, drv ~ ., resulted in what arrangement of facets?
+
+1: 1 by 3
+2: 3 by 1
+3: 2 by 2
+4: huh?
+
+Selection: 2
+
+| That's correct!
+
+  |===========================================================                 |  78%
+
+| Pretty good, right? Not too difficult either. Let's review what we learned!
+
+...
+
+  |=============================================================               |  80%
+
+| Which of the following is a basic workhorse function of ggplot2?
+
+1: gplot
+2: xyplot
+3: hist
+4: qplot
+5: scatterplot
+
+Selection: 4
+
+| You got it right!
+
+  |===============================================================             |  83%
+
+| Which types of plot does qplot plot?
+
+1: histograms
+2: all of the others
+3: box and whisker plots
+4: scatterplots
+
+Selection: 2
+
+| You are doing so well!
+
+  |=================================================================           |  85%
+
+| What does the gg in ggplot2 stand for?
+
+1: goto graphics
+2: grammar of graphics
+3: good grief
+4: good graphics
+
+Selection: 2
+
+| Great job!
+
+  |===================================================================         |  88%
+
+| True or False? The geom argument takes a string for a value.
+
+1: False
+2: True
+
+Selection: 1
+
+| Almost! Try again.
+
+| Recall our examples, for instance, geom="density".
+
+1: True
+2: False
+
+Selection: 1
+
+| You nailed it! Good job!
+
+  |=====================================================================       |  90%
+
+| True or False? The data argument takes a string for a value.
+
+1: False
+2: True
+
+Selection: 1
+
+| Keep up the great work!
+
+  |======================================================================      |  93%
+
+| True or False? The binwidth argument takes a string for a value.
+
+1: False
+2: True
+
+Selection: 1
+
+| You got it!
+
+  |========================================================================    |  95%
+
+| True or False? The user must specify x- and y-axis labels when using qplot.
+
+1: False
+2: True
+
+Selection: 1
+
+| You are really on a roll!
+
+  |==========================================================================  |  98%
+
+| Congrats! You've finished plot 1 of ggplot2. In the next lesson the plot thickens.
+
+...
+
+  |============================================================================| 100%
+  
+  
+  
+| GGPlot2_Part2. (Slides for this and other Data Science courses may be found at
+| github https://github.com/DataScienceSpecialization/courses/. If you care to use
+| them, they must be downloaded as a zip file and viewed locally. This lesson
+| corresponds to 04_ExploratoryAnalysis/ggplot2.)
+
+...
+
+  |==                                                                          |   2%
+
+| In a previous lesson we showed you the vast capabilities of qplot, the basic
+| workhorse function of the ggplot2 package. In this lesson we'll focus on some
+| fundamental components of the package. These underlie qplot which uses default
+| values when it calls them. If you understand these building blocks, you will be
+| better able to customize your plots. We'll use the second workhorse function in the
+| package, ggplot, as well as other graphing functions.
+
+...
+
+  |===                                                                         |   4%
+
+| Do you remember what the gg of ggplot2 stands for?
+
+1: goto graphics
+2: good grief
+3: great graphics
+4: grammar of graphics
+
+Selection: 4
+
+| You are quite good my friend!
+
+  |=====                                                                       |   6%
+
+| A "grammar" of graphics means that ggplot2 contains building blocks with which you
+| can create your own graphical objects. What are these basic components of ggplot2
+| plots? There are 7 of them.
+
+...
+
+  |======                                                                      |   8%
+
+| Obviously, there's a DATA FRAME which contains the data you're trying to plot. Then
+| the AESTHETIC MAPPINGS determine how data are mapped to color, size, etc. The GEOMS
+| (geometric objects) are what you see in the plot (points, lines, shapes) and FACETS
+| are the panels used in conditional plots. You've used these or seen them used in
+| the first ggplot2 (qplot) lesson.
+
+...
+
+  |========                                                                    |  10%
+
+| There are 3 more. STATS are statistical transformations such as binning, quantiles,
+| and smoothing which ggplot2 applies to the data. SCALES show what coding an
+| aesthetic map uses (for example, male = red, female = blue). Finally, the plots are
+| depicted on a COORDINATE SYSTEM. When you use qplot these were taken care of for
+| you.
+
+...
+
+  |==========                                                                  |  12%
+
+| Do you remember what the "artist's palette" model means in the context of plotting?
+
+1: plots are built up in layers
+2: we draw pictures
+3: we mix paints
+4: things get messy
+
+Selection: 1
+
+| That's correct!
+
+  |===========                                                                 |  15%
+
+| As in the base plotting system (and in contrast to the lattice system), when
+| building plots with ggplot2, the plots are built up in layers, maybe in several
+| steps. You can plot the data, then overlay a summary (for instance, a regression
+| line or smoother) and then add any metadata and annotations you need.
+
+...
+
+  |=============                                                               |  17%
+
+| We'll keep using the mpg data that comes with the ggplot2 package. Recall the
+| versatility of qplot. Just as a refresher, call qplot now with 5 arguments. The
+| first 3 deal with data - displ, hwy, and data=mpg. The fourth is geom set equal to
+| the concatenation of the two strings, "point" and "smooth". The fifth is facets set
+| equal to the formula .~drv. Try this now.
+
+> qplot(displ, hwy, data=mpg, geom=("point", "smooth"), facets= .~drv)
+Error: unexpected ',' in "qplot(displ, hwy, data=mpg, geom=("point","
+> qplot(displ, hwy, data=mpg, geom=c("point", "smooth"), facets= .~drv)
+
+| All that practice is paying off!
+
+  |==============                                                              |  19%
+
+| We see a 3 facet plot, one for each drive type (4, f, and r). Now we'll see how
+| ggplot works. We'll build up a similar plot using the basic components of the
+| package. We'll do this in a series of steps.
+
+...
+
+  |================                                                            |  21%
+
+| First we'll create a variable g by assigning to it the output of a call to ggplot
+| with 2 arguments. The first is mpg (our dataset) and the second will tell ggplot
+| what we want to plot, in this case, displ and hwy. These are what we want our
+| aesthetics to represent so we enclose these as two arguments to the function aes.
+| Try this now.
+
+> g <- ggplot(mpg, aes(displ, hwy))
+
+| Excellent work!
+
+  |=================                                                           |  23%
+
+| Notice that nothing happened? As in the lattice system, ggplot created a graphical
+| object which we assigned to the variable g.
+
+...
+
+  |===================                                                         |  25%
+
+| Run the R command summary with g as its argument to see what g contains.
+
+> g
+
+| That's not exactly what I'm looking for. Try again. Or, type info() for more
+| options.
+
+| Type summary(g) at the command prompt.
+
+> summary(g)
+data: manufacturer, model, displ, year, cyl, trans, drv, cty, hwy, fl, class
+  [234x11]
+mapping:  x = displ, y = hwy
+faceting: facet_null() 
+
+| You got it!
+
+  |=====================                                                       |  27%
+
+| So g contains the mpg data with all its named components in a 234 by 11 matrix. It
+| also contains a mapping, x (displ) and y (hwy) which you specified, and no
+| faceting.
+
+...
+
+  |======================                                                      |  29%
+
+| Note that if you tried to print g with the expressions g or print(g) you'd get an
+| error! Even though it's a great package, ggplot doesn't know how to display the
+| data yet since you didn't specify how you wanted to see it. Now type g+geom_point()
+| and see what happens.
+
+> g+geom_point()
+
+| Your dedication is inspiring!
+
+  |========================                                                    |  31%
+
+| By calling the function geom_point you added a layer. By not assigning the
+| expression to a variable you displayed a plot. Notice that you didn't have to pass
+| any arguments to the function geom_point. That's because the object g has all the
+| data stored in it. (Remember you saw that when you ran summary on g before.) Now
+| use the expression you just typed (g + geom_point()) and add to it another layer, a
+| call to geom_smooth(). Notice the red message R gives you.
+
+> g+geom_point()+geom_smooth()
+
+| Your dedication is inspiring!
+
+  |=========================                                                   |  33%
+
+| The gray shadow around the blue line is the confidence band. See how wide it is at
+| the right? Let's try a different smoothing function. Use the up arrow to recover
+| the expression you just typed, and instead of calling geom_smooth with no
+| arguments, call it with the argument method set equal to the string "lm".
+
+> g+geom_point()+geom_smooth("lm")
+Error: Mapping must be created by `aes()` or `aes_()`
+> g+geom_point()+geom_smooth(method="lm")
+
+| You are doing so well!
+
+  |===========================                                                 |  35%
+
+| By changing the smoothing function to "lm" (linear model) ggplot2 generated a
+| regression line through the data. Now recall the expression you just used and add
+| to it another call, this time to the function facet_grid. Use the formula . ~ drv
+| as it argument. Note that this is the same type of formula used in the calls to
+| qplot.
+
+> g+geom_point()+geom_smooth(method="lm")+facet_grid(. ~ drv)
+
+| Great job!
+
+  |============================                                                |  38%
+
+| Notice how each panel is labeled with the appropriate factor. All the data
+| associated with 4-wheel drive cars is in the leftmost panel, front-wheel drive data
+| is shown in the middle panel, and rear-wheel drive data in the rightmost. Notice
+| that this is similar to the plot you created at the start of the lesson using
+| qplot. (We used a different smoothing function than previously.)
+
+...
+
+  |==============================                                              |  40%
+
+| So far you've just used the default labels that ggplot provides. You can add your
+| own annotation using functions such as xlab(), ylab(), and ggtitle(). In addition,
+| the function labs() is more general and can be used to label either or both axes as
+| well as provide a title. Now recall the expression you just typed and add a call to
+| the function ggtitle with the argument "Swirl Rules!".
+
+> g+geom_point()+geom_smooth(method="lm")+facet_grid(. ~ drv)+ggtitle("Swirl Rules!")
+
+| Your dedication is inspiring!
+
+  |================================                                            |  42%
+
+| Now that you've seen the basics we'll talk about customizing. Each of the “geom”
+| functions (e.g., _point and _smooth) has options to modify it. Also, the function
+| theme() can be used to modify aspects of the entire plot, e.g. the position of the
+| legend. Two standard appearance themes are included in ggplot. These are
+| theme_gray() which is the default theme (gray background with white grid lines) and
+| theme_bw() which is a plainer (black and white) color scheme.
+
+...
+
+  |=================================                                           |  44%
+
+| Let's practice modifying aesthetics now. We'll use the graphic object g that we
+| already filled with mpg data and add a call to the function geom_point, but this
+| time we'll give geom_point 3 arguments. Set the argument color equal to "pink", the
+| argument size to 4, and the argument alpha to 1/2. Notice that all the arguments
+| are set equal to constants.
+
+> g + geom_point(color="pink", size=4, alpha=1/2)
+
+| You got it right!
+
+  |===================================                                         |  46%
+
+| Notice the different shades of pink? That's the result of the alpha aesthetic which
+| you set to 1/2. This aesthetic tells ggplot how transparent the points should be.
+| Darker circles indicate values hit by multiple data points.
+
+...
+
+  |====================================                                        |  48%
+
+| Now we'll modify the aesthetics so that color indicates which drv type each point
+| represents. Again, use g and add to it a call to the function geom_point with 3
+| arguments. The first is size set equal to 4, the second is alpha equal to 1/2. The
+| third is a call to the function aes with the argument color set equal to drv. Note
+| that you MUST use the function aes since the color of the points is data dependent
+| and not a constant as it was in the previous example.
+
+> g + geom_point(size=4, alpha=1/2, aes(color=drv))
+
+| Great job!
+
+  |======================================                                      |  50%
+
+| Notice the helpful legend on the right decoding the relationship between color and
+| drv.
+
+...
+
+  |========================================                                    |  52%
+
+| Now we'll practice modifying labels. Again, we'll use g and add to it calls to 3
+| functions. First, add a call to geom_point with an argument making the color
+| dependent on the drv type (as we did in the previous example). Second, add a call
+| to the function labs with the argument title set equal to "Swirl Rules!". Finally,
+| add a call to labs with 2 arguments, one setting x equal to "Displacement" and the
+| other setting y equal to "Hwy Mileage".
+
+> g + geom_point(aes(color=drv)) + labs(title="Swirl Rules!") + labs(x="Displacement", y="Hwy Mileage")
+
+| Nice work!
+
+  |=========================================                                   |  54%
+
+| Note that you could have combined the two calls to the function labs in the
+| previous example. Now we'll practice customizing the geom_smooth calls. Use g and
+| add to it a call to geom_point setting the color to drv type (remember to use the
+| call to the aes function), size set to 2 and alpha to 1/2. Then add a call to
+| geom_smooth with 4 arguments. Set size equal to 4, linetype to 3, method to "lm",
+| and se to FALSE.
+
+> g + geom_point(size=4, alpha=1/2, aes(color=drv)) + geom_smooth(size=4, linetype=3, method="lm", se=FALSE)
+
+| Nice try, but that's not exactly what I was hoping for. Try again. Or, type info()
+| for more options.
+
+| Type g + geom_point(aes(color = drv),size=2,alpha=1/2) +
+| geom_smooth(size=4,linetype=3,method="lm",se=FALSE) at the command prompt.
+
+> g + geom_point(size=2, alpha=1/2, aes(color=drv)) + geom_smooth(size=4, linetype=3, method="lm", se=FALSE)
+
+| You're the best!
+
+  |===========================================                                 |  56%
+
+| What did these arguments do? The method specified a linear regression (note the
+| negative slope indicating that the bigger the displacement the lower the gas
+| mileage), the linetype specified that it should be dashed (not continuous), the
+| size made the dashes big, and the se flag told ggplot to turn off the gray shadows
+| indicating standard errors (confidence intervals).
+
+...
+
+  |============================================                                |  58%
+
+| Finally, let's do a simple plot using the black and white theme, theme_bw. Specify
+| g and add a call to the function geom_point with the argument setting the color to
+| the drv type. Then add a call to the function theme_bw with the argument
+| base_family set equal to "Times". See if you notice the difference.
+
+> g + geom_point(aes(color=drv)) + theme_bw((base_family="Times"))
+Error in base_size/2 : non-numeric argument to binary operator
+> g + geom_point(aes(color=drv)) + theme_bw(base_family="Times")
+There were 12 warnings (use warnings() to see them)
+
+| You nailed it! Good job!
+
+  |==============================================                              |  60%
+
+| No more gray background! Also, if you have good eyesight, you'll notice that the
+| font in the labels changed.
+
+...
+
+  |================================================                            |  62%
+
+| One final note before we go through a more complicated, layered ggplot example, and
+| this concerns the limits of the axes. We're pointing this out to emphasize a subtle
+| difference between ggplot and the base plotting function plot.
+
+...
+
+  |=================================================                           |  65%
+
+| We've created some random x and y data, called myx and myy, components of a
+| dataframe called testdat. These represent 100 random normal points, except halfway
+| through, we made one of the points be an outlier. That is, we set its y-value to be
+| out of range of the other points. Use the base plotting function plot to create a
+| line plot of this data. Call it with 4 arguments - myx, myy, type="l", and
+| ylim=c(-3,3). The type="l" tells plot you want to display the data as a line
+| instead of as a scatterplot.
+
+warning messages from top-level task callback 'mini'
+There were 20 warnings (use warnings() to see them)
+> plot(myx, myy, type="l",ylim=c(-3,3))
+
+| Nice work!
+
+  |===================================================                         |  67%
+
+| Notice how plot plotted the points in the (-3,3) range for y-values. The outlier at
+| (50,100) is NOT shown on the line plot. Now we'll plot the same data with ggplot.
+| Recall that the name of the dataframe is testdat. Create the graphical object g
+| with a call to ggplot with 2 arguments, testdat (the data) and a call to aes with 2
+| arguments, x set equal to myx, and y set equal to myy.
+
+> g <- ggplot()testdata, aes(x=myx, y=myy)
+Error: unexpected symbol in "g <- ggplot()testdata"
+> g <- ggplot()testdata, aes(x=myx, y=myy))
+Error: unexpected symbol in "g <- ggplot()testdata"
+> g <- ggplot(testdata, aes(x=myx, y=myy))
+Error in ggplot(testdata, aes(x = myx, y = myy)) : 
+  object 'testdata' not found
+> g <- ggplot(testdat, aes(x=myx, y=myy))
+
+| You are amazing!
+
+  |====================================================                        |  69%
+
+| Now add a call to geom_line with 0 arguments to g.
+
+> g ,- g + geom()
+Error: unexpected ',' in "g ,"
+> g <- g + geom()
+Error: could not find function "geom"
+> g <- g + geom_line()
+
+| That's not the answer I was looking for, but try again. Or, type info() for more
+| options.
+
+| Type g + geom_line() at the command prompt.
+
+> g + geom_line()
+
+| You are really on a roll!
+
+  |======================================================                      |  71%
+
+| Notice how ggplot DID display the outlier point at (50,100). As a result the rest
+| of the data is smashed down so you don't get to see what the bulk of it looks like.
+| The single outlier probably isn't important enough to dominate the graph. How do we
+| get ggplot to behave more like plot in a situation like this?
+
+...
+
+  |=======================================================                     |  73%
+
+| Let's take a guess that in addition to adding geom_line() to g we also just have to
+| add ylim(-3,3) to it as we did with the call to plot. Try this now to see what
+| happens.
+
+> g + geom_line() + ylim(-3,3)
+
+| You got it!
+
+  |=========================================================                   |  75%
+
+| Notice that by doing this, ggplot simply ignored the outlier point at (50,100).
+| There's a break in the line which isn't very noticeable. Now recall that at the
+| beginning of the lesson we mentioned 7 components of a ggplot plot, one of which
+| was a coordinate system. This is a situation where using a coordinate system would
+| be helpful. Instead of adding ylim(-3,3) to the expression g+geom_line(), add a
+| call to the function coord_cartesian with the argument ylim set equal to c(-3,3).
+
+> g + geom_line() + coord_cartesian(ylim=c(-3,3))
+
+| You are amazing!
+
+  |===========================================================                 |  77%
+
+| See the difference? This looks more like the plot produced by the base plot
+| function. The outlier y value at x=50 is not shown, but the plot indicates that it
+| is larger than 3.
+
+...
+
+  |============================================================                |  79%
+
+| We'll close with a more complicated example to show you the full power of ggplot
+| and the entire ggplot2 package. We'll continue to work with the mpg dataset.
+
+...
+
+  |==============================================================              |  81%
+
+| Start by creating the graphical object g by assigning to it a call to ggplot with 2
+| arguments. The first is the dataset and the second is a call to the function aes.
+| This call will have 3 arguments, x set equal to displ, y set equal to hwy, and
+| color set equal to factor(year). This last will allow us to distinguish between the
+| two manufacturing years (1999 and 2008) in our data.
+
+> g <- ggplot(mpg, aes(x=displ, y = hwy, color(factor(year))))
+
+| That's not exactly what I'm looking for. Try again. Or, type info() for more
+| options.
+
+| Type g <- ggplot(mpg,aes(x=displ,y=hwy,color=factor(year))) at the command prompt.
+
+> g <- ggplot(mpg, aes(x=displ, y = hwy, color=factor(year)))
+
+| Excellent work!
+
+  |===============================================================             |  83%
+
+| Uh oh! Nothing happened. Does g exist? Of course, it just isn't visible yet since
+| you didn't add a layer.
+
+...
+
+  |=================================================================           |  85%
+
+| If you typed g at the command line, what would happen?
+
+1: a scatterplot would appear with 2 colors of points
+2: R would return an error in red
+3: I would have to try this to answer the question
+
+Selection: 1
+
+| One more time. You can do it!
+
+| You've told ggplot about the data, but have you told it how to display it?
+
+1: a scatterplot would appear with 2 colors of points
+2: I would have to try this to answer the question
+3: R would return an error in red
+
+Selection: 3
+
+| You are doing so well!
+
+  |==================================================================          |  88%
+
+| We'll build the plot up step by step. First add to g a call to the function
+| geom_point with 0 arguments.
+
+> g + geom_point()
+
+| Keep working like that and you'll get there!
+
+  |====================================================================        |  90%
+
+| A simple, yet comfortingly familiar scatterplot appears. Let's make our display a 2
+| dimensional multi-panel plot. Recall your last command (with the up arrow) and add
+| to it a call the function facet_grid. Give it 2 arguments. The first is the formula
+| drv~cyl, and the second is the argument margins set equal to TRUE. Try this now.
+
+> g + geom_point() + facet_grid(drv~cyl, margins = TRUE)
+
+| You got it right!
+
+  |======================================================================      |  92%
+
+| A 4 by 5 plot, huh? The margins argument tells ggplot to display the marginal
+| totals over each row and column, so instead of seeing 3 rows (the number of drv
+| factors) and 4 columns (the number of cyl factors) we see a 4 by 5 display. Note
+| that the panel in position (4,5) is a tiny version of the scatterplot of the entire
+| dataset.
+
+...
+
+  |=======================================================================     |  94%
+
+| Now add to your last command (or retype it if you like to type) a call to
+| geom_smooth with 4 arguments. These are method set to "lm", se set to FALSE, size
+| set to 2, and color set to "black".
+
+> g + geom_point() + facet_grid(drv~cyl, margins = TRUE) + geom_smooth(method="lm", se=FALSE, size=2, color="black")
+
+| That's a job well done!
+
+  |=========================================================================   |  96%
+
+| Angry Birds? Finally, add to your last command (or retype it if you like to type) a
+| call to the function labs with 3 arguments. These are x set to "Displacement", y
+| set to "Highway Mileage", and title set to "Swirl Rules!".
+
+> g + geom_point() + facet_grid(drv~cyl, margins = TRUE) + geom_smooth(method="lm", se=FALSE, size=2, color="black")+ labs(x="Displacement", y="Highway Mileage", title="Swirl Rules!")
+
+| You got it right!
+
+  |==========================================================================  |  98%
+
+| You could have done these labels with separate calls to labs but we thought you'd
+| be sick of this by now. Anyway, congrats! You've concluded part 2 of ggplot2. We
+| hope you got enough mileage out of the lesson. If you like ggplot2 you can do some
+| extras with the extra lesson.
+
+...
+
+  |============================================================================| 100%
+
+
+| GGPlot2_Extras. (Slides for this and other Data Science courses may be found at
+| github https://github.com/DataScienceSpecialization/courses/. If you care to use
+| them, they must be downloaded as a zip file and viewed locally. This lesson
+| corresponds to 04_ExploratoryAnalysis/ggplot2.)
+
+...
+
+  |=                                                                           |   2%
+
+| In this lesson we'll go through a few more qplot examples using diamond data which
+| comes with the ggplot2 package. This data is a little more complicated than the mpg
+| data and it contains information on various characteristics of diamonds.
+
+...
+
+  |===                                                                         |   4%
+
+| Run the R command str with the argument diamonds to see what the data looks like.
+
+> str(diamonds)
+Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	53940 obs. of  10 variables:
+ $ carat  : num  0.23 0.21 0.23 0.29 0.31 0.24 0.24 0.26 0.22 0.23 ...
+ $ cut    : Ord.factor w/ 5 levels "Fair"<"Good"<..: 5 4 2 4 2 3 3 3 1 3 ...
+ $ color  : Ord.factor w/ 7 levels "D"<"E"<"F"<"G"<..: 2 2 2 6 7 7 6 5 2 5 ...
+ $ clarity: Ord.factor w/ 8 levels "I1"<"SI2"<"SI1"<..: 2 3 5 4 2 6 7 3 4 5 ...
+ $ depth  : num  61.5 59.8 56.9 62.4 63.3 62.8 62.3 61.9 65.1 59.4 ...
+ $ table  : num  55 61 65 58 58 57 57 55 61 61 ...
+ $ price  : int  326 326 327 334 335 336 336 337 337 338 ...
+ $ x      : num  3.95 3.89 4.05 4.2 4.34 3.94 3.95 4.07 3.87 4 ...
+ $ y      : num  3.98 3.84 4.07 4.23 4.35 3.96 3.98 4.11 3.78 4.05 ...
+ $ z      : num  2.43 2.31 2.31 2.63 2.75 2.48 2.47 2.53 2.49 2.39 ...
+
+| Great job!
+
+  |====                                                                        |   6%
+
+| From the output, how many characteristics of diamonds do you think this data
+| contains?
+
+1: 10
+2: 53940
+3: 5394
+4: 53950
+
+Selection: 10
+Enter an item from the menu, or 0 to exit
+Selection: 1
+
+| Your dedication is inspiring!
+
+  |======                                                                      |   7%
+
+| From the output of str, how many diamonds are characterized in this dataset?
+
+1: 53940
+2: 53950
+3: 10
+4: 5394
+
+Selection: 1
+
+| Excellent work!
+
+  |=======                                                                     |   9%
+
+| Now let's plot a histogram of the price of the 53940 diamonds in this dataset.
+| Recall that a histogram requires only one variable of the data, so run the R
+| command qplot with the first argument price and the argument data set equal to
+| diamonds. This will show the frequency of different diamond prices.
+
+> qplot(price, data=diamonds)
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+| That's a job well done!
+
+  |========                                                                    |  11%
+
+| Not only do you get a histogram, but you also get a message about the binwidth
+| defaulting to range/30. Recall that range refers to the spread or dispersion of the
+| data, in this case price of diamonds. Run the R command range now with
+| diamonds$price as its argument.
+
+> range(diamonds$price)
+[1]   326 18823
+
+| You got it!
+
+  |==========                                                                  |  13%
+
+| We see that range returned the minimum and maximum prices, so the diamonds vary in
+| price from $326 to $18823. We've done the arithmetic for you, the range (difference
+| between these two numbers) is $18497.
+
+...
+
+  |===========                                                                 |  15%
+
+| Rerun qplot now with 3 arguments. The first is price, the second is data set equal
+| to diamonds, and the third is binwidth set equal to 18497/30). (Use the up arrow to
+| save yourself some typing.) See if the plot looks familiar.
+
+> qplot(price, data=diamonds, binwidth=18497/30))
+Error: unexpected ')' in "qplot(price, data=diamonds, binwidth=18497/30))"
+> qplot(price, data=diamonds, binwidth=18497/30)
+
+| That's correct!
+
+  |=============                                                               |  17%
+
+| No more messages in red, but a histogram almost identical to the previous one! If
+| you typed 18497/30 at the command line you would get the result 616.5667. This
+| means that the height of each bin tells you how many diamonds have a price between
+| x and x+617 where x is the left edge of the bin.
+
+...
+
+  |==============                                                              |  19%
+
+| We've created a vector containing integers that are multiples of 617 for you. It's
+| called brk. Look at it now.
+
+> brk
+ [1]     0   617  1234  1851  2468  3085  3702  4319  4936  5553  6170  6787  7404
+[14]  8021  8638  9255  9872 10489 11106 11723 12340 12957 13574 14191 14808 15425
+[27] 16042 16659 17276 17893 18510 19127
+
+| Your dedication is inspiring!
+
+  |===============                                                             |  20%
+
+| We've also created a vector containing the number of diamonds with prices between
+| each pair of adjacent entries of brk. For instance, the first count is the number
+| of diamonds with prices between 0 and $617, and the second is the number of
+| diamonds with prices between $617 and $1234. Look at the vector named counts now.
+
+> counts
+ [1]  4611 13255  5230  4262  3362  2567  2831  2841  2203  1666  1445  1112   987
+[14]   766   796   655   606   553   540   427   429   376   348   338   298   305
+[27]   269   287   227   251    97
+
+| Perseverance, that's the answer.
+
+  |=================                                                           |  22%
+
+| See how it matches the histogram you just plotted? So, qplot really works!
+
+...
+
+  |==================                                                          |  24%
+
+| You're probably sick of it but rerun qplot again, this time with 4 arguments. The
+| first 3 are the same as the last qplot command you just ran (price, data set equal
+| to diamonds, and binwidth set equal to 18497/30). (Use the up arrow to save
+| yourself some typing.) The fourth argument is fill set equal to cut. The shape of
+| the histogram will be familiar, but it will be more colorful.
+
+> qplot(price, data=diamonds, binwidth=18497/30, fill=cut)
+
+| That's a job well done!
+
+  |====================                                                        |  26%
+
+| This shows how the counts within each price grouping (bin) are distributed among
+| the different cuts of diamonds. Notice how qplot displays these distributions
+| relative to the cut legend on the right. The fair cut diamonds are at the bottom of
+| each bin, the good cuts are above them, then the very good above them, until the
+| ideal cuts are at the top of each bin. You can quickly see from this display that
+| there are very few fair cut diamonds priced above $5000.
+
+...
+
+  |=====================                                                       |  28%
+
+| Now we'll replot the histogram as a density function which will show the proportion
+| of diamonds in each bin. This means that the shape will be similar but the scale on
+| the y-axis will be different since, by definition, the density function is
+| nonnegative everywhere, and the area under the curve is one. To do this, simply
+| call qplot with 3 arguments. The first 2 are price and data (set equal to
+| diamonds). The third is geom which should be set equal to the string "density". Try
+| this now.
+
+> qplot(price, data=diamonds, geom="density")
+
+| Excellent work!
+
+  |=======================                                                     |  30%
+
+| Notice that the shape is similar to that of the histogram we saw previously. The
+| highest peak is close to 0 on the x-axis meaning that most of the diamonds in the
+| dataset were inexpensive. In general, as prices increase (move right along the
+| x-axis) the number of diamonds (at those prices) decrease. The exception to this is
+| when the price is around $4000; there's a slight increase in frequency. Let's see
+| if cut is responsible for this increase.
+
+...
+
+  |========================                                                    |  31%
+
+| Rerun qplot, this time with 4 arguments. The first 2 are the usual, and the third
+| is geom set equal to "density". The fourth is color set equal to cut. Try this now.
+
+> qplot(price, data=diamonds, geom="density", color=cut
++ )
+
+| You nailed it! Good job!
+
+  |=========================                                                   |  33%
+
+| See how easily qplot did this? Four of the five cuts have 2 peaks, one at price
+| $1000 and the other between $4000 and $5000. The exception is the Fair cut which
+| has a single peak at $2500. This gives us a little more understanding of the
+| histogram we saw before.
+
+...
+
+  |===========================                                                 |  35%
+
+| Let's move on to scatterplots. For these we'll need to specify two variables from
+| the diamond dataset.
+
+...
+
+  |============================                                                |  37%
+
+| Let's start with carat and price. Use these as the first 2 arguments of qplot. The
+| third should be data set equal to the dataset. Try this now.
+
+> qplot(carat, price, data=diamonds)
+
+| You nailed it! Good job!
+
+  |==============================                                              |  39%
+
+| We see the positive trend here, as the number of carats increases the price also
+| goes up.
+
+...
+
+  |===============================                                             |  41%
+
+| Now rerun the same command, except add a fourth parameter, shape, set equal to cut.
+
+> qplot(carat, price, data=diamonds, shape=cut)
+
+| You are quite good my friend!
+
+  |================================                                            |  43%
+
+| The same scatterplot appears, except the cuts of the diamonds are distinguished by
+| different symbols. The legend at the right tells you which symbol is associated
+| with each cut. These are small and hard to read, so rerun the same command, except
+| this time instead of setting the argument shape equal to cut, set the argument
+| color equal to cut.
+
+> qplot(carat, price, data=diamonds, color=cut)
+
+| That's a job well done!
+
+  |==================================                                          |  44%
+
+| That's easier to see! Now we'll close with two, more complicated scatterplot
+| examples.
+
+...
+
+  |===================================                                         |  46%
+
+| We'll rerun the plot you just did (carat,price,data=diamonds and color=cut) but add
+| an additional parameter. Use geom_smooth with the method set equal to the string
+| "lm".
+
+> qplot(carat, price, data=diamonds, color=cut,geom_smooth="lm")
+Error: Unknown parameters: geom_smooth
+> qplot(carat, price, data=diamonds, color=cut,geom_smooth(method="lm"))
+Error: Unknown parameters: NA
+> qplot(carat, price, data=diamonds, color=cut, geom_smooth(method="lm"))
+Error: Unknown parameters: NA
+> qplot(carat, price, data=diamonds, color=cut, geom_smooth(method="lm"))
+Error: Unknown parameters: NA
+> qplot(carat, price, data=diamonds, color=cut) + geom_smooth(method="lm")
+
+| Your dedication is inspiring!
+
+  |=====================================                                       |  48%
+
+| Again, we see the same scatterplot, but slightly more compressed and showing 5
+| regression lines, one for each cut of diamonds. It might be hard to see, but around
+| each line is a shadow showing the 95% confidence interval. We see, unsurprisingly,
+| that the better the cut, the steeper (more positive) the slope of the lines.
+
+...
+
+  |======================================                                      |  50%
+
+| Finally, let's rerun that plot you just did qplot(carat,price,data=diamonds,
+| color=cut) + geom_smooth(method="lm") but add one (just one) more argument to
+| qplot. The new argument is facets and it should be set equal to the formula .~cut.
+| Recall that the facets argument indicates we want a multi-panel plot. The symbol to
+| the left of the tilde indicates rows (in this case just one) and the symbol to the
+| right of the tilde indicates columns (in this five, the number of cuts). Try this
+| now.
+
+> qplot(carat, price, data=diamonds, color=cut, facets = .~cut) + geom_smooth(method="lm")
+
+| You are really on a roll!
+
+  |=======================================                                     |  52%
+
+| Pretty good, right? Not too difficult either. Let's review what we learned!
+
+...
+
+  |=========================================                                   |  54%
+
+| Which types of plot does qplot plot?
+
+1: all of the others
+2: scatterplots
+3: box and whisker plots
+4: histograms
+
+Selection: 1
+
+| Nice work!
+
+  |==========================================                                  |  56%
+
+| Any and all of the above choices work; qplot is just that good. What does the gg in
+| ggplot2 stand for?
+
+1: goto graphics
+2: grammar of graphics
+3: good graphics
+4: good grief
+
+Selection: 2
+
+| All that hard work is paying off!
+
+  |============================================                                |  57%
+
+| True or False? The geom argument takes a string for a value.
+
+1: False
+2: True
+
+Selection: 2
+
+| All that hard work is paying off!
+
+  |=============================================                               |  59%
+
+| True or False? The method argument takes a string for a value.
+
+1: False
+2: True
+
+Selection: 2
+
+| That's correct!
+
+  |==============================================                              |  61%
+
+| True or False? The binwidth argument takes a string for a value.
+
+1: False
+2: True
+
+Selection: 1
+
+| All that practice is paying off!
+
+  |================================================                            |  63%
+
+| True or False? The user must specify x- and y-axis labels when using qplot.
+
+1: True
+2: False
+
+Selection: 2
+
+| You are amazing!
+
+  |=================================================                           |  65%
+
+| Now for some ggplots.
+
+...
+
+  |===================================================                         |  67%
+
+| First create a graphical object g by assigning to it the output of a call to the
+| function ggplot with 2 arguments. The first is the dataset diamonds and the second
+| is a call to the function aes with 2 arguments, depth and price. Remember you won't
+| see any result.
+
+> g <- ggplot(diamonds, aes(depth, price))
+
+| All that hard work is paying off!
+
+  |====================================================                        |  69%
+
+| Does g exist? Yes! Type summary with g as an argument to see what it holds.
+
+> summary(g)
+data: carat, cut, color, clarity, depth, table, price, x, y, z [53940x10]
+mapping:  x = depth, y = price
+faceting: facet_null() 
+
+| Keep up the great work!
+
+  |=====================================================                       |  70%
+
+| We see that g holds the entire dataset. Now suppose we want to see a scatterplot of
+| the relationship. Add to g a call to the function geom_point with 1 argument, alpha
+| set equal to 1/3.
+
+> g + geom_point(alpha=1/3)
+
+| You are really on a roll!
+
+  |=======================================================                     |  72%
+
+| That's somewhat interesting. We see that depth ranges from 43 to 79, but the
+| densest distribution is around 60 to 65. Suppose we want to see if this
+| relationship (between depth and price) is affected by cut or carat. We know cut is
+| a factor with 5 levels (Fair, Good, Very Good, Premium, and Ideal). But carat is
+| numeric and not a discrete factor. Can we do this?
+
+...
+
+  |========================================================                    |  74%
+
+| Of course! That's why we asked. R has a handy command, cut, which allows you to
+| divide your data into sets and label each entry as belonging to one of the sets, in
+| effect creating a new factor. First, we'll have to decide where to cut the data.
+
+...
+
+  |==========================================================                  |  76%
+
+| Let's divide the data into 3 pockets, so 1/3 of the data falls into each. We'll use
+| the R command quantile to do this. Create the variable cutpoints and assign to it
+| the output of a call to the function quantile with 3 arguments. The first is the
+| data to cut, namely diamonds$carat; the second is a call to the R function seq.
+| This is also called with 3 arguments, (0, 1, and length set equal to 4). The third
+| argument to the call to quantile is the boolean na.rm set equal to TRUE.
+
+> cutpoints <- quantile(diamonds$carat, seq(0,1,length=4), na.rm=TRUE)
+
+| All that hard work is paying off!
+
+  |===========================================================                 |  78%
+
+| Look at cutpoints now to understand what it is.
+
+> cutpoints
+       0% 33.33333% 66.66667%      100% 
+     0.20      0.50      1.00      5.01 
+
+| That's the answer I was looking for.
+
+  |=============================================================               |  80%
+
+| We see a 4-long vector (explaining why length was set equal to 4). We also see that
+| .2 is the smallest carat size in the dataset and 5.01 is the largest. One third of
+| the diamonds are between .2 and .5 carats and another third are between .5 and 1
+| carat in size. The remaining third are between 1 and 5.01 carats. Now we can use
+| the R command cut to label each of the 53940 diamonds in the dataset as belonging
+| to one of these 3 factors. Create a new name in diamonds, diamonds$car2 by
+| assigning it the output of the call to cut. This command takes 2 arguments,
+| diamonds$carat, which is what we want to cut, and cutpoints, the places where we'll
+| cut.
+
+> diamonds$car2 <- cut(diamonds$carat, cutpoints)
+
+| Your dedication is inspiring!
+
+  |==============================================================              |  81%
+
+| Now we can continue with our multi-facet plot. First we have to reset g since we
+| changed the dataset (diamonds) it contained (by adding a new column). Assign to g
+| the output of a call to ggplot with 2 arguments. The dataset diamonds is the first,
+| and a call to the function aes with 2 arguments (depth,price) is the second.
+
+> g <- ggplot(diamonds, aes(depth, price))
+
+| You got it right!
+
+  |===============================================================             |  83%
+
+| Now add to g calls to 2 functions. This first is a call to geom_point with the
+| argument alpha set equal to 1/3. The second is a call to the function facet_grid
+| using the formula cut ~ car2 as its argument.
+
+> g + geom_point(alpha=1/3) + facet_grid(cut ~ cut2)
+Error in layout_base(data, cols, drop = drop) : 
+  At least one layer must contain all variables used for facetting
+> g + geom_point(alpha=1/3) + facet_grid(facets = cut ~ cut2)
+Error in layout_base(data, cols, drop = drop) : 
+  At least one layer must contain all variables used for facetting
+> g + geom_point(alpha=1/3) + facet_grid(facets = . ~ cut2)
+Error in layout_base(data, cols, drop = drop) : 
+  At least one layer must contain all variables used for facetting
+> g + geom_point(alpha=1/3) + facet_grid(facets = cut ~ car2)
+
+| That's the answer I was looking for.
+
+  |=================================================================           |  85%
+
+| We see a multi-facet plot with 5 rows, each corresponding to a cut factor. Not
+| surprising. What is surprising is the number of columns. We were expecting 3 and
+| got 4. Why?
+
+...
+
+  |==================================================================          |  87%
+
+| The first 3 columns are labeled with the cutpoint boundaries. The fourth is labeled
+| NA and shows us where the data points with missing data (NA or Not Available)
+| occurred. We see that there were only a handful (12 in fact) and they occurred in
+| Very Good, Premium, and Ideal cuts. We created a vector, myd, containing the
+| indices of these datapoints. Look at these entries in diamonds by typing the
+| expression diamonds[myd,]. The myd tells R what rows to show and the empty column
+| entry says to print all the columns.
+
+> diamonds[myd,]
+      carat       cut color clarity depth table price    x    y    z car2
+15      0.2   Premium     E     SI2  60.2    62   345 3.79 3.75 2.27 <NA>
+31592   0.2   Premium     E     VS2  59.8    62   367 3.79 3.77 2.26 <NA>
+31593   0.2   Premium     E     VS2  59.0    60   367 3.81 3.78 2.24 <NA>
+31594   0.2   Premium     E     VS2  61.1    59   367 3.81 3.78 2.32 <NA>
+31595   0.2   Premium     E     VS2  59.7    62   367 3.84 3.80 2.28 <NA>
+31596   0.2     Ideal     E     VS2  59.7    55   367 3.86 3.84 2.30 <NA>
+31597   0.2   Premium     F     VS2  62.6    59   367 3.73 3.71 2.33 <NA>
+31598   0.2     Ideal     D     VS2  61.5    57   367 3.81 3.77 2.33 <NA>
+31599   0.2 Very Good     E     VS2  63.4    59   367 3.74 3.71 2.36 <NA>
+31600   0.2     Ideal     E     VS2  62.2    57   367 3.76 3.73 2.33 <NA>
+31601   0.2   Premium     D     VS2  62.3    60   367 3.73 3.68 2.31 <NA>
+31602   0.2   Premium     D     VS2  61.7    60   367 3.77 3.72 2.31 <NA>
+
+| That's the answer I was looking for.
+
+  |====================================================================        |  89%
+
+| We see these entries match the plots. Whew - that's a relief. The car2 field is, in
+| fact, NA for these entries, but the carat field shows they each had a carat size of
+| .2. What's going on here?
+
+...
+
+  |=====================================================================       |  91%
+
+| Actually our plot answers this question. The boundaries for each column appear in
+| the gray labels at the top of each column, and we see that the first column is
+| labeled (0.2,0.5]. This indicates that this column contains data greater than .2
+| and less than or equal to .5. So diamonds with carat size .2 were excluded from the
+| car2 field.
+
+...
+
+  |======================================================================      |  93%
+
+| Finally, recall the last plotting command
+| (g+geom_point(alpha=1/3)+facet_grid(cut~car2)) or retype it if you like and add
+| another call. This one to the function geom_smooth. Pass it 3 arguments, method set
+| equal to the string "lm", size set equal to 3, and color equal to the string
+| "pink".
+
+> g + geom_point(alpha=1/3) + facet_grid(facets = cut ~ car2) + geom_smooth(method="lm", size=3, color="pink")
+
+| Nice work!
+
+  |========================================================================    |  94%
+
+| Nice thick regression lines which are somewhat interesting. You can add labels to
+| the plot if you want but we'll let you experiment on your own.
+
+...
+
+  |=========================================================================   |  96%
+
+| Lastly, ggplot2 can, of course, produce boxplots. This final exercise is the sum of
+| 3 function calls. The first call is to ggplot with 2 arguments, diamonds and a call
+| to aes with carat and price as arguments. The second call is to geom_boxplot with
+| no arguments. The third is to facet_grid with one argument, the formula . ~ cut.
+| Try this now.
+
+> ggplot(diamonds, aes(carat, price)) + geom_boxplot() + facet_grid(.~cut)
+Warning message:
+Continuous x aesthetic -- did you forget aes(group=...)? 
+
+| Keep working like that and you'll get there!
+
+  |=========================================================================== |  98%
+
+| Yes! A boxplot looking like marshmallows about to be roasted. Well done and
+| congratulations! You've finished this jewel of a lesson. Hope it payed off!
+
+...
+
+  |============================================================================| 100%
+
+  

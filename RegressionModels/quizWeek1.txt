@@ -1,0 +1,211 @@
+
+> x <- c(0.18, -1.54, 0.42, 0.95)
+> w <- c(2, 1, 3, 1)
+> fit <- lm(x ~ w)
+> summary(fit)
+
+Call:
+lm(formula = x ~ w)
+
+Residuals:
+       1        2        3        4 
+ 0.08545 -1.26636 -0.04273  1.22364 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)  -0.6418     1.4562  -0.441    0.702
+w             0.3682     0.7520   0.490    0.673
+
+Residual standard error: 1.247 on 2 degrees of freedom
+Multiple R-squared:  0.107,	Adjusted R-squared:  -0.3394 
+F-statistic: 0.2397 on 1 and 2 DF,  p-value: 0.6728
+
+> fit <- lm(w ~ x)
+> summary(fit)
+
+Call:
+lm(formula = w ~ x)
+
+Residuals:
+      1       2       3       4 
+ 0.1984 -0.3016  1.1286 -1.0254 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept)   1.7493     0.5540   3.157   0.0874 .
+x             0.2907     0.5937   0.490   0.6728  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.108 on 2 degrees of freedom
+Multiple R-squared:  0.107,	Adjusted R-squared:  -0.3394 
+F-statistic: 0.2397 on 1 and 2 DF,  p-value: 0.6728
+
+> mean(x)
+[1] 0.0025
+
+x <‐ c(0.18, ‐1.54, 0.42, 0.95)
+w <‐ c(2, 1, 3, 1)
+
+----------------
+> sum(w * (x - 0.1471)^2)
+[1] 3.716543
+--------------
+
+
+
+> x <- c(0.8, 0.47, 0.51, 0.73, 0.36, 0.58, 0.57, 0.85, 0.44, 0.42)
+> y <- c(1.39, 0.72, 1.55, 0.48, 1.19, -1.59, 1.23, -0.65, 1.49, 0.05)
+> lm(I(y - mean(y))~ I(x - mean(x)) - 1)
+
+Call:
+lm(formula = I(y - mean(y)) ~ I(x - mean(x)) - 1)
+
+Coefficients:
+I(x - mean(x))  
+        -1.713 
+        
+        
+        
+data <- data.frame(table(x, y))
+names(data) <- c("x", "y")
+
+myPlot <- function(beta){
+    g <- ggplot(data, aes(x = x, y = y)) + geom_point()
+    g <- g + geom_abline(intercept = mean(y), slope = beta, size = 3)
+    sumErrors <- sum( (y - beta * x) ^2 )
+    g <- g + ggtitle(paste("beta = ", beta, "sumErrors = ", round(sumErrors, 3)))
+    g
+}
+manipulate(myPlot(beta), beta = slider(-2, 2, step = 0.02))
+
+
+ > data("mtcars")
+> lm(mpg ~ weight, data = mtcars)
+Error in eval(expr, envir, enclos) : object 'weight' not found
+> lm(mpg ~ weight, data = mtcars)
+Error in eval(expr, envir, enclos) : object 'weight' not found
+> str(mtcars)
+'data.frame':	32 obs. of  11 variables:
+ $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+ $ cyl : num  6 6 4 6 8 6 8 4 4 6 ...
+ $ disp: num  160 160 108 258 360 ...
+ $ hp  : num  110 110 93 110 175 105 245 62 95 123 ...
+ $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+ $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...
+ $ qsec: num  16.5 17 18.6 19.4 17 ...
+ $ vs  : num  0 0 1 1 0 1 0 1 1 1 ...
+ $ am  : num  1 1 1 0 0 0 0 0 0 0 ...
+ $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
+ $ carb: num  4 4 1 1 2 1 4 2 2 4 ...
+> lm(mpg ~ wt, data = mtcars)
+
+Call:
+lm(formula = mpg ~ wt, data = mtcars)
+
+Coefficients:
+(Intercept)           wt  
+     37.285       -5.344  
+     
+
+
+Consider data with an outcome (Y) and a predictor (X). 
+
+The standard deviation of the predictor is one half that of the outcome. 
+The correlation between the two variables is .5. 
+
+What value would the slope coefficient for the regression model?
+
+Beta1 = Cor(Y,X) * Sd(Y) /Sd(X)
+Beta0 = Yhat - Beta1 * Xhat
+
+=>
+
+Sd(Y) = Sd(X)/2
+
+Sd(Y)/Sd(X) = Sd(X)/2 / Sd(X)
+
+Beta1 = 0.5 * (0.5/1) = 0.25
+
+Has to be the inverse, 4?
+
+> 1.5 * 0.4
+[1] 0.6
+> mean(c(8.58, 10.46, 9.01, 9.64, 8.86))
+[1] 9.31
+> 8.58 - mean(c(8.58, 10.46, 9.01, 9.64, 8.86))
+[1] -0.73
+> scalar1 <- function(x) {x / sqrt(sum(x^2))}
+> scalar1(c(8.58, 10.46, 9.01, 9.64, 8.86))
+[1] 0.4110785 0.5011516 0.4316803 0.4618644 0.4244936
+> x <- c(8.58, 10.46, 9.01, 9.64, 8.86)
+> x - mean(x)
+[1] -0.73  1.15 -0.30  0.33 -0.45
+> (x - mean(x))/sd(x)
+[1] -0.9718658  1.5310215 -0.3993969  0.4393366 -0.5990954
+> x <- c(0.8, 0.47, 0.51, 0.73, 0.36, 0.58, 0.57, 0.85, 0.44, 0.42)
+> y <- c(1.39, 0.72, 1.55, 0.48, 1.19, -1.59, 1.23, -0.65, 1.49, 0.05)
+> lm(y ~x)
+
+Call:
+lm(formula = y ~ x)
+
+Coefficients:
+(Intercept)            x  
+      1.567       -1.713  
+
+myPlot <- function(beta){
++     g <- ggplot(data, aes(x = x, y = y)) + geom_point()
++     g <- g + geom_abline(intercept = mean(y), slope = beta, size = 3)
++     sumErrors <- sum( (y - beta * x) ^2 )
++     g <- g + ggtitle(paste("beta = ", beta, "sumErrors = ", round(sumErrors, 3)))
++     g
++ }
+> manipulate(myPlot(beta), beta = slider(-2, 2, step = 0.02))
+
+
+----------------      
+Thru manipulate = 0.8263
+------------------
+
+> x <- c(0.8, 0.47, 0.51, 0.73, 0.36, 0.58, 0.57, 0.85, 0.44, 0.42)
+> x - mean(x)
+ [1]  0.227 -0.103 -0.063  0.157 -0.213  0.007 -0.003  0.277 -0.133 -0.153
+> mean(x)
+[1] 0.573
+
+
+
+Let the slope having fit Y as the outcome and X as the predictor be denoted as β1.
+
+Let the slope from fitting X as the outcome and Y as the predictor be denoted as γ1.
+
+Suppose that you divide β1 by γ1; in other words consider β1/γ1. What is this ratio always equal to?
+
+
+Y predictor of X
+
+B1 = Cor(Y,X) * (Sd(Y) / Sd(X))
+
+X predictor of Y
+
+Y1 = Cor(Y,X) * (Sd(X) / Sd(Y)))
+
+B1/Y1 = Cor(Y,X) * (Sd(Y) / Sd(X))
+        --------------------------
+        Cor(Y,X) * (Sd(X) / Sd(Y)))
+        
+      = Sd(Y) / Sd(X)
+        --------------------------
+        Sd(X) / Sd(Y)
+        
+SY * SY
+-------
+SX * SX
+
+= 
+
+Var(Y)
+-----
+Var(X)
+

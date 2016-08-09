@@ -1,0 +1,1284 @@
+| MultiVar_Examples2. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be
+| downloaded as a zip file and viewed locally. This lesson corresponds to
+| Regression_Models/02_02_multivariateExamples.)
+
+...
+
+  |===                                                                                       |   3%
+
+| This is the second lesson in which we'll look at some regression models with more than one independent variable. We'll begin with the InsectSprays data which
+| we've taken the liberty to load for you. This data is part of R's datasets package. It shows the effectiveness of different insect sprays. We've used the code
+| from the slides to show you a boxplot of the data.
+
+...
+
+  |=====                                                                                     |   6%
+
+| How many Insect Sprays are in this dataset?
+
+> 6
+[1] 6
+
+| Keep working like that and you'll get there!
+
+  |========                                                                                  |   9%
+
+| From the boxplot, which spray has the largest median?
+
+ANSWER: B
+
+| All that hard work is paying off!
+
+  |===========                                                                               |  12%
+
+| Let's first try to get a better understanding of the dataset InsectSprays. Use the R function dim to find the dimensions of the data.
+
+> dim(InsectSprays)
+[1] 72  2
+
+| Excellent work!
+
+  |==============                                                                            |  15%
+
+| The R function dim says that InsectSprays is a 72 by 2 array. Use the R function head to look at the first 15 elements of InsectSprays.
+
+> head(InsectSprays)
+  count spray
+1    10     A
+2     7     A
+3    20     A
+4    14     A
+5    14     A
+6    12     A
+
+| That's not the answer I was looking for, but try again. Or, type info() for more options.
+
+| Type "head(InsectSprays,15)" at the R prompt.
+
+> head(InsectSprays,15)
+   count spray
+1     10     A
+2      7     A
+3     20     A
+4     14     A
+5     14     A
+6     12     A
+7     10     A
+8     23     A
+9     17     A
+10    20     A
+11    14     A
+12    13     A
+13    11     B
+14    17     B
+15    21     B
+
+| You are quite good my friend!
+
+  |================                                                                          |  18%
+
+| So this dataset contains 72 counts, each associated with a particular different spray. The counts are in the first column and a letter identifying the spray
+| in the second. To save you some typing we've created 6 arrays with just the count data for each spray. The arrays have the names sx, where x is A,B,C,D,E or
+| F. Type one of the names (your choice) of these arrays to see what we're talking about.
+
+> sA
+ [1] 10  7 20 14 14 12 10 23 17 20 14 13
+
+| You are doing so well!
+
+  |===================                                                                       |  21%
+
+| As a check, run the R command summary on the second column of the dataset to see how many entries we have for each spray.  (Recall that the expression M[ ,2]
+| yields the second column of the array M.)
+
+> summary(InsectSprays[,2])
+ A  B  C  D  E  F 
+12 12 12 12 12 12 
+
+| Excellent job!
+
+  |======================                                                                    |  24%
+
+| It's not surprising that with 72 counts we'd have 12 count for each of the 6 sprays. In this lesson we'll consider multilevel factor levels and how we
+| interpret linear models of data with more than 2 factors.
+
+...
+
+  |=========================                                                                 |  27%
+
+| Use the R function sapply to find out the classes of the columns of the data.
+
+> sapply(InsectSprays,class)
+    count     spray 
+"numeric"  "factor" 
+
+| Great job!
+
+  |===========================                                                               |  30%
+
+| The class of the second "spray" column is factor. Recall from the slides that the equation representing the relationship between a particular outcome and
+| several factors contains binary variables, one for each factor. This data has 6 factors so we need 6 dummy variables. Each will indicate if a particular
+| outcome (a count) is associated with a specific factor or category (insect spray).
+
+...
+
+  |==============================                                                            |  33%
+
+| Using R's lm function, generate the linear model in which count is the dependent variable and spray is the independent. Recall that in R formula has the form
+| y ~ x, where y depends on the predictor x. The data set is InsectSprays. Store the model in the variable fit.
+
+> fit <- lm(count ~ spray)
+Error in eval(expr, envir, enclos) : object 'count' not found
+> fit <- lm(count ~ spray, data=InsectSprays)
+
+| Perseverance, that's the answer.
+
+  |=================================                                                         |  36%
+
+| Using R's summary function, look at the coefficients of the model. Recall that these can be accessed with the R construct x$coef.
+
+> fit$coef
+(Intercept)      sprayB      sprayC      sprayD      sprayE      sprayF 
+ 14.5000000   0.8333333 -12.4166667  -9.5833333 -11.0000000   2.1666667 
+
+| Not quite! Try again. Or, type info() for more options.
+
+| Type "summary(fit)$coef" at the R prompt.
+
+> summary(fit)$coef
+               Estimate Std. Error    t value     Pr(>|t|)
+(Intercept)  14.5000000   1.132156 12.8074279 1.470512e-19
+sprayB        0.8333333   1.601110  0.5204724 6.044761e-01
+sprayC      -12.4166667   1.601110 -7.7550382 7.266893e-11
+sprayD       -9.5833333   1.601110 -5.9854322 9.816910e-08
+sprayE      -11.0000000   1.601110 -6.8702352 2.753922e-09
+sprayF        2.1666667   1.601110  1.3532281 1.805998e-01
+
+| You got it!
+
+  |===================================                                                       |  39%
+
+| Notice that R returns a 6 by 4 array. For convenience, store off the first column of this array, the Estimate column, in a variable called est. Remember the R
+| construct for accessing the first column is x[,1].
+
+> est <- summary(fit)$coef[,1]
+
+| Your dedication is inspiring!
+
+  |======================================                                                    |  42%
+
+| Notice that sprayA does not appear explicitly in the list of Estimates. It is there, however, as the first entry in the Estimate column. It is labeled as
+| "(Intercept)". That is because sprayA is the first in the alphabetical list of the levels of the factor, and R by default uses the first level as the
+| reference against which the other levels or groups are compared when doing its t-tests (shown in the third column).
+
+...
+
+  |=========================================                                                 |  45%
+
+| What do the Estimates of this model represent? Of course they are the coefficients of the binary or dummy variables associated with sprays. More importantly,
+| the Intercept is the mean of the reference group, in this case sprayA, and the other Estimates are the distances of the other groups' means from the reference
+| mean. Let's verify these claims now. First compute the mean of the sprayA counts. Remember the counts are all stored in the vectors named sx. Now we're
+| interested in finding the mean of sA.
+
+mean(sA)
+[1] 14.5
+
+| Keep working like that and you'll get there!
+
+  |============================================                                              |  48%
+
+| What do you think the mean of sprayB is?
+
+1: 0.83333
+2: 15.3333
+3: -12.41667
+4: I haven't a clue
+
+Selection: 1
+
+| Not quite right, but keep trying.
+
+| Adding the value of the Intercept to the Estimate for sprayB yields the empirical mean of sprayB.
+
+1: 0.83333
+2: -12.41667
+3: 15.3333
+4: I haven't a clue
+
+Selection: 3
+
+| Excellent job!
+
+  |==============================================                                            |  52%
+
+| Verify this now by using R's mean function to compute the mean of sprayB.
+
+> mean(sB)
+[1] 15.33333
+
+| You are amazing!
+
+  |=================================================                                         |  55%
+
+| Let's generate another model of this data, this time omitting the intercept. We can easily use R's lm function to do this by appending " - 1" to the formula,
+| e.g., count ~ spray - 1. This tells R to omit the first level. Do this now and store the new model in the variable nfit.
+
+> nfit <- lm(count ~ spray - 1, data=InsectSprays)
+
+| Keep working like that and you'll get there!
+
+  |====================================================                                      |  58%
+
+| Now, as before, look at the coefficient portion of the summary of nfit.
+
+> summary(nfit)$coef[,1]
+   sprayA    sprayB    sprayC    sprayD    sprayE    sprayF 
+14.500000 15.333333  2.083333  4.916667  3.500000 16.666667 
+
+| That's not exactly what I'm looking for. Try again. Or, type info() for more options.
+
+| Type "summary(nfit)$coef" at the R prompt.
+
+> summary(nfit)$coef
+        Estimate Std. Error   t value     Pr(>|t|)
+sprayA 14.500000   1.132156 12.807428 1.470512e-19
+sprayB 15.333333   1.132156 13.543487 1.001994e-20
+sprayC  2.083333   1.132156  1.840148 7.024334e-02
+sprayD  4.916667   1.132156  4.342749 4.953047e-05
+sprayE  3.500000   1.132156  3.091448 2.916794e-03
+sprayF 16.666667   1.132156 14.721181 1.573471e-22
+
+| You are amazing!
+
+  |=======================================================                                   |  61%
+
+| Notice that sprayA now appears explicitly in the list of Estimates. Also notice how the values of the columns have changed. The means of all the groups are
+| now explicitly shown in the Estimate column. Remember that previously, with an intercept, sprayA was excluded, its mean was the intercept, and the values for
+| the other sprays (estimates, standard errors, and t-tests) were all computed relative to sprayA, the reference group. Omitting the intercept clearly affected
+| the model.
+
+...
+
+  |=========================================================                                 |  64%
+
+| What values does the Estimate column now show?
+
+1: The variances of all 6 levels
+2: The means of all 6 levels
+3: I have no idea
+
+Selection: 2
+
+| You nailed it! Good job!
+
+  |============================================================                              |  67%
+
+| Without an intercept (reference group) the tests are whether the expected counts (the groups means) are different from zero. Which spray has the least
+| significant result?
+
+1: sprayA
+2: sprayF
+3: sprayC
+4: sprayB
+
+Selection: 2
+
+| Not quite right, but keep trying.
+
+| Which spray has the highest probability?
+
+1: sprayB
+2: sprayC
+3: sprayF
+4: sprayA
+
+Selection: 2
+
+| All that practice is paying off!
+
+  |===============================================================                           |  70%
+
+| Clearly, which level is first is important to the model. If you wanted a different reference group, for instance, to compare sprayB to sprayC, you could refit
+| the model with a different reference group.
+
+...
+
+  |=================================================================                         |  73%
+
+| The R function relevel does precisely this. It re-orders the levels of a factor. We'll do this now. We'll call relevel with two arguments. The first is the
+| factor, in this case InsectSprays$spray, and the second is the level that we want to be first, in this case "C". Store the result in a new variable spray2.
+
+> spray2 <- relevel(InsectSprays$spray, "C")
+
+| You're the best!
+
+  |====================================================================                      |  76%
+
+| Now generate a new linear model and put the result in the variable fit2.
+
+> fit2 <- lm(count ~ spray - 1, data=spray2)
+Error in eval(expr, envir, enclos) : object 'count' not found
+> summary(spray2)
+ C  A  B  D  E  F 
+12 12 12 12 12 12 
+
+| You seem to have misspelled the model's name. I was expecting fit2 but you apparently typed .
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| Type "fit2 <- lm(count ~ spray2, InsectSprays)" at the R prompt.
+
+> fit2 <- lm(count ~ spray2, InsectSprays)
+
+| Keep working like that and you'll get there!
+
+  |=======================================================================                   |  79%
+
+| As before, look at the coef portion of the summary of this new model fit2. See how sprayC is now the intercept (since it doesn't appear explicitly in the
+| list).
+
+> > summary(fit2)$coef
+             Estimate Std. Error  t value     Pr(>|t|)
+(Intercept)  2.083333   1.132156 1.840148 7.024334e-02
+spray2A     12.416667   1.601110 7.755038 7.266893e-11
+spray2B     13.250000   1.601110 8.275511 8.509776e-12
+spray2D      2.833333   1.601110 1.769606 8.141205e-02
+spray2E      1.416667   1.601110 0.884803 3.794750e-01
+spray2F     14.583333   1.601110 9.108266 2.794343e-13
+
+| Excellent work!
+
+  |==========================================================================                |  82%
+
+| According to this new model what is the mean of spray2C?
+
+1: 2.083333
+2: 14.583333
+3: 12.416667
+4: The model doesn't tell me.
+
+Selection: 1
+
+| You are doing so well!
+
+  |============================================================================              |  85%
+
+| Verify your answer with R's mean function using the array sC as the argument.
+
+> mean(sC)
+[1] 2.083333
+
+| Excellent job!
+
+  |===============================================================================           |  88%
+
+| According to this new model what is the mean of spray2A?
+
+1: 14.583333
+2: 12.416667
+3: I don't have a clue
+4: 14.50000
+
+Selection: 4
+
+| Keep working like that and you'll get there!
+
+  |==================================================================================        |  91%
+
+| Remember that with this model sprayC is the reference group, so the t-test statistics (shown in column 3 of the summary coefficients) compare the other sprays
+| to sprayC. These can be computed by hand using the Estimates and standard error from the original model (fit) which used sprayA as the references.
+
+...
+
+  |=====================================================================================     |  94%
+
+| The slides show the details of this but here we'll demonstrate by calculating the spray2B t value.  Subtract fit's sprayC coefficient (fit$coef[3]) from
+| sprayB's (fit$coef[2]) and divide by the standard error which we saw was 1.6011. The result is spray2B's t value. Do this now.
+
+> (fit$coef[3] - fit$coef[2]) / 1.6011
+   sprayC 
+-8.275561 
+
+| Keep trying! Or, type info() for more options.
+
+| Type "(fit$coef[2]-fit$coef[3])/1.6011" at the R prompt.
+
+> (fit$coef[2] - fit$coef[3]) / 1.6011
+  sprayB 
+8.275561 
+
+| That's the answer I was looking for.
+
+  |=======================================================================================   |  97%
+
+| We glossed over some details in this lesson. For instance, counts can never be 0 so the assumption of normality is violated. We'll explore this issue more
+| when we discuss Poisson GLMs. For now be glad that you've concluded this second lesson on multivariable linear models.
+
+...
+
+  |==================================================================================
+  
+| MultiVar_Examples3. (Slides for this and other Data Science courses may be found at github https://github.com/DataScienceSpecialization/courses. If you care
+| to use them, they must be downloaded as a zip file and viewed locally. This lesson corresponds to Regression_Models/02_02_multivariateExamples.)
+
+...
+
+  |====                                                                                                                                                   |   3%
+
+| This is the third and final lesson in which we'll look at regression models with more than one independent variable or predictor. We'll begin with WHO hunger
+| data which we've taken the liberty to load for you. WHO is the World Health Organization and this data concerns young children from around the world and rates
+| of hunger among them which the organization compiled over a number of years. The original csv file was very large and we've subsetted just the rows which
+| identify the gender of the child as either male or female. We've read the data into the data frame "hunger" for you, so you can easily access it.
+
+...
+
+  |========                                                                                                                                               |   5%
+
+| As we did in the last lesson let's first try to get a better understanding of the dataset. Use the R function dim to find the dimensions of hunger.
+
+> dim(hunger)
+[1] 948  13
+
+| Keep working like that and you'll get there!
+
+  |============                                                                                                                                           |   8%
+
+| How many samples does hunger have?
+
+> 948
+[1] 948
+
+| All that hard work is paying off!
+
+  |================                                                                                                                                       |  11%
+
+| Now use the R function names to find out what the 13 columns of hunger represent.
+
+> names(hunger)
+ [1] "X"              "Indicator"      "Data.Source"    "PUBLISH.STATES" "Year"           "WHO.region"     "Country"        "Sex"            "Display.Value" 
+[10] "Numeric"        "Low"            "High"           "Comments"      
+
+| That's the answer I was looking for.
+
+  |====================                                                                                                                                   |  14%
+
+| The Numeric column for a particular row tells us the percentage of children under age 5 who were underweight when that sample was taken. This is one of the
+| columns we'll be focussing on in this lesson. It will be the outcome (dependent variable) for the models we generate.
+
+...
+
+  |========================                                                                                                                               |  16%
+
+| Let's first look at the rate of hunger and see how it's changed over time. Use the R function lm to generate the linear model in which the rate of hunger,
+| Numeric, depends on the predictor, Year. Put the result in the variable fit.
+
+> fit <- lm(Numeric ~ Year, data=hunger)
+
+| Nice work!
+
+  |=============================                                                                                                                          |  19%
+
+| Now look at the coef portion of the summary of fit.
+
+> summary(fit)$coef
+              Estimate  Std. Error   t value     Pr(>|t|)
+(Intercept) 634.479660 121.1445995  5.237375 2.007699e-07
+Year         -0.308397   0.0605292 -5.095012 4.209412e-07
+
+| You are quite good my friend!
+
+  |=================================                                                                                                                      |  22%
+
+| What is the coefficient of hunger$Year?
+
+1: 634.47966
+2: 0.06053
+3: -0.30840
+4: 121.14460
+
+Selection: 3
+
+| All that hard work is paying off!
+
+  |=====================================                                                                                                                  |  24%
+
+| What does the negative Estimate of hunger$Year show?
+
+1: I haven't a clue
+2: As time goes on, the rate of hunger decreases
+3: As time goes on, the rate of hunger increases
+
+Selection: 2
+
+| You nailed it! Good job!
+
+  |=========================================                                                                                                              |  27%
+
+| What does the intercept of the model represent?
+
+1: the number of children questioned in the survey
+2: the number of hungry children at year 0
+3: the percentage of hungry children at year 0
+
+Selection: 3
+
+| You are doing so well!
+
+  |=============================================                                                                                                          |  30%
+
+| Now let's use R's subsetting capability to look at the rates of hunger for the different genders to see how, or even if, they differ.  Once again use the R
+| function lm to generate the linear model in which the rate of hunger (Numeric) for female children depends on Year. Put the result in the variable lmF. You'll
+| have to use the R construct x[hunger$Sex=="Female"] to pick out both the correct Numerics and the correct Years.
+
+> lmF <- lm(Numeric ~ Year, data=hunger[hunger$Sex == "Female"])
+Error in `[.data.frame`(hunger, hunger$Sex == "Female") : 
+  undefined columns selected
+> lmF <- lm(Numeric ~ Year, data=hunger[Sex == "Female"])
+Error in `[.data.frame`(hunger, Sex == "Female") : object 'Sex' not found
+> lmF <- lm(Numeric ~ Year, data=subset(hunger, [Sex == "Female"]))
+Error: unexpected '[' in "lmF <- lm(Numeric ~ Year, data=subset(hunger, ["
+> lmF <- lm(Numeric ~ Year, data=subset(hunger, Sex == "Female"))
+
+| You're close...I can feel it! Try it again. Or, type info() for more options.
+
+| Type lmF <- lm(hunger$Numeric[hunger$Sex=="Female"] ~ hunger$Year[hunger$Sex=="Female"]) at the R prompt or more simply lmF <- lm(Numeric[Sex=="Female"] ~
+| Year[Sex=="Female"],hunger)
+
+> lmF <- lm(Numeric[Sex == "Female"] ~ Year[Sex == "Female"], data=hunger)
+
+| You got it right!
+
+  |=================================================                                                                                                      |  32%
+
+| Do the same for male children and put the result in lmM.
+
+> lmM <- lm(Numeric[Sex == "Male"] ~ Year[Sex == "Male"], data=hunger)
+
+| Keep up the great work!
+
+  |=====================================================                                                                                                  |  35%
+
+| Now we'll plot the data points and fitted lines using different colors to distinguish between males (blue) and females (pink).
+
+...
+
+  |=========================================================                                                                                              |  38%
+
+| We can see from the plot that the lines are not exactly parallel. On the right side of the graph (around the year 2010) they are closer together than on the
+| left side (around 1970). Since they aren't parallel, their slopes must be different, though both are negative. Of the following R expressions which would
+| confirm that the slope for males is negative?
+
+1: lmM$coef[2]
+2: lmF$coef[2]
+3: lmM$coef[1]
+
+Selection: 1
+
+| Keep working like that and you'll get there!
+
+  |=============================================================                                                                                          |  41%
+
+| Now instead of separating the data by subsetting the samples by gender we'll use gender as another predictor to create the linear model lmBoth. Recall that to
+| do this in R we place a plus sign "+" between the independent variables, so the formula looks like dependent ~ independent1 + independent2.
+
+...
+
+  |=================================================================                                                                                      |  43%
+
+| Create lmBoth now. Numeric is the dependent, Year and Sex are the independent variables. The data is "hunger". For lmBoth, make sure Year is first and Sex is
+| second.
+
+> lmBoth <- lm(Numeric ~ Year + Sex, data=hunger)
+
+| You got it right!
+
+  |=====================================================================                                                                                  |  46%
+
+| Now look at the summary of lmBoth with the R command summary.
+
+> summary(lmBoth)
+
+Call:
+lm(formula = Numeric ~ Year + Sex, data = hunger)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-25.472 -11.297  -1.848   7.058  45.990 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 633.5283   120.8950   5.240 1.98e-07 ***
+Year         -0.3084     0.0604  -5.106 3.99e-07 ***
+SexMale       1.9027     0.8576   2.219   0.0267 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 13.2 on 945 degrees of freedom
+Multiple R-squared:  0.03175,	Adjusted R-squared:  0.0297 
+F-statistic: 15.49 on 2 and 945 DF,  p-value: 2.392e-07
+
+
+| You are amazing!
+
+  |=========================================================================                                                                              |  49%
+
+| Notice that three estimates are given, the intercept, one for Year and one for Male. What happened to the estimate for Female? Note that Male and Female are
+| categorical variables hence they are factors in this model. Recall from the last lesson (and slides) that R treats the first (alphabetical) factor as the
+| reference and its estimate is the intercept which represents the percentage of hungry females at year 0. The estimate given for the factor Male is a distance
+| from the intercept (the estimate of the reference group Female). To calculate the percentage of hungry males at year 0 you have to add together the intercept
+| and the male estimate given by the model.
+
+...
+
+  |==============================================================================                                                                         |  51%
+
+| What percentage of young Males were hungry at year 0?
+
+1: 633.2199
+2: 635.431
+3: 1.9027
+4: I can't tell since the data starts at 1970.
+
+Selection: 2
+
+| You are quite good my friend!
+
+  |==================================================================================                                                                     |  54%
+
+| What does the estimate for hunger$Year represent?
+
+1: the annual decrease in percentage of hungry males
+2: the annual decrease in percentage of hungry children of both genders
+3: the annual decrease in percentage of hungry females
+
+Selection: 2
+
+| That's the answer I was looking for.
+
+  |======================================================================================                                                                 |  57%
+
+| Now we'll replot the data points along with two new lines using different colors.  The red line will have the female intercept and the blue line will have the
+| male intercept.
+
+...
+
+  |==========================================================================================                                                             |  59%
+
+| The lines appear parallel. This is because
+
+1: they have the same slope
+2: I have no idea
+3: they have slopes that are very close
+
+Selection: 3
+
+| Keep trying!
+
+| By definition parallel lines have the same slope.
+
+1: they have the same slope
+2: I have no idea
+3: they have slopes that are very close
+
+Selection: 1
+
+| You are really on a roll!
+
+  |==============================================================================================                                                         |  62%
+
+| Now we'll consider the interaction between year and gender to see how that affects changes in rates of hunger. To do this we'll add a third term to the
+| predictor portion of our model formula, the product of year and gender.
+
+...
+
+  |==================================================================================================                                                     |  65%
+
+| Create the model lmInter. Numeric is the outcome and the three predictors are Year, Sex, and Sex*Year. The data is "hunger".
+
+> lmInter <- lm(Numeric ~ Year + Sex + Sex*Year, data = hunger)
+
+| That's the answer I was looking for.
+
+  |======================================================================================================                                                 |  68%
+
+| Now look at the summary of lmInter with the R command summary.
+
+> summary(lmInter)
+
+Call:
+lm(formula = Numeric ~ Year + Sex + Sex * Year, data = hunger)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-25.913 -11.248  -1.853   7.087  46.146 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  603.50580  171.05519   3.528 0.000439 ***
+Year          -0.29340    0.08547  -3.433 0.000623 ***
+SexMale       61.94772  241.90858   0.256 0.797946    
+Year:SexMale  -0.03000    0.12087  -0.248 0.804022    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 13.21 on 944 degrees of freedom
+Multiple R-squared:  0.03181,	Adjusted R-squared:  0.02874 
+F-statistic: 10.34 on 3 and 944 DF,  p-value: 1.064e-06
+
+
+| All that practice is paying off!
+
+  |==========================================================================================================                                             |  70%
+
+| What is the percentage of hungry females at year 0?
+
+1: 61.94772
+2: 603.5058
+3: The model doesn't say.
+
+Selection: 2
+
+| Perseverance, that's the answer.
+
+  |==============================================================================================================                                         |  73%
+
+| What is the percentage of hungry males at year 0?
+
+1: 665.4535
+2: 61.94772
+3: The model doesn't say.
+4: 603.5058
+
+Selection: 1
+
+| Excellent work!
+
+  |==================================================================================================================                                     |  76%
+
+| What is the annual change in percentage of hungry females?
+
+1: -0.29340
+2: -0.03000
+3: 0.08547
+4: The model doesn't say.
+
+Selection: 1
+
+| You are doing so well!
+
+  |======================================================================================================================                                 |  78%
+
+| What is the annual change in percentage of hungry males?
+
+| The estimate associated with Year:SexMale represents the distance of the annual change in percent of males from that of females.
+
+1: 0.12087
+2: -0.03000
+3: The model doesn't say.
+4: -0.32340
+
+Selection: 4
+
+| That's correct!
+
+  |==========================================================================================================================                             |  81%
+
+| Now we'll replot the data points along with two new lines using different colors to distinguish between the genders.
+
+...
+
+  |===============================================================================================================================                        |  84%
+
+| Which line has the steeper slope?
+
+1: They look about the same
+2: Male
+3: Female
+
+Selection: 2
+
+| You are really on a roll!
+
+  |===================================================================================================================================                    |  86%
+
+| Finally, we note that things are a little trickier when we're dealing with an interaction between predictors which are continuous (and not factors). The
+| slides show the underlying algebra, but we can summarize.
+
+...
+
+  |=======================================================================================================================================                |  89%
+
+| Suppose we have two interacting predictors and one of them is held constant. The expected change in the outcome for a unit change in the other predictor is
+| the coefficient of that changing predictor + the coefficient of the interaction * the value of the predictor held constant.
+
+...
+
+  |===========================================================================================================================================            |  92%
+
+| Suppose the linear model is Hi = b0 + (b1*Ii) + (b2*Yi)+ (b3*Ii*Yi) + ei. Here the H's represent the outcomes, the I's and Y's the predictors, neither of
+| which is a category, and the b's represent the estimated coefficients of the predictors. We can ignore the e's which represent the residuals of the model.
+| This equation models a continuous interaction since neither I nor Y is a category or factor. Suppose we fix I at some value and let Y vary.
+
+...
+
+  |===============================================================================================================================================        |  95%
+
+| Which expression represents the change in H per unit change in Y given that I is fixed at 5?
+
+1: b0+b2
+2: b1+5*b3
+3: b2+b3*Y
+4: b2+b3*5
+
+Selection: 2
+
+| Nice try, but that's not exactly what I was hoping for. Try again.
+
+| The expected change in the outcome is the estimate of the changing predictor (Y) + the estimate of the interaction (b3) * the value of the predictor held
+| constant (5).
+
+1: b2+b3*Y
+2: b2+b3*5
+3: b1+5*b3
+4: b0+b2
+
+Selection: 3
+
+| Try again. Getting it right on the first try is boring anyway!
+
+| The expected change in the outcome is the estimate of the changing predictor (Y) + the estimate of the interaction (b3) * the value of the predictor held
+| constant (5).
+
+1: b2+b3*Y
+2: b0+b2
+3: b1+5*b3
+4: b2+b3*5
+
+Selection: 4
+
+| Excellent job!
+
+  |===================================================================================================================================================    |  97%
+
+| Congratulations! You've finished this final lesson in multivariable regression models.
+
+...
+
+  |=======================================================================================================================================================| 100%
+  
+| Residuals, Diagnostics, and Variation. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be downloaded as a zip file and viewed locally. This lesson
+| corresponds to Regression_Models/02_04_residuals_variation_diagnostics.)
+
+...
+
+  |=====                                                                                                                                                  |   3%
+
+| In the accompanying figure there is a fairly obvious outlier. However obvious, it does not affect the fit very much as can be seen by comparing the orange
+| line with the black. The orange line represents a fit in which the outlier is included in the data set, and the black line represents a fit in which the
+| outlier is excluded. Including this outlier does not change the fit very much, so it is said to lack influence.
+
+...
+
+  |=========                                                                                                                                              |   6%
+
+| This next figure also has a fairly obvious outlier, but in this case including the outlier changes the fit a great deal. The slope and the residuals of the
+| orange line are very different than those of the black line. This outlier is said to be influential.
+
+...
+
+  |==============                                                                                                                                         |   9%
+
+| Outliers may or may not belong in the data. They may represent real events or they may be spurious. In any case, they should be examined. In order to spot
+| them, R provides various diagnostic plots and measures of influence. In this lesson we'll illustrate their meanings and use. The basic technique is to examine
+| the effects of leaving one sample out, as we did in comparing the black and orange lines above. We'll use the influential outlier to illustrate, since leaving
+| it out has clear effects.
+
+...
+
+  |==================                                                                                                                                     |  12%
+
+| The influential outlier is in a data frame named out2. It has two columns, labeled y and x, respectively. To begin, create a model named fit using fit <- lm(y
+| ~ x, out2) or an equivalent expression.
+
+> fit <- lm(y ~ x, out2)
+
+| You are doing so well!
+
+  |=======================                                                                                                                                |  15%
+
+| The simplest diagnostic plot displays residuals versus fitted values. Residuals should be uncorrelated with the fit, independent and (almost) identically
+| distributed with mean zero. Enter plot(fit, which=1) at the R prompt to see if this is the case.
+
+> plot(fit, which=1)
+
+| That's a job well done!
+
+  |===========================                                                                                                                            |  18%
+
+| Do the residuals appear uncorrelated with the fit?
+
+1: Yes
+2: No. There is a linear pattern involving all but one residual and the fit.
+
+Selection: 1
+
+| Not quite right, but keep trying.
+
+| There is an obvious linear relation between fit and most residuals.
+
+1: Yes
+2: No. There is a linear pattern involving all but one residual and the fit.
+
+Selection: 2
+
+| Your dedication is inspiring!
+
+  |================================                                                                                                                       |  21%
+
+| The Residuals vs Fitted plot labels certain points with their row names or numbers, numbers in our case. Which of the three labeled points would you guess is
+| our influential outlier?
+
+1: 50
+2: 1
+3: 13
+
+Selection: 2
+
+| That's the answer I was looking for.
+
+  |=====================================                                                                                                                  |  24%
+
+| Our influential outlier is in row 1 of the data. To exclude it is just a matter using out2[-1, ] rather than out2 as data. Create a second model, named fitno
+| for 'fit with no outlier', which excludes the outlier.
+
+> fitno <- lm(y ~ x, out2[-1,])
+
+| Excellent work!
+
+  |=========================================                                                                                                              |  27%
+
+| Display a Residuals vs Fitted plot for fitno. Remember to use which=1.
+
+> plot(fitno, which=1)
+
+| You are doing so well!
+
+  |==============================================                                                                                                         |  30%
+
+| This plot has none of the patterned appearance of the first. It looks as we would expect if residuals were independently and (almost) identically distributed
+| with zero mean, and were uncorrelated with the fit.
+
+...
+
+  |==================================================                                                                                                     |  33%
+
+| The change which inclusion or exclusion of a sample induces in coefficents is a simple measure of its influence. Subtract coef(fitno) from coef(fit) to see
+| the change induced by including the influential first sample.
+
+> coef(fit - coef(fitno))
+Error in fit - coef(fitno) : non-numeric argument to binary operator
+> coef(fit) - coef(fitno)
+(Intercept)           x 
+-0.01167866 -0.53363019 
+
+| Excellent work!
+
+  |=======================================================                                                                                                |  36%
+
+| dfbeta: The function, dfbeta, does the equivalent calculation for every sample in the data. The first row of dfbeta(fit) should match the difference we've
+| just calculated. The second row is a similar calculation for the second sample, and so on. Since dfbeta returns a large matrix, use either head(dfbeta(fit))
+| or View(dfbeta(fit)) to examine the result.
+
+> head(dfbeta(fit))
+   (Intercept)             x
+1 -0.011678662 -0.5336301857
+2  0.008636967  0.0045759242
+3  0.010323864 -0.0003509441
+4  0.003122096 -0.0033664451
+5  0.001975966 -0.0008297575
+6  0.002230518 -0.0005867041
+
+| Perseverance, that's the answer.
+
+  |===========================================================                                                                                            |  39%
+
+| Comparing the first row with those below it, we see that the first sample has a much larger effect on the slope (the x column) than other samples. In fact,
+| the magnitude of its effect is about 100 times that of any other point. Its effect on the intercept is not very distinctive essentially because its y
+| coordinate is 0, the mean of the other samples.
+
+...
+
+  |================================================================                                                                                       |  42%
+
+| When a sample is included in a model, it pulls the regression line closer to itself (orange line) than that of the model which excludes it (black line.) Its
+| residual, the difference between its actual y value and that of a regression line, is thus smaller in magnitude when it is included (orange dots) than when it
+| is omitted (black dots.) The ratio of these two residuals, orange to black, is therefore small in magnitude for an influential sample. For a sample which is
+| not influential the ratio would be close to 1. Hence, 1 minus the ratio is a measure of influence, near 0 for points which are not influential, and near 1 for
+| points which are.
+
+...
+
+  |=====================================================================                                                                                  |  45%
+
+| This measure is sometimes called influence, sometimes leverage, and sometimes hat value. Since it is 1 minus the ratio of two residuals, to calculate it from
+| scratch we must first obtain the two residuals. The ratio's numerator (orange dots) is the residual of the first sample of the model we called fit. The model
+| fitno, which excludes this sample, also excludes its residual, so we will have to calculate its value. This is easily done. We use R's predict function to
+| calculate fitno's predicted value of y and subtract it from the actual value. Use the expression resno <- out2[1, "y"] - predict(fitno, out2[1,]) to do the
+| calculation.
+
+> resno <- out2[1, "y"] - predict(fitno, out2[1,])
+
+| Your dedication is inspiring!
+
+  |=========================================================================                                                                              |  48%
+
+| Now calculate the influence of our outlier using 1-resid(fit)[1]/resno or an equivalent expression.
+
+> 1-resid(fit)[1]/resno
+        1 
+0.6311547 
+
+| All that hard work is paying off!
+
+  |==============================================================================                                                                         |  52%
+
+| hatvalues: The function, hatvalues, performs for every sample a calculation equivalent to the one you've just done. Thus the first entry of hatvalues(fit)
+| should match the value which you have just calculated. Since there are quite a few samples, use head(hatvalues(fit)) or View(hatvalues(fit)) to compare the
+| influence measure of our outlier to that of some other samples.
+
+> head(hatvalues(fit))
+         1          2          3          4          5          6 
+0.63115474 0.02324999 0.01962520 0.04326099 0.02255531 0.02071441 
+
+| All that practice is paying off!
+
+  |==================================================================================                                                                     |  55%
+
+| Residuals of individual samples are sometimes treated as having the same variance, which is estimated as the sample variance of the entire set of residuals.
+| Theoretically, however, residuals of individual samples have different variances and these differences can become large in the presence of outliers.
+| Standardized and Studentized residuals attempt to compensate for this effect in two slightly different ways. Both use hat values.
+
+...
+
+  |=======================================================================================                                                                |  58%
+
+| We'll consider standardized residuals first. To begin, calculate the sample standard deviation of fit's residual by dividing fit's deviance, i.e., its
+| residual sum of squares, by the residual degrees of freedom and taking the square root. Store the result in a variable called sigma.
+
+> sigma <- sqrt( deviance(fit$residuals) / (length(out2) - 1))
+Error: $ operator is invalid for atomic vectors
+> summary(fit)
+
+Call:
+lm(formula = y ~ x, data = out2)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.56609 -0.25525 -0.00038  0.25467  1.35871 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.02986    0.07035  -0.424 0.673166    
+x            0.31919    0.07981   3.999 0.000214 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4966 on 49 degrees of freedom
+Multiple R-squared:  0.2461,	Adjusted R-squared:  0.2307 
+F-statistic:    16 on 1 and 49 DF,  p-value: 0.0002138
+
+
+| Nice try, but that's not exactly what I was hoping for. Try again. Or, type info() for more options.
+
+| Enter sigma <- sqrt(deviance(fit)/df.residual(fit)) or an equivalent expression at the R prompt.
+
+> /df.residual(fit)
+Error: unexpected '/' in "/"
+> df.residual(fit)
+[1] 49
+
+| You're close...I can feel it! Try it again. Or, type info() for more options.
+
+| Enter sigma <- sqrt(deviance(fit)/df.residual(fit)) or an equivalent expression at the R prompt.
+
+> sigma <- sqrt( deviance(fit$residuals) / (length(out2) - 2))
+Error: $ operator is invalid for atomic vectors
+> sigma <- sqrt( deviance(fit) / (length(out2) - 2))
+
+| Give it another try. Or, type info() for more options.
+
+| Enter sigma <- sqrt(deviance(fit)/df.residual(fit)) or an equivalent expression at the R prompt.
+
+> sigma <- sqrt(deviance(fit)/df.residual(fit))
+
+| You are really on a roll!
+
+  |============================================================================================                                                           |  61%
+
+| Ordinarily we would just divide fit's residual (which has mean 0) by sigma. In the present case we multiply sigma times sqrt(1-hatvalues(fit)) to estimate
+| standard deviations of individual samples. Thus, instead of dividing resid(fit) by sigma, we divide by sigma*sqrt(1-hatvalues(fit)). The result is called the
+| standardized residual. Compute fit's standardized residual and store it in a variable named rstd.
+
+> rstd <- sigma * sqrt(1-hatvalues(fit))
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| Enter rstd <- resid(fit)/(sigma * sqrt(1-hatvalues(fit))) or an equivalent expression at the R prompt.
+
+> rstd <- resid(fit)/(sigma * sqrt(1-hatvalues(fit)))
+
+| Perseverance, that's the answer.
+
+  |================================================================================================                                                       |  64%
+
+| rstandard: The function, rstandard, computes the standardized residual which we have just computed step by step. Use head(cbind(rstd, rstandard(fit))) or
+| View(cbind(rstd, rstandard(fit))) to compare the two calculations.
+
+> head(cbind(rstd, rstandard(fit)))
+        rstd           
+1 -5.1928156 -5.1928156
+2  0.9389601  0.9389601
+3  1.0450409  1.0450409
+4  0.2682743  0.2682743
+5  0.1893339  0.1893339
+6  0.2186961  0.2186961
+
+| Perseverance, that's the answer.
+
+  |=====================================================================================================                                                  |  67%
+
+| A Scale-Location plot shows the square root of standardized residuals against fitted values. Use plot(fit, which=3) to display it.
+
+> plot(fit, which=3)
+
+| Keep up the great work!
+
+  |=========================================================================================================                                              |  70%
+
+| Most of the diagnostic statistics under discussion were developed because of perceived shortcomings of other diagnostics and because their distributions under
+| a null hypothesis could be characterized. The assumption that residuals are approximately normal is implicit in such characterizations. Since standardized
+| residuals adjust for individual residual variances, a QQ plot of standardized residuals against normal with constant variance is of interest. Use plot(fit,
+| which=2) to display this diagnostic plot.
+
+> plot(fit, which=2)
+
+| You nailed it! Good job!
+
+  |==============================================================================================================                                         |  73%
+
+| Look at the outlier's standardized residual, labeled 1 on the Normal QQ plot. About how many standard deviations from the mean is it?
+
+1: About -2
+2: About -5
+
+Selection: 1
+
+| One more time. You can do it!
+
+| This would be its position on the vertical axis.
+
+1: About -2
+2: About -5
+
+Selection: 2
+
+| That's correct!
+
+  |==================================================================================================================                                     |  76%
+
+| Studentized residuals, (sometimes called externally Studentized residuals,) estimate the standard deviations of individual residuals using, in addition to
+| individual hat values, the deviance of a model which leaves the associated sample out. We'll illustrate using the outlier. Recalling that the model we called
+| fitno omits the outlier sample, calculate the sample standard deviation of fitno's residual by dividing its deviance, by its residual degrees of freedom and
+| taking the square root. Store the result in a variable called sigma1.
+
+> sigma2 <- sqrt(deviance(fitno)/df.residual(fitno))
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| Enter sigma1 <- sqrt(deviance(fitno)/df.residual(fitno)) or an equivalent expression at the R prompt.
+
+> sigma1 <- sqrt(deviance(fitno)/df.residual(fitno))
+
+| Keep working like that and you'll get there!
+
+  |=======================================================================================================================                                |  79%
+
+| Calculate the Studentized residual for the outlier sample by dividing resid(fit)[1] by the product of sigma1 and sqrt(1-hatvalues(fit)[1]). There is no need
+| to store this in a variable.
+
+> resid(fit)[1] / (sigma1 * sqrt(1-hatvalues(fit)[1]))
+        1 
+-7.664261 
+
+| Excellent work!
+
+  |============================================================================================================================                           |  82%
+
+| rstudent: The function, rstudent, calculates Studentized residuals for each sample using a procedure equivalent to that which we just used for the outlier.
+| Thus rstudent(fit)[1] should match the value we calculated in the previous question. Use head(rstudent(fit)) or View(rstudent(fit)) to verify this and to
+| compare the Studentized residual of the outlier with those of other samples.
+
+> head(rstudent(fit))
+         1          2          3          4          5          6 
+-7.6642608  0.9378046  1.0460451  0.2657179  0.1874606  0.2165588 
+
+| Great job!
+
+  |================================================================================================================================                       |  85%
+
+| Cook's distance is the last influence measure we will consider. It is essentially the sum of squared differences between values fitted with and without a
+| particular sample. It is normalized (divided by) residual sample variance times the number of predictors which is 2 in our case (the intercept and x.) It
+| essentially tells how much a given sample changes a model. We'll illustrate once again by calculating Cook's distance for the outlier.
+
+...
+
+  |=====================================================================================================================================                  |  88%
+
+| We'll begin by calculating the difference in predicted values between fit and fitno, the models which respectively include and omit the outlier. This is most
+| easily done by subtracting predict(fit, out2) from predict(fitno, out2). Store the difference in a variable named dy.
+
+> dy <- predict(fitno, out2) - predict(fit, out2)
+
+| All that practice is paying off!
+
+  |=========================================================================================================================================              |  91%
+
+| Recall that we calculated the sample standard deviation of fit's residual, sigma, earlier. Divide the summed squares of dy by 2*sigma^2 to calculate the
+| outlier's Cook's distance. There is no need to store the result in a variable.
+
+> summary(dy)
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+-0.69640 -0.15530  0.02411  0.08325  0.24360  2.68000 
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| Enter sum(dy^2)/(2*sigma^2) or an equivalent expression at the R prompt.
+
+> sum(dy^2)/(2*sigma^2)
+[1] 23.07105
+
+| Keep working like that and you'll get there!
+
+  |==============================================================================================================================================         |  94%
+
+| cooks.distance: The function, cooks.distance, will calculate Cook's distance for each sample. Rather than verify that cooks.distance(fit)[1] is equal to the
+| value just calculated, because that sort of thing must be getting tedious by now, display a diagnostic plot which uses Cook's distance using plot(fit,
+| which=5).
+
+> plot(fit, which=5)
+
+| You are amazing!
+
+  |==================================================================================================================================================     |  97%
+
+| That concludes swirl's coverage of Residuals, Diagnostics, and Variation. The HTML5 slides for this as well as other units in the Johns Hopkins Data Science
+| Specialization can be found here: https://github.com/DataScienceSpecialization/courses. They must be downloaded and viewed locally.
+
+...
+
+  |=======================================================================================================================================================| 100%
+
+
+

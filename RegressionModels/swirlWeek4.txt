@@ -1,0 +1,1436 @@
+| Variance Inflation Factors. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be downloaded
+| as a zip file and viewed locally. This lesson corresponds to
+| Regression_Models/02_04_residuals_variation_diagnostics.)
+
+...
+
+  |====                                                                                            |   4%
+
+| In modeling, our interest lies in parsimonious, interpretable representations of the data that enhance
+| our understanding of the phenomena under study. Omitting variables results in bias in the coefficients
+| of interest - unless their regressors are uncorrelated with the omitted ones. On the other hand,
+| including any new variables increases (actual, not estimated) standard errors of other regressors. So
+| we don't want to idly throw variables into the model. This lesson is about the second of these two
+| issues, which is known as variance inflation.
+
+...
+
+  |========                                                                                        |   8%
+
+| We shall use simulations to illustrate variance inflation. The source code for these simulations is in
+| a file named vifSims.R which I have copied into your working directory and tried to display in your
+| source code editor. If I've failed to display it, you should open it manually.
+
+...
+
+  |============                                                                                    |  12%
+
+| Find the function, makelms, at the top of vifSims.R. The final expression in makelms creates 3 linear
+| models. The first, lm(y ~ x1), predicts y in terms of x1, the second predicts y in terms of x1 and x2,
+| the third in terms of all three regressors. The second coefficient of each model, for instance
+| coef(lm(y ~ x1))[2], is extracted and returned in a 3-long vector. What does this second coefficient
+| represent?
+
+1: The coefficient of the intercept.
+2: The coefficient of x1.
+3: The coefficient of x2.
+
+Selection: 1
+
+| You're close...I can feel it! Try it again.
+
+| The first coefficient is that of the intercept. The rest are in the order given by the formula.
+
+1: The coefficient of x2.
+2: The coefficient of x1.
+3: The coefficient of the intercept.
+
+Selection: 2
+
+| You got it right!
+
+  |================                                                                                |  17%
+
+| In makelms, the simulated dependent variable, y, depends on which of the regressors?
+
+1: x1 and x2
+2: x1, x2, and x3
+3: x1
+
+Selection: 3
+
+| You are quite good my friend!
+
+  |====================                                                                            |  21%
+
+| In vifSims.R, find the functions, rgp1() and rgp2(). Both functions generate 3 regressors, x1, x2, and
+| x3. Compare the lines following the comment Point A in rgp1() with those following Point C in rgp2().
+| Which of the following statements about x1, x2, and x3 is true?
+
+1: x1, x2, and x3 are uncorrelated in rgp1(), but not in rgp2().
+2: x1, x2, and x3 are correlated in both rgp1() and rgp2().
+3: x1, x2, and x3 are correlated in rgp1(), but not in rgp1().
+4: x1, x2, and x3 are uncorrelated in both rgp1() and rgp2().
+
+Selection: 1
+
+| You are doing so well!
+
+  |========================                                                                        |  25%
+
+| In the line following Point B in rgp1(), the function maklms(x1, x2, x3) is applied 1000 times. Each
+| time it is applied, it simulates a new dependent variable, y, and returns estimates of the coefficient
+| of x1 for each of the 3 models, y ~ x1, y ~ x1 + x2, and y ~ x1 + x2 + x3. It thus computes 1000
+| estimates of the 3 coefficients, collecting the results in 3x1000 array, beta. In the next line, the
+| expression, apply(betas, 1, var), does which of the following?
+
+1: Computes the variance of each row.
+2: Computes the variance of each column.
+
+Selection: 1
+
+| Excellent job!
+
+  |============================                                                                    |  29%
+
+| The function rgp1() computes the variance in estimates of the coefficient of x1 in each of the three
+| models, y ~ x1, y ~ x1 + x2, and y ~ x1 + x2 + x3. (The results are rounded to 5 decimal places for
+| convenient viewing.) This simulation approximates the variance (i.e., squared standard error) of x1's
+| coefficient in each of these three models. Recall that variance inflation is due to correlated
+| regressors and that in rgp1() the regressors are uncorrelated. Run the simulation rgp1() now. Be
+| patient. It takes a while.
+
+> rgp1()
+[1] "Processing. Please wait."
+     x1      x1      x1 
+0.00110 0.00111 0.00112 
+
+| Nice work!
+
+  |================================                                                                |  33%
+
+| The variances in each of the three models are approximately equal, as expected, since the other
+| regressors, x2 and x3, are uncorrelated with the regressor of interest, x1. However, in rgp2(), x2 and
+| x3 both depend on x1, so we should expect an effect. From the expressions assigning x2 and x3 which
+| follow Point C, which is more strongly correlated with x1?
+
+1: x3
+2: x2
+
+Selection: 2
+
+| Not quite right, but keep trying.
+
+| In vifSims.R, look at the lines following Point C again, and note that 1/sqrt(2) in the expression for
+| x2 is much smaller than 0.95 in the expression for x3.
+
+1: x2
+2: x3
+
+Selection: 2
+
+| Great job!
+
+  |====================================                                                            |  38%
+
+| Run rgp2() to simulate standard errors in the coefficient of x1 for cases in which x1 is correlated
+| with the other regressors
+
+> rgp2()
+[1] "Processing. Please wait."
+     x1      x1      x1 
+0.00110 0.00240 0.00981 
+
+| Nice work!
+
+  |========================================                                                        |  42%
+
+| In this case, variance inflation due to correlated regressors is clear, and is most pronounced in the
+| third model, y ~ x1 + x2 + x3, since x3 is the regressor most strongly correlated with x1.
+
+...
+
+  |============================================                                                    |  46%
+
+| In these two simulations we had 1000 samples of estimated coefficients, hence could calculate sample
+| variance in order to illustrate the effect. In a real case, we have only one set of coefficients and we
+| depend on theoretical estimates. However, theoretical estimates contain an unknown constant of
+| proportionality. We therefore depend on ratios of theoretical estimates called Variance Inflation
+| Factors, or VIFs.
+
+...
+
+  |================================================                                                |  50%
+
+| A variance inflation factor (VIF) is a ratio of estimated variances, the variance due to including the
+| ith regressor, divided by that due to including a corresponding ideal regressor which is uncorrelated
+| with the others. VIF's can be calculated directly, but the car package provides a convenient method for
+| the purpose as we will illustrate using the Swiss data from the datasets package.
+
+...
+
+  |====================================================                                            |  54%
+
+| According to its documentation, the Swiss data set consists of a standardized fertility measure and
+| socioeconomic indicators for each of 47 French-speaking provinces of Switzerland in about 1888 when
+| Swiss fertility rates began to fall. Type head(swiss) or View(swiss) to examine the data.
+
+> head(swidd)
+Error in head(swidd) : object 'swidd' not found
+> head(swiss)
+             Fertility Agriculture Examination Education Catholic Infant.Mortality
+Courtelary        80.2        17.0          15        12     9.96             22.2
+Delemont          83.1        45.1           6         9    84.84             22.2
+Franches-Mnt      92.5        39.7           5         5    93.40             20.2
+Moutier           85.8        36.5          12         7    33.77             20.3
+Neuveville        76.9        43.5          17        15     5.16             20.6
+Porrentruy        76.1        35.3           9         7    90.57             26.6
+
+| Nice work!
+
+  |========================================================                                        |  58%
+
+| Fertility was thought to depend on five socioeconomic factors: the percent of males working in
+| Agriculture, the percent of draftees receiving the highest grade on the army's Examination, the percent
+| of draftees with Education beyond primary school, the percent of the population which was Roman
+| Catholic, and the rate of Infant Mortality in the province. Use linear regression to model Fertility in
+| terms of these five regressors and an intercept. Store the model in a variable named mdl.
+
+> md1 <- lm(Fertility ~ Agriculture + Examination + Catholic + Infant.Mortality + 1)
+Error in eval(expr, envir, enclos) : object 'Fertility' not found
+> md1 <- lm(Fertility ~ Agriculture + Examination + Catholic + Infant.Mortality + 1, data = swidd)
+Error in is.data.frame(data) : object 'swidd' not found
+> md1 <- lm(Fertility ~ Agriculture + Examination + Catholic + Infant.Mortality + 1, data = swiss)
+
+| You seem to have misspelled the model's name. I was expecting mdl but you apparently typed md1.
+
+| Nice try, but that's not exactly what I was hoping for. Try again. Or, type info() for more options.
+
+| Entering mdl <- lm(Fertility ~ ., swiss) is the easiest way to model Fertility as a function of all
+| five regressors. The dot after the ~ means to include all (including an intercept.)
+
+> mdl <- lm(Fertility ~ ., swiss)
+
+| That's correct!
+
+  |============================================================                                    |  62%
+
+| Calculate the VIF's for each of the regressors using vif(mdl).
+
+> vif(mdl)
+     Agriculture      Examination        Education         Catholic Infant.Mortality 
+        2.284129         3.675420         2.774943         1.937160         1.107542 
+
+| Your dedication is inspiring!
+
+  |================================================================                                |  67%
+
+| These VIF's show, for each regression coefficient, the variance inflation due to including all the
+| others. For instance, the variance in the estimated coefficient of Education is 2.774943 times what it
+| might have been if Education were not correlated with the other regressors. Since Education and score
+| on an Examination are likely to be correlated, we might guess that most of the variance inflation for
+| Education is due to including Examination.
+
+...
+
+  |====================================================================                            |  71%
+
+| Make a second linear model of Fertility in which Examination is omitted, but the other four regressors
+| are included. Store the result in a variable named mdl2.
+
+> mdl2 <- lm(Fertility ~ . - Examination, swiss)
+
+| You are quite good my friend!
+
+  |========================================================================                        |  75%
+
+| Calculate the VIF's for this model using vif(mdl2).
+
+> vif(mdl2)
+     Agriculture        Education         Catholic Infant.Mortality 
+        2.147153         1.816361         1.299916         1.107528 
+
+| Great job!
+
+  |============================================================================                    |  79%
+
+| As expected, omitting Examination has markedly decreased the VIF for Education, from 2.774943 to
+| 1.816361. Note that omitting Examination has had almost no effect the VIF for Infant Mortality. Chances
+| are Examination and Infant Mortality are not strongly correlated. Now, before finishing this lesson,
+| let's review several significant points.
+
+...
+
+  |================================================================================                |  83%
+
+| A VIF describes the increase in the variance of a coefficient due to the correlation of its regressor
+| with the other regressors. What is the relationship of a VIF to the standard error of its coefficient?
+
+1: There is no relationship.
+2: They are the same.
+3: VIF is the square of standard error inflation.
+
+Selection: 2
+
+| You're close...I can feel it! Try it again.
+
+| Variance is the square of standard deviation, and standard error is the standard deviation of an
+| estimated coefficient.
+
+1: There is no relationship.
+2: They are the same.
+3: VIF is the square of standard error inflation.
+
+Selection: 3
+
+| That's the answer I was looking for.
+
+  |====================================================================================            |  88%
+
+| If a regressor is strongly correlated with others, hence will increase their VIF's, why shouldn't we
+| just exclude it?
+
+1: Excluding it might bias coefficient estimates of regressors with which it is correlated.
+2: We should never exclude anything.
+3: We should always exclude it.
+
+Selection: 1
+
+| Nice work!
+
+  |========================================================================================        |  92%
+
+| The problems of variance inflation and bias due to excluded regressors both involve correlated
+| regressors. However there are methods, such as factor analysis or principal componenent analysis, which
+| can convert regressors to an equivalent uncorrelated set. Why then, when modeling, should we not just
+| use uncorrelated regressors and avoid all the trouble?
+
+1: We should always use uncorrelated regressors.
+2: Factor analysis takes too much computation.
+3: Using converted regressors may make interpretation difficult.
+
+Selection: 
+Enter an item from the menu, or 0 to exit
+Selection: 3
+
+| Excellent work!
+
+  |============================================================================================    |  96%
+
+| That completes the exercise in variance inflation. The issue of omitting regressors is discussed in
+| another lesson.
+
+...
+
+  |================================================================================================| 1
+
+| Overfitting and Underfitting. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be downloaded
+| as a zip file and viewed locally. This lesson corresponds to
+| Regression_Models/02_04_residuals_variation_diagnostics.)
+
+...
+
+  |====                                                                                             |   4%
+
+| The Variance Inflation Factors lesson demonstrated that including new variables will increase standard
+| errors of coefficient estimates of other, correlated regressors. Hence, we don't want to idly throw
+| variables into the model. On the other hand, omitting variables results in bias in coefficients of
+| regressors which are correlated with the omitted ones. In this lesson we demonstrate the effect of
+| omitted variables and discuss the use of ANOVA to construct parsimonious, interpretable representations
+| of the data.
+
+...
+
+  |=======                                                                                          |   7%
+
+| First, I would like to illustrate how omitting a correlated regressor can bias estimates of a
+| coefficient. The relevant source code is in a file named fitting.R which I have copied into your
+| working directory and tried to display in your source code editor. If I've failed to display it, you
+| should open it manually.
+
+...
+
+  |===========                                                                                      |  11%
+
+| Find the function simbias() at the top of fitting.R. Below the comment labeled Point A three
+| regressors, x1, x2, and x3, are defined. Which of these two are correlated?
+
+1: x1 and x2
+2: x1 and x3
+3: x2 and x3
+
+Selection: 1
+
+| That's a job well done!
+
+  |==============                                                                                   |  15%
+
+| Within simbias() another function, f(n), is defined. It forms a dependent variable, y, and at Point C
+| returns the coefficient of x1 as estimated by two models, y ~ x1 + x2, and y ~ x1 + x3. One regressor
+| is missing in each model. In the expression for y (Point B,) what is the actual coefficient of x1?
+
+1: 0.3
+2: 1
+3: 1/sqrt(2)
+
+Selection: 3
+
+| You almost had it, but not quite. Try again.
+
+| What is the coefficient of x1 in the sum, x1 + x2 + x3?
+
+1: 0.3
+2: 1/sqrt(2)
+3: 1
+
+Selection: 3
+
+| All that practice is paying off!
+
+  |==================                                                                               |  19%
+
+| At Point D in simbias() the internal function, f(), is applied 150 times and the results returned as a
+| 2x150 matrix. The first row of this matrix contains independent estimates of x1's coefficient in the
+| case that x3, the regressor uncorrelated with x1, is omitted. The second row contains estimates of x1's
+| coefficient when the correlated regressor, x2, is omitted. Use simbias(), accepting the default
+| argument, to form these estimates and store the result in a variable called x1c. (The default argument
+| just guarantees a nice histogram, in a figure to follow.)
+
+> x1c <- simbias()
+
+| You got it right!
+
+  |======================                                                                           |  22%
+
+| The actual coefficient of x1 is 1. Having been warned that omitting a correlated regressor would bias
+| estimates of x1's coefficient, we would expect the mean estimate of x1c's second row to be farther from
+| 1 than the mean of x1c's first row. Using apply(x1c, 1, mean), find the means of each row.
+
+> apply(x1c, 1, mean)
+      x1       x1 
+1.034403 1.476944 
+
+| You are quite good my friend!
+
+  |=========================                                                                        |  26%
+
+| Histograms of estimates from x1c's first row (blue) and second row (red) are shown. Estimates from the
+| second row are clearly more than two standard deviations from the correct value of 1, and the bias due
+| to omitting the correlated regressor is evident. (The code which produced this figure is incidental to
+| the lesson, but is available as the function x1hist(), at the bottom of fitting.R.)
+
+...
+
+  |=============================                                                                    |  30%
+
+| Adding even irrelevant regressors can cause a model to tend toward a perfect fit. We illustrate this by
+| adding random regressors to the swiss data and regressing on progressively more of them. As the number
+| of regressors approaches the number of data points (47), the residual sum of squares, also known as the
+| deviance, approaches 0. (The source code for this figure can be found as function bogus() in fitting.R.
+
+...
+
+  |================================                                                                 |  33%
+
+| In the figure, adding random regressors decreased deviance, but we would be mistaken to believe that
+| such decreases are significant. To assess significance, we should take into account that adding
+| regressors reduces residual degrees of freedom. Analysis of variance (ANOVA) is a useful way to
+| quantify the significance of additional regressors. To exemplify its use, we will use the swiss data.
+
+...
+
+  |====================================                                                             |  37%
+
+| Recall that the Swiss data set consists of a standardized fertility measure and socioeconomic
+| indicators for each of 47 French-speaking provinces of Switzerland in 1888. Fertility was thought to
+| depend on an intercept and five factors denoted as Agriculture, Examination, Education, Catholic, and
+| Infant Mortality. To begin our ANOVA example, regress Fertility on Agriculture and store the result in
+| a variable named fit1.
+
+> fit1 <- lm(Fertility ~ Agriculture, data=swiss)
+
+| You are doing so well!
+
+  |========================================                                                         |  41%
+
+| Create another model, named fit3, by regressing Fertility on Agriculture and two additonal regressors,
+| Examination and Education.
+
+> fit1 <- lm(Fertility ~ Agriculture + Examination + Education, data=swiss)
+
+| You seem to have misspelled the model's name. I was expecting fit3 but you apparently typed fit1.
+
+| Give it another try. Or, type info() for more options.
+
+| Enter fit3 <- lm(Fertility ~ Agriculture + Examination + Education, swiss) or something equivalent at
+| the R prompt.
+
+> fit1 <- lm(Fertility ~ Agriculture, data=swiss)
+
+| You seem to have misspelled the model's name. I was expecting fit3 but you apparently typed fit1.
+
+| Not exactly. Give it another go. Or, type info() for more options.
+
+| Enter fit3 <- lm(Fertility ~ Agriculture + Examination + Education, swiss) or something equivalent at
+| the R prompt.
+
+> fit3 <- lm(Fertility ~ Agriculture + Examination + Education, data=swiss)
+
+| Keep working like that and you'll get there!
+
+  |===========================================                                                      |  44%
+
+| We'll now use anova to assess the significance of the two added regressors. The null hypothesis is that
+| the added regressors are not significant. We'll explain in detail shortly, but right now just apply the
+| significance test by entering anova(fit1, fit3).
+
+> anova(fit1, fit3)
+Analysis of Variance Table
+
+Model 1: Fertility ~ Agriculture
+Model 2: Fertility ~ Agriculture + Examination + Education
+  Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+1     45 6283.1                                  
+2     43 3180.9  2    3102.2 20.968 4.407e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+| You nailed it! Good job!
+
+  |===============================================                                                  |  48%
+
+| The three asterisks, ***, at the lower right of the printed table indicate that the null hypothesis is
+| rejected at the 0.001 level, so at least one of the two additional regressors is significant. Rejection
+| is based on a right-tailed F test, Pr(>F), applied to an F value. According to the table, what is that
+| F value?
+
+1: 20.968
+2: 45
+3: 3102.2
+
+Selection: 1
+
+| All that practice is paying off!
+
+  |==================================================                                               |  52%
+
+| An F statistic is a ratio of two sums of squares divided by their respective degrees of freedom. If the
+| two scaled sums are independent and centrally chi-squared distributed with the same variance, the
+| statistic will have an F distribution with parameters given by the two degrees of freedom. In our case,
+| the two sums are residual sums of squares which, as we know, have mean zero hence are centrally
+| chi-squared provided the residuals themselves are normally distributed. The two relevant sums are given
+| in the RSS (Residual Sum of Squares) column of the table. What are they?
+
+1: 6283.1 and 3180.9
+2: 45 and 43
+3: 2 and 3102.2
+
+Selection: 1
+
+| Great job!
+
+  |======================================================                                           |  56%
+
+| R's function, deviance(model), calculates the residual sum of squares, also known as the deviance, of
+| the linear model given as its argument. Using deviance(fit3), verify that 3180.9 is fit3's residual sum
+| of squares. (Of course, fit3 is called Model 2 in the table.)
+
+> deviance(fit3)
+[1] 3180.925
+
+| That's correct!
+
+  |=========================================================                                        |  59%
+
+| In the next several steps, we will show how to calculate the F value, 20.968, which appears in the
+| table printed by anova(). We'll begin with the denominator, which is fit3's residual sum of squares
+| divided by its degrees of freedom. Fit3 has 43 residual degrees of freedom. This figure is obtained by
+| subtracting 4, the the number of fit3's predictors (the 3 named and the intercept,) from 47, the number
+| of samples in swiss. Store the value of deviance(fit3)/43 in a variable named d.
+
+> d <- deviance(fit3)/43 
+
+| Keep up the great work!
+
+  |=============================================================                                    |  63%
+
+| The numerator is the difference, deviance(fit1)-deviance(fit3), divided by the difference in the
+| residual degrees of freedom of fit1 and fit3, namely 2. This calculation requires some theoretical
+| justification which we omit, but the essential idea is that fit3 has 2 predictors in addition to those
+| of fit1. Calculate the numerator and store it in a variable named n.
+
+> n <- (deviance(fit1)-deviance(fit3)) / 2
+
+| You are quite good my friend!
+
+  |=================================================================                                |  67%
+
+| Calculate the ratio, n/d, to show it is essentially equal to the F value, 20.968, given by anova().
+
+> n/d
+[1] 20.96783
+
+| Excellent job!
+
+  |====================================================================                             |  70%
+
+| We'll now calculate the p-value, which is the probability that a value of n/d or larger would be drawn
+| from an F distribution which has parameters 2 and 43. This value was given as 4.407e-07 in the column
+| labeled Pr(>F) in the table printed by anova(), a very unlikely value if the null hypothesis were true.
+| Calculate this p-value using pf(n/d, 2, 43, lower.tail=FALSE).
+
+> pf(n/d, 2, 43, lower.tail=FALSE)
+[1] 4.406913e-07
+
+| That's correct!
+
+  |========================================================================                         |  74%
+
+| Based on the calculated p-value, a false rejection of the null hypothesis is extremely unlikely. We are
+| confident that fit3 is significantly better than fit1, with one caveat: analysis of variance is
+| sensitive to its assumption that model residuals are approximately normal. If they are not, we could
+| get a small p-value for that reason. It is thus worth testing residuals for normality. The Shapiro-Wilk
+| test is quick and easy in R. Normality is its null hypothesis. Use shapiro.test(fit3$residuals) to test
+| the residual of fit3.
+
+> shapiro.test(fit3$residuals)
+
+	Shapiro-Wilk normality test
+
+data:  fit3$residuals
+W = 0.97276, p-value = 0.336
+
+
+| You nailed it! Good job!
+
+  |===========================================================================                      |  78%
+
+| The Shapiro-Wilk p-value of 0.336 fails to reject normality, supporting confidence in our analysis of
+| variance. In order to illustrate the use of anova() with more than two models, I have constructed fit5
+| and fit6 using the first 5 and all 6 regressors (including the intercept) respectively. Thus fit1,
+| fit3, fit5, and fit6 form a nested sequence of models; the regressors of one are included in those of
+| the next. Enter anova(fit1, fit3, fit5, fit6) at the R prompt now to get the flavor.
+
+> anova(fit1, fit3, fit5, fit6)
+Analysis of Variance Table
+
+Model 1: Fertility ~ Agriculture
+Model 2: Fertility ~ Agriculture + Examination + Education
+Model 3: Fertility ~ Agriculture + Examination + Education + Catholic
+Model 4: Fertility ~ Agriculture + Examination + Education + Catholic + 
+    Infant.Mortality
+  Res.Df    RSS Df Sum of Sq       F    Pr(>F)    
+1     45 6283.1                                   
+2     43 3180.9  2   3102.19 30.2107 8.638e-09 ***
+3     42 2513.8  1    667.13 12.9937 0.0008387 ***
+4     41 2105.0  1    408.75  7.9612 0.0073357 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+| You are really on a roll!
+
+  |===============================================================================                  |  81%
+
+| It appears that each model is a significant improvement on its predecessor. Before ending the lesson,
+| let's review a few salient points.
+
+...
+
+  |===================================================================================              |  85%
+
+| Omitting a regressor can bias estimation of the coefficient of certain other regressors. Which ones?
+
+1: Correlated regressors
+2: Uncorrelated regressors
+
+Selection: 2
+
+| That's not the answer I was looking for, but try again.
+
+| The other one.
+
+1: Uncorrelated regressors
+2: Correlated regressors
+
+Selection: 2
+
+| You are really on a roll!
+
+  |======================================================================================           |  89%
+
+| Including more regressors will reduce a model's residual sum of squares, even if the new regressors are
+| irrelevant. True or False?
+
+1: True
+2: False
+3: It depends on circumstances.
+
+Selection: 1
+
+| Keep up the great work!
+
+  |==========================================================================================       |  93%
+
+| When adding regressors, the reduction in residual sums of squares should be tested for significance
+| above and beyond that of reducing residual degrees of freedom. R's anova() function uses an F-test for
+| this purpose. What else should be done to insure that anova() applies?
+
+1: Regressors should be tested for normality.
+2: Model residuals should be tested for normality.
+3: The residuals should be tested for having zero means.
+
+Selection: 2
+
+| You nailed it! Good job!
+
+  |=============================================================================================    |  96%
+
+| That completes the lesson on underfitting and overfitting.
+
+...
+
+  |=================================================================================================| 100%
+  
+  
+Binary Outcomes. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be downloaded
+| as a zip file and viewed locally. This lesson corresponds to Regression_Models/03_02_binaryOutcomes.)
+
+...
+
+  |====                                                                                            |   4%
+
+| Frequently we care about outcomes that have two values such as alive or dead, win or lose, success or
+| failure. Such outcomes are called binary, Bernoulli, or 0/1. A collection of exchangeable binary
+| outcomes for the same covariate data are called binomial outcomes. (Outcomes are exchangeable if their
+| order doesn't matter.)
+
+...
+
+  |=======                                                                                         |   8%
+
+| In this unit we will use glm() to model a process with a binary outcome and a continuous predictor. We
+| will also learn how to interpret glm coefficients, and how to find confidence intervals. But first,
+| let's discuss odds.
+
+...
+
+  |===========                                                                                     |  12%
+
+| The Baltimore Ravens are a team in the American Football League. In post season (championship) play
+| they win about 2/3 of their games. In other words, they win about twice as often as they lose. If I
+| wanted to bet on them, I would have to offer 2-to-1 odds--if they lost I would pay you $2, but if they
+| won you would pay me only $1. That way, in the long run over many bets, we'd both expect to win as much
+| money as we'd lost.
+
+...
+
+  |===============                                                                                 |  15%
+
+| During the regular season the Ravens win about 55% of their games. What odds would I have to offer in
+| the regular season?
+
+1: Any of these
+2: 1.22222 to 1
+3: 55 to 45
+4: 11 to 9
+
+Selection: 1
+
+| You are doing so well!
+
+  |==================                                                                              |  19%
+
+| All of the answers are correct because they all represent the same ratio. If p is the probability of an
+| event, the associated odds are p/(1-p).
+
+...
+
+  |======================                                                                          |  23%
+
+| Now suppose we want to see how the Ravens' odds depends on their offense. In other words, we want to
+| model how p, or some function of it, depends on how many points the Ravens are able to score. Of
+| course, we can't observe p, we can only observe wins, losses, and the associated scores. Here is a Box
+| plot of one season's worth of such observations.
+
+...
+
+  |==========================                                                                      |  27%
+
+| We can see that the Ravens tend to win more when they score more points. In fact, about 3/4 of their
+| losses are at or below a certain score and about 3/4 of their wins are at or above it. What score am I
+| talking about? (Remember that the purple boxes represent 50% of the samples, and the "T's" 25%.)
+
+1: 40
+2: 30
+3: 18
+4: 23
+
+Selection: 4
+
+| You are doing so well!
+
+  |==============================                                                                  |  31%
+
+| There were 9 games in which the Ravens scored 23 points or less. They won 4 of these games, so we might
+| guess their probability of winning, given that they score 23 points or less, is about 1/2.
+
+...
+
+  |=================================                                                               |  35%
+
+| There were 11 games in which the Ravens scored 24 points or more. They won all but one of these. Verify
+| this by checking the data yourself. It is in a data frame called ravenData. Look at it by typing either
+| ravenData or View(ravenData).
+
+> ravenData
+   ravenWinNum ravenWin ravenScore
+1            1        W          9
+2            0        L         13
+3            1        W         13
+4            1        W         16
+5            0        L         17
+6            0        L         17
+7            0        L         20
+8            0        L         23
+9            1        W         23
+10           1        W         24
+11           1        W         25
+12           1        W         28
+13           0        L         28
+14           1        W         31
+15           1        W         31
+16           1        W         33
+17           1        W         34
+18           1        W         38
+19           1        W         44
+20           1        W         55
+
+| That's a job well done!
+
+  |=====================================                                                           |  38%
+
+| We see a fairly rapid transition in the Ravens' win/loss record between 23 and 28 points. At 23 points
+| and below they win about half their games, between 24 and 28 points they win 3 of 4, and above 28
+| points they win them all. From this, we get a very crude idea of the correspondence between points
+| scored and the probability of a win. We get an S shaped curve, a graffiti S anyway.
+
+...
+
+  |=========================================                                                       |  42%
+
+| Of course, we would expect a real curve to be smoother. We would not, for instance, expect the Ravens
+| to win half the games in which they scored zero points, nor to win all the games in which they scored
+| more than 28. A generalized linear model which has these properties supposes that the log odds of a win
+| depend linearly on the score. That is, log(p/(1-p)) = b0 + b1*score. The link function, log(p/(1-p)),
+| is called the logit, and the process of finding the best b0 and b1, is called logistic regression.
+
+...
+
+  |============================================                                                    |  46%
+
+| The "best" b0 and b1 are those which maximize the likelihood of the actual win/loss record. Based on
+| the score of a game, b0 and b1 give us a log odds, which we can convert to a probability, p, of a win.
+| We would like p to be high for the scores of winning games, and low for the scores of losses.
+
+...
+
+  |================================================                                                |  50%
+
+| We can use R's glm() function to find the b0 and b1 which maximize the likelihood of our observations.
+| Referring back to the data frame, we want to predict the binary outcomes, ravenWinNum, from the points
+| scored, ravenScore. This corresponds to the formula, ravenWinNum ~ ravenScore, which is the first
+| argument to glm. The second argument, family, describes the outcomes, which in our case are binomial.
+| The third argument is the data, ravenData. Call glm with these parameters and store the result in a
+| variable named mdl.
+
+> mdl <- glm(ravenWinNum ~ ravenScore, family="binomial", data = ravenData)
+
+| Nice work!
+
+  |====================================================                                            |  54%
+
+| The probabilities estimated by logistic regression using glm() are represented by the black curve. It
+| is more reasonable than our crude estimate in several respects: It increases smoothly with score, it
+| estimates that 15 points give the Ravens a 50% chance of winning, that 28 points give them an 80%
+| chance, and that 55 points make a win very likely (98%) but not absolutely certain.
+
+...
+
+  |=======================================================                                         |  58%
+
+| The model is less credible at scores lower than 9. Of course, there is no data in that region; the
+| Ravens scored at least 9 points in every game. The model gives them a 33% chance of winning if they
+| score 9 points, which may be reasonable, but it also gives them a 16% chance of winning even if they
+| score no points! We can use R's predict() function to see the model's estimates for lower scores. The
+| function will take mdl and a data frame of scores as arguments and will return log odds for the give
+| scores. Call predict(mdl, data.frame(ravenScore=c(0, 3, 6))) and store the result in a variable called
+| lodds.
+
+> lodds <- predict(mdl, data.frame(ravenScore=c(0, 3, 6)))
+
+| Great job!
+
+  |===========================================================                                     |  62%
+
+| Since predict() gives us log odds, we will have to convert to probabilities. To convert log odds to
+| probabilities use exp(lodds)/(1+exp(lodds)). Don't bother to store the result in a variable. We won't
+| need it.
+
+> exp(lodds)/(1+exp(lodds))
+        1         2         3 
+0.1570943 0.2041977 0.2610505 
+
+| Excellent work!
+
+  |===============================================================                                 |  65%
+
+| As you can see, a person could make a lot of money betting against this model. When the Ravens score no
+| points, the model might like 16 to 84 odds. As it turns out, though, the model is not that sure of
+| itself. Typing summary(mdl) you can see the estimated coefficients are both within 2 standard errors of
+| zero. Check out the summary now.
+
+> summary(mdl)
+
+Call:
+glm(formula = ravenWinNum ~ ravenScore, family = "binomial", 
+    data = ravenData)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.7575  -1.0999   0.5305   0.8060   1.4947  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)
+(Intercept) -1.68001    1.55412  -1.081     0.28
+ravenScore   0.10658    0.06674   1.597     0.11
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 24.435  on 19  degrees of freedom
+Residual deviance: 20.895  on 18  degrees of freedom
+AIC: 24.895
+
+Number of Fisher Scoring iterations: 5
+
+
+| You are quite good my friend!
+
+  |==================================================================                              |  69%
+
+| The coefficients estimate log odds as a linear function of points scored. They have a natural
+| interpretation in terms of odds because, if b0 + b1*score estimates log odds, then exp(b0 +
+| b1*score)=exp(b0)exp(b1*score) estimates odds. Thus exp(b0) is the odds of winning with a score of 0
+| (in our case 16/84,) and exp(b1) is the factor by which the odds of winning increase with every point
+| scored. In our case exp(b1) = exp(0.10658) = 1.11. In other words, the odds of winning increase by 11%
+| for each point scored.
+
+...
+
+  |======================================================================                          |  73%
+
+| However, the coefficients have relatively large standard errors. A 95% confidence interval is roughly 2
+| standard errors either side of a coefficient. R's function confint() will find the exact lower and
+| upper bounds to the 95% confidence intervals for the coefficients b0 and b1. To get the corresponding
+| intervals for exp(b0) and exp(b1) we would just exponentiate the output of confint(mdl). Do this now.
+
+> exp(confint(mdl))
+Waiting for profiling to be done...
+                  2.5 %   97.5 %
+(Intercept) 0.005674966 3.106384
+ravenScore  0.996229662 1.303304
+
+| All that practice is paying off!
+
+  |==========================================================================                      |  77%
+
+| What is the 2.5% confidence bound on the odds of winning with a score of 0 points?
+
+1: 0.996229662
+2: 2.5%
+3: 0.005674966
+
+Selection: 1
+
+| Almost! Try again.
+
+| It's very small.
+
+1: 2.5%
+2: 0.005674966
+3: 0.996229662
+
+Selection: 2
+
+| Excellent job!
+
+  |==============================================================================                  |  81%
+
+| The lower confidence bound on the odds of winning with a score of 0 is near zero, which seems much more
+| realistic than the 16/84 figure of the maximum likelihood model. Now look at the lower bound on
+| exp(b1), the exponentiated coefficient of ravenScore. How does it suggest the odds of winning will be
+| affected by each additional point scored?
+
+1: They will decrease slightly
+2: They will increase by 30%
+3: They will increase slightly
+
+Selection: 1
+
+| You're the best!
+
+  |=================================================================================               |  85%
+
+| The lower confidence bound on exp(b1) suggests that the odds of winning would decrease slightly with
+| every additional point scored. This is obviously unrealistic. Of course, confidence intervals are based
+| on large sample assumptions and our sample consists of only 20 games. In fact, the GLM version of
+| analysis of variance will show that if we ignore scores altogether, we don't do much worse.
+
+...
+
+  |=====================================================================================           |  88%
+
+| Linear regression minimizes the squared difference between predicted and actual observations, i.e.,
+| minimizes the variance of the residual. If an additional predictor significantly reduces the residual's
+| variance, the predictor is deemed important. Deviance extends this idea to generalized linear
+| regression, using (negative) log likelihoods in place of variance. (For a detailed explanation, see the
+| slides and lectures.) To see the analysis of deviance for our model, type anova(mdl).
+
+> anova(mdl)
+Analysis of Deviance Table
+
+Model: binomial, link: logit
+
+Response: ravenWinNum
+
+Terms added sequentially (first to last)
+
+
+           Df Deviance Resid. Df Resid. Dev
+NULL                          19     24.435
+ravenScore  1   3.5398        18     20.895
+
+| You're the best!
+
+  |=========================================================================================       |  92%
+
+| The value, 3.5398, labeled as the deviance of ravenScore, is actually the difference between the
+| deviance of our model, which includes a slope, and that of a model which includes only an intercept,
+| b0. This value is centrally chi-square distributed (for large samples) with 1 degree of freedom (2
+| parameters minus 1 parameter, or equivalently 19-18.) The null hypothesis is that the coefficient of
+| ravenScore is zero. To confidently reject this hypothesis, we would want 3.5398 to be larger than the
+| 95th percentile of chi-square distribution with one degree of freedom. Use qchisq(0.95, 1) to compute
+| the threshold of this percentile.
+
+> qchisq(0.95, 1)
+[1] 3.841459
+
+| Great job!
+
+  |============================================================================================    |  96%
+
+| As you can see, 3.5398 is close to but less than the 95th percentile threshold, 3.841459, hence would
+| be regarded as consistent with the null hypothesis at the conventional 5% level. In other words,
+| ravenScore adds very little to a model which just guesses that the Ravens win with probability 70%
+| (their actual record that season) or odds 7 to 3 is almost as good. If you like, you can verify this
+| using mdl0 <- glm(ravenWinNum ~ 1, binomial, ravenData), but this concludes the Binary Outcomes
+| example. Thank you.
+
+...
+
+  |================================================================================================| 100%
+  
+  
+| Count Outcomes. (Slides for this and other Data Science courses may be found at github
+| https://github.com/DataScienceSpecialization/courses. If you care to use them, they must be downloaded
+| as a zip file and viewed locally. This lesson corresponds to Regression_Models/03_03_countOutcomes.)
+
+...
+
+  |===                                                                                             |   3%
+
+| Many data take the form of counts. These might be calls to a call center, number of flu cases in an
+| area, or number of cars that cross a bridge. Data may also be in the form of rates, e.g., percent of
+| children passing a test. In this lesson we will use Poisson regression to analyze daily visits to a web
+| site as the web site's popularity grows, and to analyze the percent of visits which are due to
+| references from a different site.
+
+...
+
+  |======                                                                                          |   6%
+
+| Visits to a web site tend to occur independently, one at a time, at a certain average rate. The Poisson
+| distribution describes random processes of this type. A Poisson process is characterized by a single
+| parameter, the expected rate of occurrence, which is usually called lambda. In our case, lambda will be
+| expected visits per day. Of course, as the web site becomes more popular, lambda will grow. In other
+| words, our lambda will depend on time. We will use Poisson regression to model this dependence.
+
+...
+
+  |=========                                                                                       |   9%
+
+| Somwhat remarkably, the variance of a Poisson process has the same value as its mean, lambda. You can
+| quickly illustrate this by generating, say, n=1000 samples from a Poisson process using R's rpois(n,
+| lambda) and calculating the sample variance. For example, type var(rpois(1000, 50)). The sample
+| variance won't be exactly equal to the theoretical value, of course, but it will be fairly close.
+
+> var(rpois(1000, 50))
+[1] 50.54692
+
+| You got it!
+
+  |============                                                                                    |  12%
+
+| A famous theorem implies that properly normalized sums of independent, identically distributed random
+| variables will tend to become normally distributed as the number of samples grows large. What is that
+| theorem?
+
+1: The Pythagorean Theorem
+2: The Central Limit Theorem
+3: The Gauss-Markov BLUE Theorem
+
+Selection: 2
+
+| You got it right!
+
+  |===============                                                                                 |  16%
+
+| The counts generated by a Poisson process are, strictly speaking, slightly different than the
+| normalized sums of the Central Limit Theorem. However, the counts in a given period of time will
+| represent sums of larger numbers of terms as lambda increases. In fact, it can be formally shown that
+| for large lambda a Poisson distribution is well approximated by a normal. The figure illustrates this
+| effect. It shows progression from a sparse, asymetric, Poisson probability mass function on the left,
+| to a dense, bell-shaped curve on the right as lambda varies from 2 to 100.
+
+...
+
+  |==================                                                                              |  19%
+
+| In a Poisson regression, the log of lambda is assumed to be a linear function of the predictors. Since
+| we will try to model the growth of visits to a web site, the log of lambda will be a linear function of
+| the date: log(lambda) = b0 + b1*date. This implies that the average number of hits per day, lambda, is
+| exponential in the date: lambda = exp(b0)*exp(b1)^date. Exponential growth is also suggested by the
+| smooth, black curve drawn though the data. Thus exp(b1) would represent the percentage by which visits
+| grow per day.
+
+...
+
+  |=====================                                                                           |  22%
+
+| If you are connected to the internet right now, would you care to visit the Leek Group website?
+
+Yes or No? Yes
+
+| Type nxt() to continue
+> nxt()
+
+| Resuming lesson...
+
+  |========================                                                                        |  25%
+
+| Our data is in a data frame named hits. Use View(hits), head(hits), or tail(hits) to examine the data
+| now.
+
+> head(hits)
+        date visits simplystats
+1 2011-01-01      0           0
+2 2011-01-02      0           0
+3 2011-01-03      0           0
+4 2011-01-04      0           0
+5 2011-01-05      0           0
+6 2011-01-06      0           0
+
+| Keep up the great work!
+
+  |===========================                                                                     |  28%
+
+| There are three columns of data labeled date, visits, and simplystats respectively. The simplystats
+| column records the number of visits which are due to references from another site, the Simply
+| Statistics blog. We'll come back to that column later. For now, we are interested in the date and
+| visits columns. The date will be our predictor.
+
+...
+
+  |==============================                                                                  |  31%
+
+| Our dates are represented in terms of R's class, Date. Verify this by typing class(hits[,'date']), or
+| something equivalent.
+
+> class(hits[,'date'])
+[1] "Date"
+
+| You are really on a roll!
+
+  |=================================                                                               |  34%
+
+| R's Date class represents dates as days since or prior to January 1, 1970. They are essentially
+| numbers, and to some extent can be treated as such. Dates can, for example, be added or subtracted, or
+| easily coverted to numbers. Type as.integer(head(hits[,'date'])) to see what I mean.
+
+> as.integer(head(hits[,'date']))
+[1] 14975 14976 14977 14978 14979 14980
+
+| That's the answer I was looking for.
+
+  |====================================                                                            |  38%
+
+| The arithmetic properties of Dates allow us to use them as predictors. We'll use Poisson regression to
+| predict log(lambda) as a linear function of date in a way which maximizes the likelihood of the counts
+| we actually see. Our formula will be visits ~ date. Since our outcomes (visits) are counts, our family
+| will be 'poisson', and our third argument will be the data, hits. Create such a model and store it in a
+| variable called mdl using the following expression or something equivalent, mdl <- glm(visits ~ date,
+| poisson, hits).
+
+> mdl <- glm(visits ~ date,poisson, hits)
+
+| All that hard work is paying off!
+
+  |=======================================                                                         |  41%
+
+| The figure suggests that our Poisson regression fits the data very well. The black line is the
+| estimated lambda, or mean number of visits per day. We see that mean visits per day increased from
+| around 5 in early 2011 to around 10 by 2012, and to around 20 by late 2013. It is approximately
+| doubling every year.
+
+...
+
+  |==========================================                                                      |  44%
+
+| Type summary(mdl) to examine the estimated coefficients and their significance.
+
+> summary(mdl)
+
+Call:
+glm(formula = visits ~ date, family = poisson, data = hits)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-5.0466  -1.5908  -0.3198   0.9128  10.6545  
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -3.275e+01  8.130e-01  -40.28   <2e-16 ***
+date         2.293e-03  5.266e-05   43.55   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5150.0  on 730  degrees of freedom
+Residual deviance: 3121.6  on 729  degrees of freedom
+AIC: 6069.6
+
+Number of Fisher Scoring iterations: 5
+
+
+| You got it!
+
+  |=============================================                                                   |  47%
+
+| Both coefficients are significant, being far more than two standard errors from zero. The Residual
+| deviance is also very significantly less than the Null, indicating a strong effect. (Recall that the
+| difference between Null and Residual deviance is approximately chi-square with 1 degree of freedom.)
+| The Intercept coefficient, b0, just represents log average hits on R's Date 0, namely January 1, 1970.
+| We will ignore it and focus on the coefficient of date, b1, since exp(b1) will estimate the percentage
+| at which average visits increase per day of the site's life.
+
+...
+
+  |================================================                                                |  50%
+
+| Get the 95% confidence interval for exp(b1) by exponentiating confint(mdl, 'date')
+
+> exp(confint(mdl, 'date'))
+Waiting for profiling to be done...
+   2.5 %   97.5 % 
+1.002192 1.002399 
+
+| Nice work!
+
+  |===================================================                                             |  53%
+
+| Visits are estimated to increase by a factor of between 1.002192 and 1.002399 per day. That is, between
+| 0.2192% and 0.2399% per day. This actually represents more than a doubling every year.
+
+...
+
+  |======================================================                                          |  56%
+
+| Our model looks like a pretty good description of the data, but no model is perfect and we can often
+| learn about a data generation process by looking for a model's shortcomings. As shown in the figure,
+| one thing about our model is 'zero inflation' in the first two weeks of January 2011, before the site
+| had any visits. The model systematically overestimates the number of visits during this time. A less
+| obvious thing is that the standard deviation of the data may be increasing with lambda faster than a
+| Poisson model allows. This possibility can be seen in the rightmost plot by visually comparing the
+| spread of green dots with the standard deviation predicted by the model (black dashes.) Also, there are
+| four or five bursts of popularity during which the number of visits far exceeds two standard deviations
+| over average. Perhaps these are due to mentions on another site.
+
+...
+
+  |=========================================================                                       |  59%
+
+| It seems that at least some of them are. The simplystats column of our data records the number of
+| visits to the Leek Group site which come from the related site, Simply Statistics. (I.e., visits due to
+| clicks on a link to the Leek Group which appeared in a Simply Statisics post.)
+
+...
+
+  |============================================================                                    |  62%
+
+| In the figure, the maximum number of visits occurred in late 2012. Visits from the Simply Statistics
+| blog were also at their maximum that day. To find the exact date we can use which.max(hits[,'visits']).
+| Do this now.
+
+> which.max(hits[,'visits'])
+[1] 704
+
+| Excellent job!
+
+  |===============================================================                                 |  66%
+
+| The maximum number of visits is recorded in row 704 of our data frame. Print that row by typing
+| hits[704,].
+
+> hits[704,]
+          date visits simplystats
+704 2012-12-04     94          64
+
+| Perseverance, that's the answer.
+
+  |==================================================================                              |  69%
+
+| The maximum number of visits, 94, occurred on December 4, 2012, of which 64 came from the Simply
+| Statistics blog. We might consider the 64 visits to be a special event, over and above normal. Can the
+| difference, 94-64=30 visits, be attributed to normal traffic as estimated by our model? To check, we
+| will need the value of lambda on December 4, 2012. This will be entry 704 of the fitted.values element
+| of our model. Extract mdl$fitted.values[704] and store it in a variable named lambda.
+
+> lambda <- mdl$fitted.values[704]
+
+| You are doing so well!
+
+  |=====================================================================                           |  72%
+
+| The number of visits explained by our model on December 4, 2012 are those of a Poisson random variable
+| with mean lambda. We can find the 95th percentile of this distribution using qpois(.95, lambda). Try
+| this now.
+
+> qpois(.95, lambda)
+[1] 33
+
+| Excellent job!
+
+  |========================================================================                        |  75%
+
+| So, 95% of the time we would see 33 or fewer visits, hence 30 visits would not be rare according to our
+| model. It would seem that on December 4, 2012, the very high number of visits was due to references
+| from Simply Statistics. To gauge the importance of references from Simply Statistics we may wish to
+| model the proportion of traffic such references represent. Doing so will also illustrate the use of
+| glm's parameter, offset, to model frequencies and proportions.
+
+...
+
+  |===========================================================================                     |  78%
+
+| A Poisson process generates counts, and counts are whole numbers, 0, 1, 2, 3, etc. A proportion is a
+| fraction. So how can a Poisson process model a proportion? The trick is to include the denominator of
+| the fraction, or more precisely its log, as an offset. Recall that in our data set, 'simplystats' is
+| the visits from Simply Statistics, and 'visits' is the total number of visits. We would like to model
+| the fraction simplystats/visits, but to avoid division by zero we'll actually use
+| simplystats/(visits+1). A Poisson model assumes that log(lambda) is a linear combination of predictors.
+| Suppose we assume that log(lambda) = log(visits+1) + b0 + b1*date. In other words, if we insist that
+| the coefficient of log(visits+1) be equal to 1, we are predicting the log of mean visits from Simply
+| Statistics as a proportion of total visits: log(lambda/(visits+1)) = b0 + b1*date.
+
+...
+
+  |==============================================================================                  |  81%
+
+| glm's parameter, offset, has precisely this effect. It fixes the coefficient of the offset to 1. To
+| create a model for the proportion of visits from Simply Statistics, we let offset=log(visits+1). Create
+| such a Poisson model now and store it as a variable called mdl2.
+
+> mdl <- glm(simplystats/(visits+1) ~ date, poisson, offset = log(visits+1), hits)
+There were 50 or more warnings (use warnings() to see the first 50)
+
+| You seem to have misspelled the model's name. I was expecting mdl2 but you apparenlty typed mdl.
+
+| Keep trying! Or, type info() for more options.
+
+| Enter mdl2 <- glm(formula = simplystats ~ date, family = poisson, data = hits, offset = log(visits +
+| 1)), or something equivalent.
+
+warning messages from top-level task callback 'mini'
+There were 50 or more warnings (use warnings() to see the first 50)
+> mdl2 <- glm(formula = simplystats ~ date, family = poisson, data = hits, offset = log(visits + 1))
+
+| You are amazing!
+
+  |=================================================================================               |  84%
+
+| Although summary(mdl2) will show that the estimated coefficients are significantly different than zero,
+| the model is actually not impressive. We can illustrate why by looking at December 4, 2012, once again.
+| On that day there were 64 actual visits from Simply Statistics. However, according to mdl2, 64 visits
+| would be extremely unlikely. You can verify this weakness in the model by finding mdl2's 95th
+| percentile for that day. Recalling that December 4, 2012 was sample 704, find qpois(.95,
+| mdl2$fitted.values[704]).
+
+> qpois(.95, mdl2$fitted.values[704]))
+Error: unexpected ')' in "qpois(.95, mdl2$fitted.values[704]))"
+> qpois(.95, mdl2$fitted.values[704])
+[1] 47
+
+| You are really on a roll!
+
+  |====================================================================================            |  88%
+
+| A Poisson distribution with lambda=1000 will be well approximated by a normal distribution. What will
+| be the variance of that normal distribution?
+
+1: the square root of lambda.
+2: lambda
+3: lambda squared
+
+Selection: 2
+
+| Great job!
+
+  |=======================================================================================         |  91%
+
+| When modeling count outcomes as a Poisson process, what is modeled as a linear combination of the
+| predictors?
+
+1: The log of the mean
+2: The counts
+3: The mean
+
+Selection: 1
+
+| You are amazing!
+
+  |==========================================================================================      |  94%
+
+| What parameter of the glm function allows you to include a predictor whose coefficient is fixed to the
+| value 1?
+
+1: offset
+2: formula
+3: family
+4: data
+5: b0
+
+Selection: 1
+
+| You're the best!
+
+  |=============================================================================================   |  97%
+
+| That completes the Poisson GLM example. Thanks for sticking with it. I hope we've made it count.
+
+...
+
+  |================================================================================================| 100%
+  
