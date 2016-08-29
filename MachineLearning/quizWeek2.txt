@@ -1,0 +1,177 @@
+> head(training)
+      Cement BlastFurnaceSlag FlyAsh      Water Superplasticizer CoarseAggregate FineAggregate Age
+1 0.22309440       0.00000000      0 0.06692832      0.001032844       0.4296633     0.2792811  28
+3 0.14917003       0.06393001      0 0.10228802      0.000000000       0.4181247     0.2664872 270
+5 0.08534961       0.05689974      0 0.08251322      0.000000000       0.4204736     0.3547638 360
+7 0.17048004       0.04262001      0 0.10228802      0.000000000       0.4181247     0.2664872 365
+8 0.17048004       0.04262001      0 0.10228802      0.000000000       0.4181247     0.2664872  28
+9 0.12036199       0.05158371      0 0.10316742      0.000000000       0.4217195     0.3031674  28
+  CompressiveStrength
+1               79.99
+3               40.27
+5               44.30
+7               43.70
+8               36.45
+9               45.85
+
+
+plot(training$CompressiveStrength)
+
+training$FlyAshColor <- cut2(training$FlyAsh, g=5)
+
+> table(training$FlyAshColor)
+
+         0.0000 [0.0101,0.0362) [0.0362,0.0518) [0.0518,0.0888] 
+            432              33             156             153 
+
+training$AgeColor <- cut2(training$Age, g=5)
+
+training$CementColor <- cut2(training$Cement, g=5)
+training$BlastFurnaceSlagColor <- cut2(training$BlastFurnaceSlag, g=5)
+training$WaterColor <- cut2(training$Water, g=5)
+training$SuperplasticizerColor <- cut2(training$Superplasticizer, g=5)
+training$CoarseAggregateColor <- cut2(training$CoarseAggregate, g=5)
+training$FineAggregateColor <- cut2(training$FineAggregate, g=5)
+
+
+
+qplot(as.integer(rownames(training)), training$CompressiveStrength, color=training$FlyAshColor)
+
+qplot(as.integer(rownames(training)), training$CompressiveStrength, color=training$AgeColor)
+
+modFit<- train(CompressiveStrength ~ . - FlyAshColor - AgeColor,
+               method = "lm",data=training)
+finMod <- modFit$finalModel
+summary(modFit)
+
+plot(finMod,1,pch=19,cex=0.5,col="#00000010")
+
+qplot(finMod$fitted,finMod$residuals,colour=FlyAshColor,data=training)
+
+
+
+set.seed(3433)
+data(AlzheimerDisease)
+adData = data.frame(diagnosis,predictors)
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+training = adData[ inTrain,]
+testing = adData[-inTrain,]
+
+
+trainingIL <- select(training, c(diagnosis, IL_11:IL_8))
+testingIL <- select(testing, c(diagnosis, IL_11:IL_8))
+preProcess(trainingIL[,-1],method="pca",thresh = 0.8)
+
+Find all the predictor variables in the training set that begin with IL. Perform principal components on these variables with the preProcess() function from the caret package. Calculate the number of principal components needed to capture 80% of the variance. How many are there?
+
+> preProc <- preProcess(trainingIL[,-1],method="pca",thresh = 0.8)
+> preProc
+Created from 251 samples and 12 variables
+
+Pre-processing:
+  - centered (12)
+  - ignored (0)
+  - principal component signal extraction (12)
+  - scaled (12)
+
+PCA needed 7 components to capture 80 percent of the variance
+
+---------------------
+
+
+
+Create a training data set consisting of only the predictors with variable names beginning with IL and the diagnosis. Build two predictive models, one using the predictors as they are and one using PCA with principal components explaining 80% of the variance in the predictors. Use method="glm" in the train function.
+
+What is the accuracy of each method in the test set? Which is more accurate?
+
+Predictors as is:
+
+set.seed(3433)
+data(AlzheimerDisease)
+adData = data.frame(diagnosis,predictors)
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+training = adData[ inTrain,]
+testing = adData[-inTrain,]
+
+
+trainingIL <- select(training, c(diagnosis, IL_11:IL_8))
+testingIL <- select(testing, c(diagnosis, IL_11:IL_8))
+
+preProc <- preProcess(trainingIL[,-1],method="pca",thresh = 0.8)
+
+
+
+Straight predictors
+-------------------
+modelFitRaw <- train(diagnosis ~ .,method="glm",data=trainingIL)
+#testRaw <- predict(modelFitRaw,testingIL[,-1])
+#testRaw <- predict(modelFitRaw,testingIL)
+#confusionMatrix(testingIL$diagnosis,predict(modelFitRaw,testRaw))
+
+> modelFitRaw
+Generalized Linear Model 
+
+251 samples
+ 12 predictor
+  2 classes: 'Impaired', 'Control' 
+
+No pre-processing
+Resampling: Bootstrapped (25 reps) 
+Summary of sample sizes: 251, 251, 251, 251, 251, 251, ... 
+Resampling results:
+
+  Accuracy   Kappa     
+  0.6861681  0.05592848
+
+ 
+> 
+
+
+confusionMatrix(testingIL[,-1], predict(modelFitRaw, testingIL[,-1]))
+
+
+Via PCA
+-------
+preProc <- preProcess(trainingIL[,-1],method="pca",thresh = 0.8)
+
+trainPCA <- predict(preProc,trainingIL[,-1])
+testPCA <- predict(preProc,testingIL[,-1])
+
+modelFitPCA <- train(trainingIL[,1] ~ .,method="glm",data=trainPCA)
+
+confusionMatrix(testingIL[,1],predict(modelFitPCA,testPCA))
+
+
+preProc <- preProcess(trainingIL[,-1],method="pca",thresh = 0.8)
+trainPC <- predict(preProc,trainingIL[,-1])
+#modelFitPC <- train(trainingIL$diagnosis ~ .,method="glm",data=trainPC)
+modelFitPC <- train(trainingIL$diagnosis ~ .,method="glm",data=trainPC)
+testPC <- predict(preProc,testingIL[,-1])
+confusionMatrix(testingIL$diagnosis,predict(modelFitPC,testPC))
+
+
+M <- abs(cor(trainingIL[,-1]))
+diag(M) <- 0
+which(M > 0.8,arr.ind=T)
+
+
+prComp <- prcomp(trainingIL[,-1])
+plot(prComp$x[,1],prComp$x[,2])
+
+preProc <- preProcess(trainingIL[,-1],method="pca",pcaComp=2)
+trainPC <- predict(preProc,trainingIL[,-1])
+
+preProc <- preProcess(trainingIL,method="pca",pcaComp=2)
+trainPC <- predict(preProc,trainingIL)
+
+
+-----
+
+modelFit <- train(trainingIL$diagnosis ~ .,method="glm",preProcess="pca",data=trainingIL)
+Error in `[.data.frame`(data, , all.vars(Terms), drop = FALSE) : 
+  undefined columns selected
+confusionMatrix(testingIL$diagnosis,predict(modelFit,testingIL))
+
+
+modelFit <- train(trainingIL$diagnosis ~ .,method="glm",data=trainPC)
+confusionMatrix(testingIL$diagnosis,predict(modelFit,testPC))

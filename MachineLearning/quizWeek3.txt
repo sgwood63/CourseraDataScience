@@ -1,0 +1,287 @@
+
+library(AppliedPredictiveModeling)
+data(segmentationOriginal)
+
+> names(segmentationOriginal)
+  [1] "Cell"                          "Case"                         
+  [3] "Class"                         "AngleCh1"                     
+  [5] "AngleStatusCh1"                "AreaCh1"                      
+  [7] "AreaStatusCh1"                 "AvgIntenCh1"                  
+  [9] "AvgIntenCh2"                   "AvgIntenCh3"                  
+ [11] "AvgIntenCh4"                   "AvgIntenStatusCh1"            
+ [13] "AvgIntenStatusCh2"             "AvgIntenStatusCh3"            
+ [15] "AvgIntenStatusCh4"             "ConvexHullAreaRatioCh1"       
+ [17] "ConvexHullAreaRatioStatusCh1"  "ConvexHullPerimRatioCh1"      
+ [19] "ConvexHullPerimRatioStatusCh1" "DiffIntenDensityCh1"          
+ [21] "DiffIntenDensityCh3"           "DiffIntenDensityCh4"          
+ [23] "DiffIntenDensityStatusCh1"     "DiffIntenDensityStatusCh3"    
+ [25] "DiffIntenDensityStatusCh4"     "EntropyIntenCh1"              
+ [27] "EntropyIntenCh3"               "EntropyIntenCh4"              
+ [29] "EntropyIntenStatusCh1"         "EntropyIntenStatusCh3"        
+ [31] "EntropyIntenStatusCh4"         "EqCircDiamCh1"                
+ [33] "EqCircDiamStatusCh1"           "EqEllipseLWRCh1"              
+ [35] "EqEllipseLWRStatusCh1"         "EqEllipseOblateVolCh1"        
+ [37] "EqEllipseOblateVolStatusCh1"   "EqEllipseProlateVolCh1"       
+ [39] "EqEllipseProlateVolStatusCh1"  "EqSphereAreaCh1"              
+ [41] "EqSphereAreaStatusCh1"         "EqSphereVolCh1"               
+ [43] "EqSphereVolStatusCh1"          "FiberAlign2Ch3"               
+ [45] "FiberAlign2Ch4"                "FiberAlign2StatusCh3"         
+ [47] "FiberAlign2StatusCh4"          "FiberLengthCh1"               
+ [49] "FiberLengthStatusCh1"          "FiberWidthCh1"                
+ [51] "FiberWidthStatusCh1"           "IntenCoocASMCh3"              
+ [53] "IntenCoocASMCh4"               "IntenCoocASMStatusCh3"        
+ [55] "IntenCoocASMStatusCh4"         "IntenCoocContrastCh3"         
+ [57] "IntenCoocContrastCh4"          "IntenCoocContrastStatusCh3"   
+ [59] "IntenCoocContrastStatusCh4"    "IntenCoocEntropyCh3"          
+ [61] "IntenCoocEntropyCh4"           "IntenCoocEntropyStatusCh3"    
+ [63] "IntenCoocEntropyStatusCh4"     "IntenCoocMaxCh3"              
+ [65] "IntenCoocMaxCh4"               "IntenCoocMaxStatusCh3"        
+ [67] "IntenCoocMaxStatusCh4"         "KurtIntenCh1"                 
+ [69] "KurtIntenCh3"                  "KurtIntenCh4"                 
+ [71] "KurtIntenStatusCh1"            "KurtIntenStatusCh3"           
+ [73] "KurtIntenStatusCh4"            "LengthCh1"                    
+ [75] "LengthStatusCh1"               "MemberAvgAvgIntenStatusCh2"   
+ [77] "MemberAvgTotalIntenStatusCh2"  "NeighborAvgDistCh1"           
+ [79] "NeighborAvgDistStatusCh1"      "NeighborMinDistCh1"           
+ [81] "NeighborMinDistStatusCh1"      "NeighborVarDistCh1"           
+ [83] "NeighborVarDistStatusCh1"      "PerimCh1"                     
+ [85] "PerimStatusCh1"                "ShapeBFRCh1"                  
+ [87] "ShapeBFRStatusCh1"             "ShapeLWRCh1"                  
+ [89] "ShapeLWRStatusCh1"             "ShapeP2ACh1"                  
+ [91] "ShapeP2AStatusCh1"             "SkewIntenCh1"                 
+ [93] "SkewIntenCh3"                  "SkewIntenCh4"                 
+ [95] "SkewIntenStatusCh1"            "SkewIntenStatusCh3"           
+ [97] "SkewIntenStatusCh4"            "SpotFiberCountCh3"            
+ [99] "SpotFiberCountCh4"             "SpotFiberCountStatusCh3"      
+[101] "SpotFiberCountStatusCh4"       "TotalIntenCh1"                
+[103] "TotalIntenCh2"                 "TotalIntenCh3"                
+[105] "TotalIntenCh4"                 "TotalIntenStatusCh1"          
+[107] "TotalIntenStatusCh2"           "TotalIntenStatusCh3"          
+[109] "TotalIntenStatusCh4"           "VarIntenCh1"                  
+[111] "VarIntenCh3"                   "VarIntenCh4"                  
+[113] "VarIntenStatusCh1"             "VarIntenStatusCh3"            
+[115] "VarIntenStatusCh4"             "WidthCh1"                     
+[117] "WidthStatusCh1"                "XCentroid"                    
+[119] "YCentroid"
+
+
+library(caret)
+training <- subset(segmentationOriginal, Case == 'Train')
+testing <- subset(segmentationOriginal, Case == 'Test')
+set.seed(125)
+
+modFit <- train(Class ~ .,method="rpart",data=training[,-2])
+print(modFit$finalModel)
+
+n= 1009 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 1009 373 PS (0.63032706 0.36967294)  
+  2) TotalIntenCh2< 45323.5 454  34 PS (0.92511013 0.07488987) *
+  3) TotalIntenCh2>=45323.5 555 216 WS (0.38918919 0.61081081)  
+    6) FiberWidthCh1< 9.673245 154  47 PS (0.69480519 0.30519481) *
+    7) FiberWidthCh1>=9.673245 401 109 WS (0.27182045 0.72817955) *
+
+fancyRpartPlot(modFit$finalModel)
+
+
+a. TotalIntench2 = 23,000; FiberWidthCh1 = 10; PerimStatusCh1=2
+
+x <- training[1,]
+x$TotalIntenCh2 = 23000
+x$FiberWidthCh1 = 10
+x$PerimStatusCh1 = 2
+predict(modFit, newdata = x)
+
+x <- data.frame(TotalIntench2 = 23,000, FiberWidthCh1 = 10, PerimStatusCh1=2)
+
+
+b. TotalIntench2 = 50,000; FiberWidthCh1 = 10;VarIntenCh4 = 100
+x$TotalIntenCh2 = 50000
+x$FiberWidthCh1 = 10
+x$VarIntenCh4 = 100
+predict(modFit, newdata = x)
+
+c. TotalIntench2 = 57,000; FiberWidthCh1 = 8;VarIntenCh4 = 100
+x$TotalIntenCh2 = 57000
+x$FiberWidthCh1 = 8
+x$VarIntenCh4 = 100
+predict(modFit, newdata = x)
+
+d. FiberWidthCh1 = 8;VarIntenCh4 = 100; PerimStatusCh1=2
+x$TotalIntenCh2 = 57000
+x$FiberWidthCh1 = 8
+x$VarIntenCh4 = NA
+x$PerimStatusCh1 = 2
+predict(modFit, newdata = x)
+
+
+load("olive.rda")
+
+inTrain = createDataPartition(olive$Area, p = 3/4)[[1]]
+training = olive[inTrain,]
+testing = olive[-inTrain,]
+
+
+modFit <- train(Area ~ .,method="rpart",data=olive)
+print(modFit$finalModel)
+n= 572 
+
+node), split, n, deviance, yval
+      * denotes terminal node
+
+1) root 572 3171.32000 4.599650  
+  2) Eicosenoic>=6.5 323  176.82970 2.783282 *
+  3) Eicosenoic< 6.5 249  546.51410 6.955823  
+    6) Linoleic>=1053.5 98   21.88776 5.336735 *
+    7) Linoleic< 1053.5 151  100.99340 8.006623 *
+> fancyRpartPlot(modFit$finalModel)
+> predict(modFit,newdata)
+       1 
+2.783282 
+> 
+
+
+Then set the seed to 13234 and fit a logistic regression model (method="glm", be sure to specify family="binomial") with Coronary Heart Disease (chd) as the outcome and age at onset, current alcohol consumption, obesity levels, cumulative tabacco, type-A behavior, and low density lipoprotein cholesterol as predictors. Calculate the misclassification rate for your model using this function and a prediction on the "response" scale:
+
+
+missClass = function(values,prediction){sum(((prediction > 0.5)*1) != values)/length(values)}
+What is the misclassification rate on the training set? What is the misclassification rate on the test set?
+
+names(trainSA)
+ [1] "sbp"       "tobacco"   "ldl"       "adiposity" "famhist"   "typea"     "obesity"  
+ [8] "alcohol"   "age"       "chd"      
+> 
+
+
+
+library(ElemStatLearn)
+> data(SAheart)
+> set.seed(8484)
+> train = sample(1:dim(SAheart)[1],size=dim(SAheart)[1]/2,replace=F)
+> trainSA = SAheart[train,]
+> testSA = SAheart[-train,]
+
+modelFit <- train(chd ~ age + alcohol + obesity + tobacco + typea + ldl,
+    method="glm",family="binomial", data=trainSA)
+
+
+set.seed(13234)
+modelFit <- train(as.factor(chd) ~ age + alcohol + obesity + tobacco + typea + ldl,
+    method="glm",family="binomial", data=trainSA)
+    
+> print(modelFit$finalModel)
+
+Call:  NULL
+
+Coefficients:
+(Intercept)          age      alcohol      obesity      tobacco        typea          ldl  
+   -2.71236      0.06561     -0.00324     -0.13241      0.10374      0.02894      0.16544  
+
+Degrees of Freedom: 230 Total (i.e. Null);  224 Residual
+Null Deviance:	    302.8 
+Residual Deviance: 237.7 	AIC: 251.7
+
+
+predict(modelFit, trainSA)
+
+> missClass(testSA[,10], predict(modelFit, testSA))
+[1] 0.3116883
+> missClass(trainSA[,10], predict(modelFit, trainSA))
+[1] 0.2727273
+
+
+Load the vowel.train and vowel.test data sets:
+
+
+library(ElemStatLearn)
+data(vowel.train)
+data(vowel.test)
+
+Set the variable y to be a factor variable in both the training and test set. Then set the seed to 33833. Fit a random forest predictor relating the factor variable y to the remaining variables. Read about variable importance in random forests here: http://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#ooberr The caret package uses by default the Gini importance.
+
+Calculate the variable importance using the varImp function in the caret package. What is the order of variable importance?
+
+modFit <- train(as.factor(y) ~ .,data=vowel.train,method="rf",prox=TRUE)
+
+
+> head(vowel.test)
+  y    x.1    x.2    x.3    x.4    x.5   x.6    x.7   x.8    x.9   x.10
+1 1 -1.149 -0.904 -1.988  0.739 -0.060 1.206  0.864 1.196 -0.300 -0.467
+2 2 -2.613 -0.092 -0.540  0.484  0.389 1.741  0.198 0.257 -0.375 -0.604
+3 3 -2.505  0.632 -0.593  0.304  0.496 0.824 -0.162 0.181 -0.363 -0.764
+4 4 -1.768  1.769 -1.142 -0.739 -0.086 0.120 -0.230 0.217 -0.009 -0.279
+5 5 -2.671  3.155 -0.514  0.133 -0.964 0.234 -0.071 1.192  0.254 -0.471
+6 6 -2.509  1.326  0.354  0.663 -0.724 0.418 -0.496 0.713  0.638 -0.204
+
+
+
+> modFit <- train(as.factor(y) ~ .,data=vowel.train,method="rf",prox=TRUE)
+Loading required package: randomForest
+randomForest 4.6-12
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: ‘randomForest’
+
+The following object is masked from ‘package:ggplot2’:
+
+    margin
+
+> modFit
+Random Forest 
+
+528 samples
+ 10 predictor
+ 11 classes: '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11' 
+
+No pre-processing
+Resampling: Bootstrapped (25 reps) 
+Summary of sample sizes: 528, 528, 528, 528, 528, 528, ... 
+Resampling results across tuning parameters:
+
+  mtry  Accuracy   Kappa    
+   2    0.9352599  0.9286058
+   6    0.9084139  0.8990053
+  10    0.8796794  0.8673437
+
+Accuracy was used to select the optimal model using  the largest value.
+The final value used for the model was mtry = 2. 
+> ?varImp
+> varImp(modFit)
+rf variable importance
+
+      Overall
+x.1  100.0000
+x.2   98.5960
+x.5   44.3214
+x.6   28.3926
+x.8   14.9865
+x.9    6.7483
+x.3    4.8055
+x.4    4.5061
+x.7    0.5042
+x.10   0.0000
+
+
+
+Answers:
+
+4
+4
+4
+3
+3
+
+modFitRF <- train(as.factor(y) ~ .,data=vowel.train,method="rf")
+modFitGBM <- train(as.factor(y) ~ .,data=vowel.train,method="gbm")
+
+predRF <- predict(modFitRF,vowel.test);
+predGBM <- predict(modFitGBM,vowel.test)
+
+predDF <- data.frame(predRF,predGBM,y=as.factor(vowel.test$y)
+combModFit <- train(y ~.,method="gam",data=predDF)
+combPred <- predict(combModFit,predDF)
+
+sqrt(sum((predRF-as.factor(vowel.testing$y)^2)))

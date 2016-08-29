@@ -1,0 +1,243 @@
+library(ElemStatLearn)
+data(vowel.train)
+data(vowel.test)
+set.seed(33833)
+library(caret)
+modFitRF <- train(as.factor(y) ~ .,data=vowel.train,method="rf")
+modFitGBM <- train(as.factor(y) ~ .,data=vowel.train,method="gbm", verbose=FALSE)
+
+predRF <- predict(modFitRF,vowel.test);
+predGBM <- predict(modFitGBM,vowel.test)
+
+predDF <- data.frame(predRF,predGBM,y=as.factor(vowel.test$y))
+
+combModFit <- train(y ~.,method="gam",data=predDF)
+combPred <- predict(combModFit,predDF)
+
+predAll <- data.frame(combPred,y=as.factor(vowel.test$y))
+
+correctComb <- filter(predAll, combPred == y)
+
+library(dplyr)
+
+correctGBM <- filter(predDF, predGBM == y)
+> 248/462
+[1] 0.5367965
+correctRF <- filter(predDF, predRF == y)
+> 284/462
+[1] 0.6147186
+agreement <- filter(predDF, predRF == predGBM)
+> 314/462
+[1] 0.6796537
+> 
+  
+Answered:
+  
+RF Accuracy = 0.6082
+
+GBM Accuracy = 0.5152
+
+Agreement Accuracy = 0.6361
+
+
+--------------
+
+library(gbm)
+
+set.seed(3433)
+
+library(AppliedPredictiveModeling)
+
+data(AlzheimerDisease)
+
+adData = data.frame(diagnosis,predictors)
+
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+
+training = adData[ inTrain,]
+
+testing = adData[-inTrain,]
+
+set.seed(62433)
+
+Set the seed to 62433 and predict diagnosis with all the other variables using a random forest ("rf"), boosted trees ("gbm") and linear discriminant analysis ("lda") model. Stack the predictions together using random forests ("rf"). What is the resulting accuracy on the test set? Is it better or worse than each of the individual predictions?
+
+Answer: Stacked Accuracy: 0.80 is better than all three other methods
+
+Stacked Accuracy: 0.80 is worse than all the other methods.
+
+Stacked Accuracy: 0.80 is better than random forests and lda and the same as boosting.
+
+Stacked Accuracy: 0.88 is better than all three other methods
+
+modFitRF <- train(diagnosis ~ .,data=training,method="rf")
+modFitGBM <- train(diagnosis ~ .,data=training,method="gbm", verbose=FALSE)
+modFitLDA <- train(diagnosis ~ .,data=training,method="lda")
+
+predRF <- predict(modFitRF,testing);
+predGBM <- predict(modFitGBM,testing)
+predLDA <- predict(modFitLDA,testing)
+
+
+predDF <- data.frame(y=testing$diagnosis, predRF, predGBM,predLDA)
+
+combModFit <- train(y ~.,method="rf",data=predDF)
+predComb <- predict(combModFit,predDF)
+
+predDF <- data.frame(predDF, predComb)
+
+RFAccuracy <- nrow(filter(predDF, predRF == y))/nrow(predDF)
+GBMAccuracy <- nrow(filter(predDF, predGBM == y))/nrow(predDF)
+LDAAccuracy <- nrow(filter(predDF, predLDA == y))/nrow(predDF)
+
+CombAccuracy <- nrow(filter(predDF, predComb == y))/nrow(predDF)
+
+> RFAccuracy
+[1] 0.7682927
+> GBMAccuracy
+[1] 0.7926829
+> LDAAccuracy
+[1] 0.7682927
+> CombAccuracy
+[1] 0.804878
+> 
+
+Wrong! Stacked Accuracy: 0.80 is better than all three other methods
+
+
+
+Right! Stacked Accuracy: 0.80 is better than random forests and lda and the same as boosting.
+
+But my stats don't show this.
+
+-----------------------------------
+
+Set the seed to 233 and fit a lasso model to predict Compressive Strength. Which variable is the last coefficient to be set to zero as the penalty increases? (Hint: it may be useful to look up ?plot.enet). 
+
+BlastFurnaceSlag
+CoarseAggregate
+Cement
+FineAggregate
+
+
+set.seed(3523)
+
+library(AppliedPredictiveModeling)
+
+data(concrete)
+
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+
+training = concrete[ inTrain,]
+
+testing = concrete[-inTrain,]
+
+set.seed(233)
+
+modFitLasso <- train(CompressiveStrength ~ .,data=training,method="lasso")
+
+> modFitLasso$finalModel
+
+Call:
+enet(x = as.matrix(x), y = y, lambda = 0)
+Cp statistics of the Lasso fit 
+Cp: 1201.603 1014.917  861.914  572.237  422.521  129.536  105.671   34.171    6.767    8.340    9.000 
+DF: 1 2 3 4 5 6 7 7 7 8 9 
+Sequence of  moves:
+     Cement Superplasticizer Age BlastFurnaceSlag Water FineAggregate FlyAsh FineAggregate
+Var       1                5   8                2     4             7      3            -7
+Step      1                2   3                4     5             6      7             8
+     FineAggregate CoarseAggregate   
+Var              7               6 11
+Step             9              10 11
+
+plot(modFitLasso$finalModel, use.color=TRUE)
+
+No: CoarseAggregate
+Cement
+
+
+--------------
+
+library(lubridate) # For year() function below
+
+dat = read.csv("gaData.csv")
+
+training = dat[year(dat$date) < 2012,]
+
+testing = dat[(year(dat$date)) > 2011,]
+
+tstrain = ts(training$visitsTumblr)
+
+
+> fit <- bats(tstrain)
+> plot(forecast(fit, h=600-365))
+> fcast <- forecast(fit, h=600-365)
+> summary(fcast)
+
+Forecast method: BATS(1, {0,1}, -, -)
+
+Model Information:
+BATS(1, {0,1}, -, -)
+
+Call: bats(y = tstrain)
+
+Parameters
+  Alpha: 0.05133695
+  MA coefficients: 0.255891
+
+Seed States:
+         [,1]
+[1,] 1.011293
+[2,] 0.000000
+
+Sigma: 258.7813
+AIC: 6217.33
+
+Error measures:
+                   ME     RMSE      MAE  MPE MAPE      MASE     ACF1
+Training set 10.39787 258.7813 40.22707 -Inf  Inf 0.8437138 0.012104
+
+Forecasts:
+    Point Forecast     Lo 80    Hi 80     Lo 95    Hi 95
+366       207.4397 -124.2019 539.0813 -299.7624 714.6418
+367       197.2773 -149.6631 544.2177 -333.3223 727.8769
+...
+598       235.5405 -239.8329 710.9138 -491.4803 962.5613
+599       235.5405 -240.3135 711.3945 -492.2154 963.2964
+600       235.5405 -240.7937 711.8746 -492.9497 964.0307
+
+Fit a model using the bats() function in the forecast package to the training time series. Then forecast this model for the remaining time points. For how many of the testing points is the true value within the 95% prediction interval bounds?
+
+
+> df <- data.frame(lower=fcast$lower[,2], upper=fcast$upper[,2], test=testing$visitsTumblr)
+> inRange <- filter(df, test >= lower &  test <= upper)
+> 226/235
+[1] 0.9617021
+> 
+
+--------------------
+
+Set the seed to 325 and fit a support vector machine using the e1071 package to predict Compressive Strength using the default settings. Predict on the testing set. What is the RMSE?
+
+45.09
+
+6.72
+
+6.93
+
+11543.39
+
+fitCaret <- train(CompressiveStrength ~ .,data=training,method='svmLinear')
+# ,type='C',kernel='linear',probability = TRUE
+
+fite1071 <- e1071::svm(CompressiveStrength ~ .,data=training)
+
+test_pred  <- predict(fite1071, testing)
+
+
+mse <- mean(residuals(fite1071)^2)
+rmse <- sqrt(mse)
+
+sqrt( mean( (test_pred - testing$CompressiveStrength)^2) )
+
