@@ -12,7 +12,7 @@ http://groupware.les.inf.puc-rio.br/har
 http://groupware.les.inf.puc-rio.br/public/papers/2013.Velloso.QAR-WLE.pdf
 
 
-Six young health participants were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fashions: exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E).
+Six young health participants were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fashions: exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E). Data was collected from the participants by accelerometers on the attached to their belt, forearm, arm and the dumbell.
 
 4 sensors:
 - belt
@@ -367,6 +367,8 @@ focusTest <- test[,names(focusTrain)[1:length(names(focusTrain)) - 1]]
 
 rpartPrediction <- predict(rpartModel, focusTest, type = "class")
 
+test <- read.csv("pml-testing.csv", na.strings=c("NA","#DIV/0!", ""))
+
 Error: variables "kurtosis_roll_belt", "kurtosis_picth_belt", "skewness_roll_belt", "skewness_roll_belt.1", "max_roll_belt", "max_picth_belt", "max_yaw_belt", "min_roll_belt", "min_pitch_belt", "min_yaw_belt", "amplitude_roll_belt", "amplitude_pitch_belt", "amplitude_yaw_belt", "var_total_accel_belt", "avg_roll_belt", "stddev_roll_belt", "var_roll_belt", "avg_pitch_belt", "stddev_pitch_belt", "var_pitch_belt", "avg_yaw_belt", "stddev_yaw_belt", "var_yaw_belt", "var_accel_arm", "avg_roll_arm", "stddev_roll_arm", "var_roll_arm", "avg_pitch_arm", "stddev_pitch_arm", "var_pitch_arm", "avg_yaw_arm", "stddev_yaw_arm", "var_yaw_arm", "kurtosis_roll_arm", "kurtosis_picth_arm", "kurtosis_yaw_arm", "skewness_roll_arm", "skewness_pitch_arm", "skewness_yaw_arm", "max_roll_arm", "max_picth_arm", "max_yaw_arm", "min_roll_arm", "min_pitch_arm", "min_yaw_arm", "amplitude_roll_arm", "amplitude_pitch_arm", "amplitude_yaw_arm", "kurtosis_roll_dumbbell", "kurtosis_picth_dumbbell", "skewness_roll_dumbbell
 
 
@@ -384,16 +386,16 @@ logisToConvert <- c("kurtosis_roll_belt", "kurtosis_picth_belt", "skewness_roll_
 logisToConvert2 <- c("skewness_pitch_dumbbell", "max_roll_dumbbell", "max_picth_dumbbell", "max_yaw_dumbbell", "min_roll_dumbbell", "min_pitch_dumbbell", "min_yaw_dumbbell", "amplitude_roll_dumbbell", "amplitude_pitch_dumbbell", "amplitude_yaw_dumbbell", "var_accel_dumbbell", "avg_roll_dumbbell", "stddev_roll_dumbbell", "var_roll_dumbbell", "avg_pitch_dumbbell", "stddev_pitch_dumbbell", "var_pitch_dumbbell", "avg_yaw_dumbbell", "stddev_yaw_dumbbell", "var_yaw_dumbbell", "kurtosis_roll_forearm", "kurtosis_picth_forearm", "skewness_roll_forearm", "skewness_pitch_forearm", "max_roll_forearm", "max_picth_forearm", "max_yaw_forearm", "min_roll_forearm", "min_pitch_forearm", "min_yaw_forearm", "amplitude_roll_forearm", "amplitude_pitch_forearm", "amplitude_yaw_forearm", "var_accel_forearm", "avg_roll_forearm", "stddev_roll_forearm", "var_roll_forearm", "avg_pitch_forearm", "stddev_pitch_forearm", "var_pitch_forearm", "avg_yaw_forearm", "stddev_yaw_forearm", "var_yaw_forearm")
 
 
-playTest[,logisToConvert] = sapply(playTest[,logisToConvert], as.numeric)
-playTest[,logisToConvert2] = sapply(playTest[,logisToConvert2], as.numeric)
-focusPlayTest <- playTest[,names(focusTrain)[1:length(names(focusTrain)) - 1]]
+test[,logisToConvert] = sapply(test[,logisToConvert], as.numeric)
+test[,logisToConvert2] = sapply(test[,logisToConvert2], as.numeric)
+focusTest <- test[,names(focusTrain)[1:length(names(focusTrain)) - 1]]
 rpartPrediction <- predict(rpartModel, focusPlayTest, type="class")
 
 
 nonEmptyFocusPlayTest <- playTest[,names(nonEmptytrain)[1:length(names(nonEmptytrain)) - 1]]
 nonEmptyRpartPrediction <- predict(nonEmptyRpartModel, nonEmptyFocusPlayTest, type="class")
 
-allValuesOnlyFocusPlayTest <- playTest[,names(allValuesOnlytrain)[1:length(names(allValuesOnlytrain)) - 1]]
+allValuesOnlyFocusTest <- test[,names(allValuesOnlytrain)[1:length(names(allValuesOnlytrain)) - 1]]
 allValuesOnlyRpartPrediction <- predict(allValuesOnlyRpartModel, allValuesOnlyFocusPlayTest, type="class")
 
 > allValuesOnlyRpartPrediction
@@ -486,9 +488,13 @@ total_accel_dumbbell 19.17 33.53 22.43 27.62  30.83
 magnet_forearm_z     33.34 31.34 28.92 27.50  32.11
 
 
-predict(allValuesOnlyRFModel, nonEmptyFocusPlayTest)
+predict(allValuesOnlyRFModel, allValuesOnlyFocusTest)
 
  [1] B A B A A E D B A A B C B A E E A B B B
 Levels: A B C D E
+
+
+
+http://stackoverflow.com/questions/9666212/how-to-compute-error-rate-from-a-decision-tree
 
 
