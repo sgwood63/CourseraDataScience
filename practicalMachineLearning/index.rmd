@@ -1,0 +1,173 @@
+---
+title: "Coursera Practical Machine Learning\nCourse Assignment"
+author: "Sherman Wood"
+date: "August 29, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, fig.height=6)
+library(caret)
+library(rpart)
+library(rpart.plot)
+library(randomForest)
+```
+
+## Summary
+
+The goal of your project is to predict the manner in which they did the exercise. This is the "classe" variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases.
+
+The goal of this analysis is to investigate a data set of weight lifting training data, determine a good predicitve model and predict results from a 20 row test data set.
+
+Data was analyzed and decision tree and random forest predictive models were built with cross validation. The random forest model had over 99% accuracy and therefore a low out of sample error rate in testing, more than the decision tree. Subsequently the random forest model was used for the final prediction, which was for the 20 test rows in order:
+
+```{r prediction for summary, echo=TRUE}
+# [1] B A B A A E D B A A B C B A E E A B B B
+```
+
+## The Data
+
+The data comes from Human Activity Recognition research by: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset)
+
+The research paper related to the data is http://groupware.les.inf.puc-rio.br/public/papers/2013.Velloso.QAR-WLE.pdf
+
+Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.
+
+The data set for this analysis was:
+
+Training data set: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
+
+Test data set: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+
+The training data set contains the results of six young health participants performing one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different ways:
+
+* exactly according to the "correct" specification (Class A)
+
+And then in a variety of "incorrect" ways:
+
+* throwing the elbows to the front (Class B)
+* lifting the dumbbell only halfway (Class C)
+* lowering the dumbbell only halfway (Class D)
+* throwing the hips to the front (Class E)
+
+The Class is captured in the "classe" variable in the training data set. The test data set does not include the classe.
+
+Performance data was collected from the participants by accelerometers on the attached to their belt, forearm, arm and the dumbell.
+
+* Euler angles for roll, pitch and yaw
+* Raw accelerometer, gyroscope and magnetometer readings, including positions (x, y, z)
+* For each of the Euler angles: Mean, variance, standard deviation, max, min, amplitude, kurtosis and skewness
+
+This results in 96 derived feature sets and 153 data points per reading.
+
+Each reading is tagged by:
+
+* participant identifier - user_name
+* the order and timestamp of the reading
+* identifiers of the window of the reading. Data was collected with a sliding window approach using different lengths of time from 0.5 second to 2.5 seconds, with 0.5 second overlap.
+
+The training data set contains 19,622 readings.
+
+So the data is a time series of sequences of readings: a number of readings through an exercise repetition by a particular person. The testing set only has single readings at a point in time, rather than a complete time series for a repetition.
+It would be more correct to predict whether a given sequence of readings indicates what type of repetition (classe) was being performed, rather than predicting based on a single reading. But given the test set, we will focus on predictions based on single readings at points in time.
+
+## Data Management
+
+The data sets contain large numbers of empty or invalid values. For example, we have columns:
+
+amplitude_yaw_forearm column: all invalid values - blank, '#DIV/0!', '0.00'
+
+var_accel_forearm column: 98% NA's
+
+I will clean the data as follows:
+
+* Make invalid and empty values - literals 'NA', empty string, "#DIV/0!" - as NA in the loaded data
+* Remove the timestamp and ordering columns, because we are predicting on single readings
+
+```{r data load}
+train <- read.csv("../pml-training.csv", na.strings=c("NA","#DIV/0!", ""))
+focusTrain <- dplyr::select(train, user_name, 8:ncol(train))
+allValuesOnlyTrain <-focusTrain[,colSums(is.na(focusTrain)) == 0]
+```
+
+## Prediction Preparatrion
+
+Invalid values will not be acceptable for some machine learning algorithms like random forest, but could be significant for prediction. So I will analyze the data in several ways:
+
+* the complete data set with invalid values (NAs) - 154 columns, known as "missing data"
+* a data set with only columns that contain data values for all rows - 54 columns, known as "only clean data"
+
+For model training, I will partition the rows of the original training sets into 75% training, 25% testing.
+
+```{r partition training}
+
+set.seed(20160829)
+inTrain <- createDataPartition(y=focusTrain$classe, p=0.75, list=FALSE)
+focusTrainset <- focusTrain[inTrain,]
+focusTestset <- focusTrain[-inTrain,]
+
+set.seed(20160829)
+inTrain <- createDataPartition(y=allValuesOnlyTrain$classe, p=0.75, list=FALSE)
+allValuesOnlyFocusTrainset <- allValuesOnlyTrain[inTrain,]
+allValuesOnlyFocusTestset <- allValuesOnlyTrain[-inTrain,]
+```
+## Decision Tree ("rpart") Prediction
+
+We will use the "missing data" training data set to work with the decision tree model.
+
+By default, rpart training will conduct as many splits as possible, then applies 10–fold cross–validation to prune the tree.
+
+Let's train and see the model.
+```{r rpart model}
+set.seed(20160829)
+rpartModel <- rpart(classe ~ ., data=focusTrainset)
+
+printcp(rpartModel)
+prp(rpartModel)
+```
+
+The model focused on variables that had complete data. I also trained rpart models (not shown) with the "only clean data" training set, and they produced the same model - same variables and decision tree - as this one based on the broader "missing data" training set.
+
+Now, let's test the model and assess its effectiveness.
+```{r rpart predict}
+rpartPrediction <- predict(rpartModel, focusTestset, type="class")
+confusionMatrix(rpartPrediction, focusTestset$classe)
+```
+An accuracy of 75% is low and consequently the expected value of the out of sample error - (1 - Accuracy) = 25% - is high.
+
+Let's try a different modeling technique to see if we can get greater accuracy and a lower out of sample error.
+
+## Random Forest Prediction
+
+Using the "only clean data" training set, let's build a random forest model with cross validation and a limited number of folds to limit required processing time. We can watch the accuracy to see whether it is high enough - 99% would be great accuracy. 
+
+Let's review, include value importance, and test the model. Given the processing time for training, I am loading a previously trained random forest model from a file to use in the prediction.
+```{r random forest model and test prediction, echo=TRUE}
+#set.seed(20160829)
+#controls <- trainControl(method="cv", number = 6)
+#cl <- makeCluster(detectCores())
+#registerDoParallel(cl)
+#allValuesOnlyRFModel <- train(classe ~ ., method = "rf", data=allValuesOnlyFocusTrainset, trControl = controls,
+#   allowParallel = TRUE, importance = TRUE)
+#stopCluster(cl)
+
+load("../allValuesOnlyRFModel.RData")
+allValuesOnlyRFModel
+# Note the similarity in the important variables from the random forest and the decision tree.
+plot(varImp(allValuesOnlyRFModel), top=15)
+rfPrediction <- predict(allValuesOnlyRFModel, allValuesOnlyFocusTestset)
+confusionMatrix(rfPrediction, allValuesOnlyFocusTestset$classe)
+```
+
+The 99% accuracy rate, and therefore a low out of sample error of 1% indicates that this random forest model produces accurate predictions. This high accuracy contradicts my earlier comment about how the predicitons could be effected by the time series nature of the data.
+
+## Predicting from the given training set
+
+Using the accurate random forest model that has been defined above, and the given testing set, narrowed to only include  columns with no missing values, we get the following predictions.
+
+```{r final test prediction, echo = TRUE}
+test <- read.csv("../pml-testing.csv", na.strings=c("NA","#DIV/0!", ""))
+allValuesOnlyFocusTest <- test[,names(allValuesOnlyFocusTrainset)[1:length(names(allValuesOnlyFocusTrainset)) - 1]]
+predict(allValuesOnlyRFModel, allValuesOnlyFocusTest)
+```
+
